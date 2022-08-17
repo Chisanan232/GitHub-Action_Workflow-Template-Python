@@ -19,15 +19,15 @@ on:
   workflow_call:
     inputs:
       download_path:
-        description: "The testing type. In generally, it only has 2 options: 'unit-test' and 'integration-test'."
+        description: "The path to download testing coverage reports via 'actions/download-artifact@v3'."
         required: true
         type: string
       codecov_flags:
-        description: "The testing type. In generally, it only has 2 options: 'unit-test' and 'integration-test'."
+        description: "The flags of the testing coverage report for Codecov."
         required: true
         type: string
       codecov_name:
-        description: "The testing type. In generally, it only has 2 options: 'unit-test' and 'integration-test'."
+        description: "The name of the testing coverage report for Codecov."
         required: true
         type: string
 
