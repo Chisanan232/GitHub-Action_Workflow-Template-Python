@@ -1,7 +1,7 @@
 ############################################################################
 #
 # Workflow Description:
-#     Run testing by specific type with all test items and generate its testing
+#     Run testing by specific type with all test items via PyTest and generate its testing
 #     coverage report (it would save reports by 'actions/upload-artifact@v3').
 #
 # Workflow input parameters:
