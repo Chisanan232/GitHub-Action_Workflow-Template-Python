@@ -4,9 +4,13 @@
 #     Upload the testing coverage reports to Codecov.
 #
 # Workflow input parameters:
-#     * download_path: The path to download testing coverage reports via 'actions/download-artifact@v3'.
-#     * codecov_flags: The flags of the testing coverage report for Codecov.
-#     * codecov_name: The name of the testing coverage report for Codecov.
+#     * General arguments:
+#         * download_path: The path to download testing coverage reports via 'actions/download-artifact@v3'.
+#         * codecov_flags: The flags of the testing coverage report for Codecov.
+#         * codecov_name: The name of the testing coverage report for Codecov.
+#
+#     * Secret arguments:
+#         * codecov_token: The API token for uploading testing coverage report to Codecov.
 #
 # Workflow running output:
 #     No and do nothing.
@@ -33,6 +37,7 @@ on:
 
     secrets:
       codecov_token:
+        description: "The API token for uploading testing coverage report to Codecov."
         required: true
 
 
