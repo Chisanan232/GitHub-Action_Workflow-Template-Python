@@ -1,0 +1,47 @@
+############################################################################
+#
+# Workflow Description:
+#     Run a specific shell script to get all test items.
+#
+# Workflow input parameters:
+#     * shell_path: The file path of shell script which gets all the test items.
+#     * shell_arg: The arguments of the shell script which gets all the test items.
+#
+# Workflow running output:
+#     Yes, it has running result output. The output is the paths of all test items.
+#
+############################################################################
+
+name: Prepare test items
+
+on:
+  workflow_call:
+    inputs:
+      shell_path:
+        description: "The file path of shell script which gets all the test items."
+        required: true
+        type: string
+      shell_arg:
+        description: "The arguments of the shell script which gets all the test items."
+        required: true
+        type: string
+    outputs:
+      all_test_items:
+        description: "The output string about all test items it needs to run."
+        value: ${{ jobs.prep-testbed_get_test_items.outputs.matrix }}
+
+
+jobs:
+  prep-testbed_get_test_items:
+    name: Prepare all test items
+    runs-on: ubuntu-latest
+    # Map the job outputs to step outputs
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.all_test_items }}
+    steps:
+      - uses: actions/checkout@v3
+      - id: set-matrix
+        run: |
+          sudo apt-get install jq
+          echo "::set-output name=all_test_items::$(bash ${{ inputs.shell_path }} ${{ inputs.shell_arg }})"
+
