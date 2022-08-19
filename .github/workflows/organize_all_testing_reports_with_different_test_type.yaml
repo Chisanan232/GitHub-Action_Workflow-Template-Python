@@ -1,0 +1,58 @@
+############################################################################
+#
+# Workflow Description:
+#     Organize all the testing coverage reports. (it would save reports by 'actions/upload-artifact@v3').
+#
+# Workflow input parameters:
+#     No input parameters.
+#
+# Workflow running output:
+#     No, but it would save the testing coverage reports (coverage.xml) to provide after-process to organize and record.
+#
+############################################################################
+
+name: Organize all testing coverage reports, e.g., different runtime OS, as a final testing coverage report.
+
+on:
+  workflow_call:
+
+
+jobs:
+  organize_and_generate_test_report:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Download code coverage result file
+        uses: actions/download-artifact@v3
+        with:
+          name: project_testing_coverage_report
+          path: .coverage-*
+
+      - name: Setup Python 3.10 in Ubuntu OS
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.10'
+
+      - name: Install Python tool 'coverage'
+        run: |
+          python -m pip install --upgrade pip
+          pip install -U pip
+          pip install coverage
+
+      - name: Combine all code coverage result files
+        run: coverage combine .coverage-*
+
+      - name: Report testing coverage of project code
+        run: coverage report -m
+
+      - name: Generate testing coverage report as XML file
+        run: coverage xml
+
+      - name: Upload testing coverage report
+        uses: actions/upload-artifact@v3
+        with:
+          name: final_project_testing_coverage_report
+          path: coverage.xml
+          if-no-files-found: error
