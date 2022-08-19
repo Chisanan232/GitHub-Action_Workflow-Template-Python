@@ -38,7 +38,7 @@ jobs:
       - name: Download testing coverage report
         uses: actions/download-artifact@v3
         with:
-          name: project_coverage_report
+          name: final_project_testing_coverage_report
           path: ${{ inputs.download_path }}
 
       - name: Generate testing report for Codacy

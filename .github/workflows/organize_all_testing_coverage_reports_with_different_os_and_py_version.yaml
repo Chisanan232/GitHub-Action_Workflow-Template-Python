@@ -5,13 +5,15 @@
 #
 # Workflow input parameters:
 #     * test_type: The testing type. In generally, it only has 2 options: 'unit-test' and 'integration-test'.
+#     * generate_xml_report_finally: Something, it only has 1 test type currently. So it could let this option
+#        to be 'true' than it would generate XML report finally to let uploading process to use it directly.
 #
 # Workflow running output:
 #     No, but it would save the testing coverage reports (coverage.xml) to provide after-process to organize and record.
 #
 ############################################################################
 
-name: Upload test report to Codecov
+name: Organize testing coverage reports as a testing coverage report
 
 on:
   workflow_call:
@@ -20,6 +22,10 @@ on:
         description: "The testing type. In generally, it only has 2 options: 'unit-test' and 'integration-test'."
         required: true
         type: string
+      generate_xml_report_finally:
+        description: "Something, it only has 1 test type currently. So it could let this option to be 'true' than it would generate XML report finally to let uploading process to use it directly."
+        required: true
+        type: boolean
 
 
 jobs:
@@ -52,12 +58,26 @@ jobs:
       - name: Report testing coverage of project code
         run: coverage report -m
 
-      - name: Generate testing report for Codacy
+      - name: General testing coverage report as XML format
+        if: ${{ inputs.generate_xml_report_finally }} == 'true'
         run: coverage xml
 
+      - name: Rename the testing coverage report with test type
+        if: ${{ inputs.generate_xml_report_finally }} == 'false'
+        run: mv .coverage .coverage-${{ inputs.test_type }}
+
       - name: Upload testing coverage report
+        if: ${{ inputs.generate_xml_report_finally }} == 'true'
         uses: actions/upload-artifact@v3
         with:
-          name: project_coverage_report
+          name: final_project_testing_coverage_report
           path: coverage.xml
+          if-no-files-found: error
+
+      - name: Upload testing coverage report
+        if: ${{ inputs.generate_xml_report_finally }} == 'false'
+        uses: actions/upload-artifact@v3
+        with:
+          name: project_testing_coverage_report
+          path: .coverage-${{ inputs.test_type }}
           if-no-files-found: error
