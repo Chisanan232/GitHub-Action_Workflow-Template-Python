@@ -11,7 +11,7 @@
 #
 ############################################################################
 
-name: Upload test report to Codecov
+name: Organize testing coverage reports as a testing coverage report
 
 on:
   workflow_call:
@@ -52,12 +52,12 @@ jobs:
       - name: Report testing coverage of project code
         run: coverage report -m
 
-      - name: Generate testing report for Codacy
-        run: coverage xml
+      - name: Rename the testing coverage report with test type
+        run: mv .coverage .coverage-${{ inputs.test_type }}
 
       - name: Upload testing coverage report
         uses: actions/upload-artifact@v3
         with:
-          name: project_coverage_report
-          path: coverage.xml
+          name: project_testing_coverage_report
+          path: .coverage-${{ inputs.test_type }}
           if-no-files-found: error
