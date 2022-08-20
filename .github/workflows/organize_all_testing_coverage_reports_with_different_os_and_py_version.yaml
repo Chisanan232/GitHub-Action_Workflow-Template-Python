@@ -60,15 +60,18 @@ jobs:
         run: coverage report -m
 
       - name: General testing coverage report as XML format
-        if: ${{ inputs.generate_xml_report_finally == true }}
+#        if: ${{ inputs.generate_xml_report_finally == true }}
+        if: inputs.generate_xml_report_finally == 'true'
         run: coverage xml
 
       - name: Rename the testing coverage report with test type
-        if: ${{ inputs.generate_xml_report_finally == false }}
+#        if: ${{ inputs.generate_xml_report_finally == false }}
+        if: inputs.generate_xml_report_finally == 'false'
         run: mv .coverage .coverage-${{ inputs.test_type }}
 
       - name: Upload testing coverage report
-        if: ${{ inputs.generate_xml_report_finally == true }}
+#        if: ${{ inputs.generate_xml_report_finally == true }}
+        if: inputs.generate_xml_report_finally == 'true'
         uses: actions/upload-artifact@v3
         with:
           name: final_project_testing_coverage_report
@@ -76,7 +79,8 @@ jobs:
           if-no-files-found: error
 
       - name: Upload testing coverage report
-        if: ${{ inputs.generate_xml_report_finally == false }}
+#        if: ${{ inputs.generate_xml_report_finally == false }}
+        if: inputs.generate_xml_report_finally == 'false'
         uses: actions/upload-artifact@v3
         with:
           name: project_testing_coverage_report
