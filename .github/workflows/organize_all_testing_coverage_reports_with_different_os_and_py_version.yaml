@@ -24,8 +24,8 @@ on:
         type: string
       generate_xml_report_finally:
         description: "Something, it only has 1 test type currently. So it could let this option to be 'true' than it would generate XML report finally to let uploading process to use it directly."
-        required: true
         type: boolean
+        required: true
 
 
 jobs:
