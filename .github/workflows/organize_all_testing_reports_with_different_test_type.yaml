@@ -28,13 +28,15 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: new_project_testing_coverage_report_unit-test
-          path: .coverage-unit-test
+#          path: .coverage-unit-test
+          path: ./
 
       - name: Download code coverage result file
         uses: actions/download-artifact@v3
         with:
           name: new_project_testing_coverage_report_integration-test
-          path: .coverage-integration-test
+#          path: .coverage-integration-test
+          path: ./
 
       - name: Setup Python 3.10 in Ubuntu OS
         uses: actions/setup-python@v2
