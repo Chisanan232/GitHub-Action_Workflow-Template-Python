@@ -93,7 +93,7 @@ jobs:
       codecov_token: ${{ secrets.CODECOV_TOKEN }}
     with:
       download_path: ./
-      codecov_flags: unit-test, integration-test
+      codecov_flags: unit, integration
       codecov_name: smoothcrawler-appintegration_github-actions_test # optional
 
 
