@@ -76,7 +76,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: project_testing_coverage_report_${{ inputs.test_type }}
-          path: .coverage
+          path: ./
 
       - name: General testing coverage report as XML format
         run: coverage xml
@@ -98,7 +98,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: project_testing_coverage_report_${{ inputs.test_type }}
-          path: .coverage
+          path: ./
 
       - name: Rename the testing coverage report with test type
         run: mv .coverage .coverage-${{ inputs.test_type }}
