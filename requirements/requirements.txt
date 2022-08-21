@@ -1,0 +1,2 @@
+###### SmoothCrawler-AppIntegration Dependencies Requirements ######
+## Code - Basic ##
