@@ -104,7 +104,7 @@ jobs:
     secrets:
       codacy_token: ${{ secrets.CODACY_PROJECT_TOKEN }}
     with:
-      download_path: ./coverage.xml
+      download_path: ./
 
 
 #  pre-building_check:
