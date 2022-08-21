@@ -29,14 +29,16 @@ jobs:
         with:
           name: new_project_testing_coverage_report_unit-test
 #          path: .coverage-unit-test
-          path: ./
+          path: .coverage-*
+#          path: ./
 
       - name: Download code coverage result file
         uses: actions/download-artifact@v3
         with:
           name: new_project_testing_coverage_report_integration-test
 #          path: .coverage-integration-test
-          path: ./
+          path: .coverage-*
+#          path: ./
 
       - name: Setup Python 3.10 in Ubuntu OS
         uses: actions/setup-python@v2
@@ -49,8 +51,11 @@ jobs:
           pip install -U pip
           pip install coverage
 
+      - name: List files and directories
+        run: ls -la
+
       - name: Combine all code coverage result files
-        run: coverage combine .coverage*
+        run: coverage combine .coverage-*
 
       - name: Report testing coverage of project code
         run: coverage report -m
