@@ -30,7 +30,7 @@ on:
 
 
 jobs:
-  organize_and_generate_test_report:
+  organize_test_reports:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -59,28 +59,51 @@ jobs:
       - name: Report testing coverage of project code
         run: coverage report -m
 
+      - name: Upload testing coverage report
+        uses: actions/upload-artifact@v3
+        with:
+          name: project_testing_coverage_report_with_test_type
+          path: .coverage
+          if-no-files-found: error
+
+  generate_final_test_report:
+    if: ${{ inputs.generate_xml_report_finally == true }}
+#    if: inputs.generate_xml_report_finally == 'true'
+    needs: organize_test_reports
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download code coverage result file
+        uses: actions/download-artifact@v3
+        with:
+          name: project_testing_coverage_report_with_test_type
+          path: .coverage
+
       - name: General testing coverage report as XML format
-#        if: ${{ inputs.generate_xml_report_finally == true }}
-        if: inputs.generate_xml_report_finally == 'true'
         run: coverage xml
 
-      - name: Rename the testing coverage report with test type
-#        if: ${{ inputs.generate_xml_report_finally == false }}
-        if: inputs.generate_xml_report_finally == 'false'
-        run: mv .coverage .coverage-${{ inputs.test_type }}
-
       - name: Upload testing coverage report
-#        if: ${{ inputs.generate_xml_report_finally == true }}
-        if: inputs.generate_xml_report_finally == 'true'
         uses: actions/upload-artifact@v3
         with:
           name: final_project_testing_coverage_report
           path: coverage.xml
           if-no-files-found: error
 
+  generate_test_type_report:
+    if: ${{ inputs.generate_xml_report_finally == false }}
+#    if: inputs.generate_xml_report_finally == 'false'
+    needs: organize_test_reports
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download code coverage result file
+        uses: actions/download-artifact@v3
+        with:
+          name: project_testing_coverage_report_with_test_type
+          path: .coverage
+
+      - name: Rename the testing coverage report with test type
+        run: mv .coverage .coverage-${{ inputs.test_type }}
+
       - name: Upload testing coverage report
-#        if: ${{ inputs.generate_xml_report_finally == false }}
-        if: inputs.generate_xml_report_finally == 'false'
         uses: actions/upload-artifact@v3
         with:
           name: project_testing_coverage_report
