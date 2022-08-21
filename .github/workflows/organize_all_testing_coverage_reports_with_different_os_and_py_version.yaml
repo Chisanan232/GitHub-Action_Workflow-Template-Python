@@ -62,7 +62,7 @@ jobs:
       - name: Upload testing coverage report
         uses: actions/upload-artifact@v3
         with:
-          name: project_testing_coverage_report_with_test_type
+          name: project_testing_coverage_report_${{ inputs.test_type }}
           path: .coverage
           if-no-files-found: error
 
@@ -75,7 +75,7 @@ jobs:
       - name: Download code coverage result file
         uses: actions/download-artifact@v3
         with:
-          name: project_testing_coverage_report_with_test_type
+          name: project_testing_coverage_report_${{ inputs.test_type }}
           path: .coverage
 
       - name: General testing coverage report as XML format
@@ -97,7 +97,7 @@ jobs:
       - name: Download code coverage result file
         uses: actions/download-artifact@v3
         with:
-          name: project_testing_coverage_report_with_test_type
+          name: project_testing_coverage_report_${{ inputs.test_type }}
           path: .coverage
 
       - name: Rename the testing coverage report with test type
