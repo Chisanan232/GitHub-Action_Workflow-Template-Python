@@ -58,6 +58,11 @@ jobs:
     with:
       test_type: integration-test
       all_test_items_paths: ${{needs.prep-testbed_integration-test.outputs.all_test_items}}
+      dockerfile: sample_Dockerfile
+      dockerfile_container_name: sample_container
+      dockerfile_cmd_options: -p 12345:12345
+      dockerfile_image_tag: sample:v1
+      dockerfile_context_path: ./
 
 
   unit-test_codecov:
@@ -66,7 +71,7 @@ jobs:
     uses: ./.github/workflows/organize_all_testing_coverage_reports_with_different_os_and_py_version.yaml
     with:
       test_type: unit-test
-      generate_xml_report_finally: false
+#      generate_xml_report_finally: false
 
 
   integration-test_codecov:
@@ -75,13 +80,17 @@ jobs:
     uses: ./.github/workflows/organize_all_testing_coverage_reports_with_different_os_and_py_version.yaml
     with:
       test_type: integration-test
-      generate_xml_report_finally: false
+#      generate_xml_report_finally: false
 
 
   organize_all-test_codecov_and_generate_report:
 #    name: Organize and generate the testing report and upload it to Codecov
     needs: [unit-test_codecov, integration-test_codecov]
-    uses: ./.github/workflows/organize_all_testing_reports_with_different_test_type.yaml
+#    uses: ./.github/workflows/organize_all_testing_reports_with_different_test_type.yaml
+    uses: ./.github/workflows/organize_all_testing_coverage_reports_with_different_os_and_py_version.yaml
+    with:
+      test_type: all-test
+#      generate_xml_report_finally: false
 
 
   codecov_finish:
@@ -93,13 +102,14 @@ jobs:
       codecov_token: ${{ secrets.CODECOV_TOKEN }}
     with:
       download_path: ./
+      test_type: all-test
       codecov_flags: unit,integration
       codecov_name: smoothcrawler-appintegration_github-actions_test # optional
 
 
   codacy_finish:
 #    name: Upload test report to Codacy to analyse and record code quality
-    needs: [codecov_finish]
+    needs: organize_all-test_codecov_and_generate_report
     uses: ./.github/workflows/upload_code_report_to_codacy.yaml
     secrets:
       codacy_token: ${{ secrets.CODACY_PROJECT_TOKEN }}
