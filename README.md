@@ -23,12 +23,12 @@ this project. This project has some workflow templates for reusing in GitHub Act
 
 The usage of each workflow template.
 
-* [_prepare_test_items.yaml_](#_prepare_test_itemsyaml_)
-* [_run_test_items_via_pytest.yaml_](#_run_test_items_via_pytestyaml_)
-* [_organize_all_testing_coverage_reports_with_different_os_and_py_version.yaml_](#_organize_all_testing_coverage_reports_with_different_os_and_py_versionyaml_)
-* [_organize_all_testing_reports_with_different_test_type.yaml_](#_organize_all_testing_reports_with_different_test_typeyaml_)
-* [_upload_test_report_to_codecov.yaml_](#_upload_test_report_to_codecovyaml_)
-* [_upload_code_report_to_codacy.yaml_](#_upload_code_report_to_codacyyaml_)
+* [_prepare_test_items.yaml_](#prepare_test_itemsyaml)
+* [_run_test_items_via_pytest.yaml_](#run_test_items_via_pytestyaml)
+* [_organize_all_testing_coverage_reports_with_different_os_and_py_version.yaml_](#organize_all_testing_coverage_reports_with_different_os_and_py_versionyaml)
+* [_organize_all_testing_reports_with_different_test_type.yaml_](#organize_all_testing_reports_with_different_test_typeyaml)
+* [_upload_test_report_to_codecov.yaml_](#upload_test_report_to_codecovyaml)
+* [_upload_code_report_to_codacy.yaml_](#upload_code_report_to_codacyyaml)
 
 
 #### _prepare_test_items.yaml_
