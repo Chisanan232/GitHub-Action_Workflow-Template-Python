@@ -1,0 +1,29 @@
+###################################################################
+#
+# Description:
+# Build and run HTTP server for testing
+#
+###################################################################
+
+FROM python:3.10
+
+WORKDIR ./sample-project/
+
+# # Prepare the runtime environment for Python
+RUN pip install -U pip
+
+# # Install the Python dependencies for development
+COPY ./requirements/requirements-test.txt ./requirements/
+
+RUN pip install -U -r ./requirements/requirements-test.txt
+
+# # Install some internet tool for debug if it needs
+RUN apt-get update && \
+      apt-get install -y iputils-ping && \
+      apt-get install -y net-tools && \
+      apt-get install --no-install-recommends --assume-yes netcat
+
+# # Copy package code, testing code and scripts to container
+COPY ./test/ ./test/
+
+CMD python3 ./test/_http_server/app.py
