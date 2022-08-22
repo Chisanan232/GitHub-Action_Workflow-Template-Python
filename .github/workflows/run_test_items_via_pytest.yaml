@@ -26,6 +26,29 @@ on:
         description: "The target paths of test items under test."
         required: true
         type: string
+      dockerfile:
+        description: "The file path of Dockerfile."
+        required: false
+        type: string
+      docker_container_name:
+        description: "The name of docker container."
+        required: false
+        default: gh_ci_container
+        type: string
+      docker_cmd_options:
+        description: "The command options of 'docker run'."
+        required: false
+        type: string
+      docker_image_tag:
+        description: "The tag of image which be built by Dockerfile."
+        required: false
+        default: gh_ci_container:v0
+        type: string
+      docker_context_path:
+        description: "The path where is the context path of Dockerfile."
+        required: false
+        default: ./
+        type: string
 
 
 jobs:
@@ -63,6 +86,18 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+
+      - name: Build Docker image via Dockerfile
+        if: ${{ inputs.dockerfile }}
+        run: |
+          docker build -t ${{ inputs.docker_image_tag }} ${{ inputs.docker_context_path }} -f ${{ inputs.dockerfile }}
+          docker images
+
+      - name: Run docker container with docker image
+        if: ${{ inputs.dockerfile }}
+        run: |
+          docker run --name ${{ inputs.docker_container_name }} ${{ inputs.docker_cmd_options }} -d ${{ inputs.docker_image_tag }}
+          docker ps -a
 
       - name: Install Python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
