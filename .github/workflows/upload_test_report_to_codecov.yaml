@@ -26,6 +26,10 @@ on:
         description: "The path to download testing coverage reports via 'actions/download-artifact@v3'."
         required: true
         type: string
+      test_type:
+        description: "The testing type. In generally, it only has 2 options: 'unit-test' and 'integration-test'."
+        required: true
+        type: string
       codecov_flags:
         description: "The flags of the testing coverage report for Codecov."
         required: true
@@ -58,7 +62,8 @@ jobs:
         uses: codecov/codecov-action@v3
         with:
           token: ${{ secrets.codecov_token }} # not required for public repos
-          files: coverage.xml # optional
+#          files: coverage.xml # optional
+          files: coverage_${{ inputs.test_type }}.xml # optional
           flags: ${{ inputs.codecov_flags }} # optional
           name: ${{ inputs.codecov_name }} # optional
           fail_ci_if_error: true # optional (default = false)
