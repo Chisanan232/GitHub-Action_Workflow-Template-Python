@@ -26,34 +26,54 @@ on:
         description: "The target paths of test items under test."
         required: true
         type: string
-      http_server:
+      setup_http_server:
         description: "If it's true, it would setup and run a sample HTTP server."
         type: boolean
         required: false
         default: false
-      dockerfile:
-        description: "The file path of Dockerfile."
-        required: false
+      http_server_host:
+        description: "If it's true, it would setup and run a sample HTTP server."
         type: string
-      docker_container_name:
-        description: "The name of docker container."
         required: false
-        default: gh_ci_container
+        default: 0.0.0.0
+      http_server_port:
+        description: "If it's true, it would setup and run a sample HTTP server."
         type: string
-      docker_cmd_options:
-        description: "The command options of 'docker run'."
         required: false
+        default: 12345
+      http_server_app_module:
+        description: "If it's true, it would setup and run a sample HTTP server."
         type: string
-      docker_image_tag:
-        description: "The tag of image which be built by Dockerfile."
         required: false
-        default: gh_ci_container:v0
+        default: app
+      http_server_enter_point:
+        description: "If it's true, it would setup and run a sample HTTP server."
         type: string
-      docker_context_path:
-        description: "The path where is the context path of Dockerfile."
         required: false
-        default: ./
-        type: string
+        default: app
+#      dockerfile:
+#        description: "The file path of Dockerfile."
+#        required: false
+#        type: string
+#      docker_container_name:
+#        description: "The name of docker container."
+#        required: false
+#        default: gh_ci_container
+#        type: string
+#      docker_cmd_options:
+#        description: "The command options of 'docker run'."
+#        required: false
+#        type: string
+#      docker_image_tag:
+#        description: "The tag of image which be built by Dockerfile."
+#        required: false
+#        default: gh_ci_container:v0
+#        type: string
+#      docker_context_path:
+#        description: "The path where is the context path of Dockerfile."
+#        required: false
+#        default: ./
+#        type: string
 
 
 jobs:
@@ -123,8 +143,12 @@ jobs:
           pip install -U -r ./requirements/requirements-test.txt
 
       - name: Setup and run HTTP server for testing
-        if: ${{ inputs.http_server == true }}
-        run: gunicorn --bind 0.0.0.0:12345 'test._http_server.app:app'
+        if: ${{ inputs.setup_http_server == true }}
+        run: gunicorn --bind ${{ inputs.http_server_host }}:${{ inputs.http_server_port }} '${{ inputs.http_server_app_module }}:${{ inputs.http_server_enter_point }}'--daemon
+
+      - name: Test to send HTTP request to sample HTTP server
+        if: ${{ inputs.setup_http_server == true }}
+        run: curl "http://${{ inputs.http_server_host }}:${{ inputs.http_server_port }}/exchangeReport/STOCK_DAY?response=json&date=20170101&stockNo=2331"
 
       - name: Run tests with pytest
         run: pytest ${{ matrix.test-path }}
