@@ -26,6 +26,10 @@ on:
         description: "The target paths of test items under test."
         required: true
         type: string
+      http_server:
+        description: "If it's true, it would setup and run a sample HTTP server."
+        required: false
+        type: boolean
       dockerfile:
         description: "The file path of Dockerfile."
         required: false
@@ -87,17 +91,17 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Build Docker image via Dockerfile
-        if: ${{ inputs.dockerfile }}
-        run: |
-          docker build -t ${{ inputs.docker_image_tag }} ${{ inputs.docker_context_path }} -f ${{ inputs.dockerfile }}
-          docker images
-
-      - name: Run docker container with docker image
-        if: ${{ inputs.dockerfile }}
-        run: |
-          docker run --name ${{ inputs.docker_container_name }} ${{ inputs.docker_cmd_options }} -d ${{ inputs.docker_image_tag }}
-          docker ps -a
+#      - name: Build Docker image via Dockerfile
+#        if: ${{ inputs.dockerfile }}
+#        run: |
+#          docker build -t ${{ inputs.docker_image_tag }} ${{ inputs.docker_context_path }} -f ${{ inputs.dockerfile }}
+#          docker images
+#
+#      - name: Run docker container with docker image
+#        if: ${{ inputs.dockerfile }}
+#        run: |
+#          docker run --name ${{ inputs.docker_container_name }} ${{ inputs.docker_cmd_options }} -d ${{ inputs.docker_image_tag }}
+#          docker ps -a
 
       - name: Install Python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
@@ -116,6 +120,10 @@ jobs:
           pip install -U pip
           pip install -U -r ./requirements/requirements.txt
           pip install -U -r ./requirements/requirements-test.txt
+
+      - name: Setup and run HTTP server for testing
+        if: ${{ inputs.http_server == true }}
+        run: gunicorn --bind 0.0.0.0:12345 'test._http_server.app:app'
 
       - name: Run tests with pytest
         run: pytest ${{ matrix.test-path }}

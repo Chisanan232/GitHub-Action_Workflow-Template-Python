@@ -58,6 +58,7 @@ jobs:
     with:
       test_type: integration-test
       all_test_items_paths: ${{needs.prep-testbed_integration-test.outputs.all_test_items}}
+      http_server: true
       dockerfile: sample_Dockerfile
       docker_container_name: sample_container
       docker_cmd_options: -p 12345:12345

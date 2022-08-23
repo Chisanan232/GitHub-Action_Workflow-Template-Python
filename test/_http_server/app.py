@@ -5,10 +5,10 @@ A simple HTTP server for testing. It would return a JSON type data.
 from flask import Flask, request
 
 
-_app: Flask = Flask(__name__)
+app: Flask = Flask(__name__)
 
 
-@_app.route("/exchangeReport/STOCK_DAY", methods=["GET"])
+@app.route("/exchangeReport/STOCK_DAY", methods=["GET"])
 def get_stock_data() -> str:
     """
     API: /exchangeReport/STOCK_DAY
@@ -59,5 +59,3 @@ def get_stock_data() -> str:
             '}'
     return _data
 
-
-_app.run(host="0.0.0.0", port=12345, debug=True)
