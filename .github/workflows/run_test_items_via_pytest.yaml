@@ -28,8 +28,9 @@ on:
         type: string
       http_server:
         description: "If it's true, it would setup and run a sample HTTP server."
-        required: false
         type: boolean
+        required: false
+        default: false
       dockerfile:
         description: "The file path of Dockerfile."
         required: false
