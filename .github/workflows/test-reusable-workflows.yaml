@@ -139,8 +139,9 @@ jobs:
 #    if: github.ref_name == 'release' || github.ref_name == 'master'
     needs: [unit-test_codecov, integration-test_codecov]
     uses: ./.github/workflows/upload_test_report_to_codecov.yaml
-    with:
+    secrets:
       codecov_token: ${{ secrets.COVERALLS_TOKEN }}
+    with:
       coveralls_flag: all-test
 
 
