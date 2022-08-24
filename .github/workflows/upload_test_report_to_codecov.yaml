@@ -66,6 +66,7 @@ jobs:
 #          files: coverage.xml # optional
           files: ./coverage_${{ inputs.test_type }}.xml # optional
           flags: ${{ inputs.codecov_flags }} # optional
+          env_vars: OS,PYTHON
           name: ${{ inputs.codecov_name }} # optional
           fail_ci_if_error: true # optional (default = false)
           verbose: true # optional (default = false)
@@ -78,6 +79,7 @@ jobs:
 #          files: coverage.xml # optional
           files:  ./coverage_unit-test.xml,./coverage_integration-test.xml
           flags: ${{ inputs.codecov_flags }} # optional
+          env_vars: OS,PYTHON
           name: ${{ inputs.codecov_name }} # optional
           fail_ci_if_error: true # optional (default = false)
           verbose: true # optional (default = false)
