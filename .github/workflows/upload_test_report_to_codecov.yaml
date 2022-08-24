@@ -112,4 +112,5 @@ jobs:
         uses: coverallsapp/github-action@master
         with:
           github-token: ${{ secrets.coveralls_token }}
+          path-to-lcov: ./.coverage.integration-test
           flag-name: ${{ secrets.coveralls_flag }}
