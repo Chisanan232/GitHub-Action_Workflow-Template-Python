@@ -65,65 +65,65 @@ jobs:
       http_server_enter_point: app
 
 
-#  unit-test_codecov:
-##    name: Organize and generate the testing report and upload it to Codecov
-#    needs: run_unit-test
-#    uses: ./.github/workflows/organize_and_generate_testing_coverage_reports.yaml
-#    with:
-#      test_type: unit-test
-##      generate_xml_report_finally: false
-#
-#
-#  integration-test_codecov:
-##    name: Organize and generate the testing report and upload it to Codecov
-#    needs: run_integration-test
-#    uses: ./.github/workflows/organize_and_generate_testing_coverage_reports.yaml
-#    with:
-#      test_type: integration-test
-##      generate_xml_report_finally: false
-
-
-  organize_all-test_codecov_and_generate_report:
+  unit-test_codecov:
 #    name: Organize and generate the testing report and upload it to Codecov
-#    needs: [unit-test_codecov, integration-test_codecov]
-    needs: [run_unit-test, run_integration-test]
+    needs: run_unit-test
     uses: ./.github/workflows/organize_and_generate_testing_coverage_reports.yaml
     with:
-      test_type: all-test
-
-
-  unit-codecov_finish:
-#    name: Organize and generate the testing report and upload it to Codecov
-#    if: github.ref_name == 'release' || github.ref_name == 'master'
-    needs: [unit-test_codecov]
-    uses: ./.github/workflows/upload_test_report_to_codecov.yaml
-    secrets:
-      codecov_token: ${{ secrets.CODECOV_TOKEN }}
-    with:
-      download_path: ./
       test_type: unit-test
-      codecov_flags: unit
-      codecov_name: smoothcrawler-appintegration_github-actions_test # optional
+#      generate_xml_report_finally: false
 
 
-  integration-codecov_finish:
+  integration-test_codecov:
 #    name: Organize and generate the testing report and upload it to Codecov
-#    if: github.ref_name == 'release' || github.ref_name == 'master'
-    needs: [integration-test_codecov]
-    uses: ./.github/workflows/upload_test_report_to_codecov.yaml
-    secrets:
-      codecov_token: ${{ secrets.CODECOV_TOKEN }}
+    needs: run_integration-test
+    uses: ./.github/workflows/organize_and_generate_testing_coverage_reports.yaml
     with:
-      download_path: ./
       test_type: integration-test
-      codecov_flags: integration
-      codecov_name: smoothcrawler-appintegration_github-actions_test # optional
+#      generate_xml_report_finally: false
+
+
+#  organize_all-test_codecov_and_generate_report:
+##    name: Organize and generate the testing report and upload it to Codecov
+##    needs: [unit-test_codecov, integration-test_codecov]
+#    needs: [run_unit-test, run_integration-test]
+#    uses: ./.github/workflows/organize_and_generate_testing_coverage_reports.yaml
+#    with:
+#      test_type: all-test
+
+
+#  unit-codecov_finish:
+##    name: Organize and generate the testing report and upload it to Codecov
+##    if: github.ref_name == 'release' || github.ref_name == 'master'
+#    needs: [unit-test_codecov]
+#    uses: ./.github/workflows/upload_test_report_to_codecov.yaml
+#    secrets:
+#      codecov_token: ${{ secrets.CODECOV_TOKEN }}
+#    with:
+#      download_path: ./
+#      test_type: unit-test
+#      codecov_flags: unit
+#      codecov_name: smoothcrawler-appintegration_github-actions_test # optional
+#
+#
+#  integration-codecov_finish:
+##    name: Organize and generate the testing report and upload it to Codecov
+##    if: github.ref_name == 'release' || github.ref_name == 'master'
+#    needs: [integration-test_codecov]
+#    uses: ./.github/workflows/upload_test_report_to_codecov.yaml
+#    secrets:
+#      codecov_token: ${{ secrets.CODECOV_TOKEN }}
+#    with:
+#      download_path: ./
+#      test_type: integration-test
+#      codecov_flags: integration
+#      codecov_name: smoothcrawler-appintegration_github-actions_test # optional
 
 
   codecov_finish:
 #    name: Organize and generate the testing report and upload it to Codecov
 #    if: github.ref_name == 'release' || github.ref_name == 'master'
-    needs: [unit-codecov_finish, integration-codecov_finish]
+    needs: [unit-test_codecov, integration-test_codecov]
     uses: ./.github/workflows/upload_test_report_to_codecov.yaml
     secrets:
       codecov_token: ${{ secrets.CODECOV_TOKEN }}
