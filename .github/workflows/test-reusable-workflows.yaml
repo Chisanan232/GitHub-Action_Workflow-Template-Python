@@ -136,7 +136,7 @@ jobs:
 
   codacy_finish:
 #    name: Upload test report to Codacy to analyse and record code quality
-    needs: organize_all-test_codecov_and_generate_report
+    needs: [unit-test_codecov, integration-test_codecov]
     uses: ./.github/workflows/upload_code_report_to_codacy.yaml
     secrets:
       codacy_token: ${{ secrets.CODACY_PROJECT_TOKEN }}
