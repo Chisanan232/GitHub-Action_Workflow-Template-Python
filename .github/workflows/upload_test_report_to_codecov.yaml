@@ -44,14 +44,17 @@ on:
         description: "The flags of the testing coverage report for Codecov."
         type: string
         required: false
+        default: ''
       codecov_name:
         description: "The name of the testing coverage report for Codecov."
         type: string
         required: false
+        default: ''
       coveralls_flag:
         description: "The name of the testing coverage report for Codecov."
         type: string
         required: false
+        default: ''
 
     secrets:
       codecov_token:
@@ -86,6 +89,7 @@ jobs:
           pip install -U pip
           pip install -U codecov
           pip install -U coveralls
+          pip install -U PyYAML
 
 #      - name: Upload coverage report to platform Codecov
 #        if: ${{ inputs.use_codecov == true && inputs.test_type != 'all-test' }}
@@ -128,7 +132,7 @@ jobs:
 
       - name: Upload coverage report to platform Coveralls
         if: ${{ inputs.use_coveralls == true && inputs.test_type == 'all-test' }}
-        run: coveralls
+        run: coveralls --service=github
 #        uses: coverallsapp/github-action@master
 #        with:
 #          github-token: ${{ secrets.coveralls_token }}
