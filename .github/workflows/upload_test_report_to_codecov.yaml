@@ -24,25 +24,34 @@ on:
     inputs:
       download_path:
         description: "The path to download testing coverage reports via 'actions/download-artifact@v3'."
-        required: true
         type: string
+        required: true
       test_type:
         description: "The testing type. In generally, it only has 2 options: 'unit-test' and 'integration-test'."
-        required: true
         type: string
+        required: true
       codecov_flags:
         description: "The flags of the testing coverage report for Codecov."
-        required: true
         type: string
+        required: false
       codecov_name:
         description: "The name of the testing coverage report for Codecov."
-        required: true
         type: string
+        required: false
+      coveralls_flag:
+        description: "The name of the testing coverage report for Codecov."
+        type: string
+        required: false
 
     secrets:
       codecov_token:
         description: "The API token for uploading testing coverage report to Codecov."
-        required: true
+        required: false
+        default: ""
+      coveralls_token:
+        description: "The API token for uploading testing coverage report to Coveralls."
+        required: false
+        default: ""
 
 
 jobs:
@@ -78,8 +87,8 @@ jobs:
 #        run: mv ./coverage_integration-test.xml ./coverage2.xml
 
       - name: Upload coverage report to platform Codecov
-        if: ${{ inputs.test_type == 'all-test' }}
-        uses: codecov/codecov-action@v2
+        if: ${{ secrets.coveralls_token != '' || inputs.test_type == 'all-test' }}
+        uses: codecov/codecov-action@v3
         with:
           token: ${{ secrets.codecov_token }} # not required for public repos
 #          files:  ./coverage_unit-test.xml,./coverage_integration-test.xml
@@ -89,3 +98,10 @@ jobs:
           name: ${{ inputs.codecov_name }} # optional
           fail_ci_if_error: true # optional (default = false)
           verbose: true # optional (default = false)
+
+      - name: Upload coverage report to platform Coveralls
+        if: ${{ secrets.coveralls_token != '' || inputs.test_type == 'all-test' }}
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{ secrets.coveralls_token }}
+          flag-name: ${{ secrets.coveralls_flag }}
