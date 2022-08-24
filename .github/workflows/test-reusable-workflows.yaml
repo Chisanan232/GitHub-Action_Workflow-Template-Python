@@ -144,6 +144,7 @@ jobs:
       codecov_token: ${{ secrets.COVERALLS_TOKEN }}
     with:
       use_coveralls: true
+      download_path: ./
       coveralls_flag: all-test
 
 
