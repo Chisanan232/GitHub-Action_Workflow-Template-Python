@@ -11,7 +11,7 @@
 #
 ############################################################################
 
-name: Organize testing coverage reports as a testing coverage report
+name: Organize all testing coverage reports which be tested in many different runtime OS and Python version as a testing coverage report
 
 on:
   workflow_call:
