@@ -93,7 +93,7 @@ jobs:
 
   codecov_finish:
 #    name: Organize and generate the testing report and upload it to Codecov
-    if: github.ref_name == 'release' || github.ref_name == 'master'
+#    if: github.ref_name == 'release' || github.ref_name == 'master'
     needs: organize_all-test_codecov_and_generate_report
     uses: ./.github/workflows/upload_test_report_to_codecov.yaml
     secrets:
@@ -101,7 +101,7 @@ jobs:
     with:
       download_path: ./
       test_type: all-test
-      codecov_flags: unit,integration
+      codecov_flags: unit,integration,github.ref_name
       codecov_name: smoothcrawler-appintegration_github-actions_test # optional
 
 
