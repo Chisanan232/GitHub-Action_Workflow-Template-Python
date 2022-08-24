@@ -140,8 +140,8 @@ jobs:
     needs: [unit-test_codecov, integration-test_codecov]
     uses: ./.github/workflows/upload_test_report_to_codecov.yaml
     with:
-      github-token: ${{ secrets.COVERALLS_TOKEN }}
-      flag-name: all-test
+      codecov_token: ${{ secrets.COVERALLS_TOKEN }}
+      coveralls_flag: all-test
 
 
   codacy_finish:
