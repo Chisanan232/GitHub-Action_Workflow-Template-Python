@@ -58,9 +58,6 @@ jobs:
           name: final_project_testing_coverage_report
           path: ${{ inputs.download_path }}
 
-      - name: Rename the testing coverage report
-        run: mv coverage_${{ inputs.test_type }}.xml coverage.xml
-
       - name: Upload coverage report to platform Codecov
         if: ${{ inputs.test_type != 'all-test' }}
         uses: codecov/codecov-action@v3
