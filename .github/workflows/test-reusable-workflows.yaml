@@ -141,7 +141,7 @@ jobs:
     needs: [unit-test_codecov, integration-test_codecov]
     uses: ./.github/workflows/upload_test_report_to_codecov.yaml
     secrets:
-      codecov_token: ${{ secrets.COVERALLS_TOKEN }}
+      coveralls_token: ${{ secrets.COVERALLS_TOKEN }}
     with:
       use_coveralls: true
       download_path: ./
