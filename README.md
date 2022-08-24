@@ -1,6 +1,7 @@
 # GitHub Action - Workflow template for Python library
 
 [![github-action reusable workflows test](https://github.com/Chisanan232/GitHub-Action-Template-Python/actions/workflows/test-reusable-workflows.yaml/badge.svg)](https://github.com/Chisanan232/GitHub-Action-Template-Python/actions/workflows/test-reusable-workflows.yaml)
+[![Release](https://img.shields.io/github/release/Chisanan232/GitHub-Action-Template-Python.svg?label=Release&logo=github)](https://github.com/Chisanan232/GitHub-Action-Template-Python/releases)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg?logo=apache)](https://opensource.org/licenses/Apache-2.0)
 
 
@@ -25,8 +26,7 @@ The usage of each workflow template.
 
 * [_prepare_test_items.yaml_](#prepare_test_itemsyaml)
 * [_run_test_items_via_pytest.yaml_](#run_test_items_via_pytestyaml)
-* [_organize_all_testing_coverage_reports_with_different_os_and_py_version.yaml_](#organize_all_testing_coverage_reports_with_different_os_and_py_versionyaml)
-* [_organize_all_testing_reports_with_different_test_type.yaml_](#organize_all_testing_reports_with_different_test_typeyaml)
+* [_organize_and_generate_testing_coverage_reports.yaml_](#organize_and_generate_testing_coverage_reportsyaml)
 * [_upload_test_report_to_codecov.yaml_](#upload_test_report_to_codecovyaml)
 * [_upload_code_report_to_codacy.yaml_](#upload_code_report_to_codacyyaml)
 
@@ -36,10 +36,10 @@ The usage of each workflow template.
 * Description: Prepare the test items.
 * Options:
 
-| option name | function content                                     |
-|-------------|------------------------------------------------------|
-| shell_path  | The path shell script for getting the testing items. |
-| shell_arg   | Input arguments of the shell script.                 |
+| option name | option is optional or required | function content                                     |
+|-------------|--------------------------------|------------------------------------------------------|
+| shell_path  | Required                       | The path shell script for getting the testing items. |
+| shell_arg   | Required                       | Input arguments of the shell script.                 |
 
 * Output: 
   * all_test_items: All the test items it would run.
@@ -66,10 +66,15 @@ And we could get this workflow output result via keyword _all_test_items_.
 * Description: Run testing by specific type with all test items via PyTest and generate its testing coverage report (it would save reports by _actions/upload-artifact@v3_).
 * Options:
 
-| option name          | function content                                                                           |
-|----------------------|--------------------------------------------------------------------------------------------|
-| test_type            | The testing type. In generally, it only has 2 options: _unit-test_ and _integration-test_. |
-| all_test_items_paths | The target paths of test items under test.                                                 |
+| option name             | option is optional or required       | function content                                                                           |
+|-------------------------|--------------------------------------|--------------------------------------------------------------------------------------------|
+| test_type               | Required                             | The testing type. In generally, it only has 2 options: _unit-test_ and _integration-test_. |
+| all_test_items_paths    | Required                             | The target paths of test items under test.                                                 |
+| setup_http_server       | Optional, Default value is _false_   | If it's true, it would set up and run HTTP server for testing.                             |
+| http_server_host        | Optional, Default value is _0.0.0.0_ | The host IPv4 address of HTTP server.                                                      |
+| http_server_port        | Optional, Default value is _12345_   | The port number of HTTP server.                                                            |
+| http_server_app_module  | Optional, Default value is _app_     | The module path of HTTP server.                                                            |
+| http_server_enter_point | Optional, Default value is _app_     | The object about the web application.                                                      |
 
 * Output: 
 
@@ -85,6 +90,11 @@ No, but it would save the testing coverage reports to provide after-process to o
     with:
       test_type: unit-test
       all_test_items_paths: ${{needs.prepare-testing-items_unit-test.outputs.all_test_items}}
+      setup_http_server: true
+      http_server_host: 0.0.0.0
+      http_server_port: 30303
+      http_server_app_module: test._http_server.app
+      http_server_enter_point: app
 ```
 
 Please take a look of option _all_test_items_paths_. You could find that it get the input result of 
@@ -99,19 +109,18 @@ is provided by previous workflow? That is all testing items.
 
 <hr>
 
-#### _organize_all_testing_coverage_reports_with_different_os_and_py_version.yaml_
+#### _organize_and_generate_testing_coverage_reports.yaml_
 
-* Description: Organize all the testing coverage reports. (it would save reports by _actions/upload-artifact@v3_).
+* Description: Organize all the testing coverage reports which be generated in different runtime OS with Python version. (it would save reports by _actions/upload-artifact@v3_).
 * Options:
 
-| option name                 | function content                                                                                                                                                              |
-|-----------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| test_type                   | The testing type. In generally, it only has 2 options: _unit-test_ and _integration-test_.                                                                                    |
-| generate_xml_report_finally | Something, it only has 1 test type currently. So it could let this option to be 'true' than it would generate XML report finally to let uploading process to use it directly. |
+| option name                 | option is optional or required | function content                                                                                                                                                              |
+|-----------------------------|--------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| test_type                   | Required                       | The testing type. In generally, it only has 2 options: _unit-test_ and _integration-test_.                                                                                    |
 
 * Output: 
 
-No, but it would save the testing coverage reports (coverage.xml) to provide after-process to organize and record.
+No, but it would save the testing coverage reports (coverage_<test_type>.xml) to provide after-process to organize and record.
 
 * How to use it?
 
@@ -119,56 +128,12 @@ No, but it would save the testing coverage reports (coverage.xml) to provide aft
   unit-test_codecov:
 #    name: Organize and generate the testing report and upload it to Codecov
     needs: run_unit-test
-    uses: Chisanan232/GitHub-Action-Template-Python/.github/workflows/organize_all_testing_coverage_reports_with_different_os_and_py_version.yaml@master
+    uses: Chisanan232/GitHub-Action-Template-Python/.github/workflows/organize_and_generate_testing_coverage_reports.yaml@master
     with:
       test_type: unit-test
-      generate_xml_report_finally: true
 ```
 
 It would upload the organized report via _actions/upload-artifact@v3_. And it doesn't support customize options of _actions/upload-artifact@v3_ currently.
-
-<hr>
-
-#### _organize_all_testing_reports_with_different_test_type.yaml_
-
-* Description: Organize all the testing coverage reports. (it would save reports by _actions/upload-artifact@v3_).
-* Options:
-
-It has no input parameter.
-
-* Output: 
-
-No, but it would save the testing coverage reports (coverage.xml) to provide after-process to organize and record.
-
-* How to use it?
-
-```yaml
-  organize_all-test_codecov_and_generate_report:
-#    name: Organize and generate the testing report and upload it to Codecov
-    needs: [unit-test_codecov, integration-test_codecov]
-    uses: Chisanan232/GitHub-Action-Template-Python/.github/workflows/organize_all_testing_reports_with_different_test_type.yaml@master
-```
-
-This workflow is very close with another workflow _organize_all_testing_coverage_reports_with_different_os_and_py_version.yaml_. 
-But they're different. In a software test, it may have one or more test types it would run to check the software quality. 
-So let us consider below 2 scenarios: 
-
-First scenario, it has only one test. So the CI workflow would be like below:
-
-    get test items -> run test -> organize and generate testing report
-
-Second one, it has 2 tests: _Unit test_ and _Integration test_: 
-
-    get unit test items -> run unit test -> organize unit test report ------------------------
-                                                                                             |-> organize and generate final test report
-    get integration test items -> run integration test -> organize integration test report ---
-
-So it should organize testing coverage reports twice, first time is organizing report with one specific test type, 
-another one time is organizing these 2 test types reports.
-Hence, the different is: 
-* _organize_all_testing_coverage_reports_with_different_os_and_py_version.yaml_ is the first process to organize testing coverage reports. 
-  And it could set option _generate_xml_report_finally_ as _true_ to let the CI workflow be more clear and simpler if it has only one test type.
-* _organize_all_testing_reports_with_different_test_type.yaml_ is the second organizing process if it has 2 more test types in CI workflow.
 
 <hr>
 
@@ -181,17 +146,18 @@ It has 2 different types option could use:
 
 _General option_:
 
-| option name   | function content                                                                  |
-|---------------|-----------------------------------------------------------------------------------|
-| download_path | The path to download testing coverage reports via _actions/download-artifact@v3_. |
-| codecov_flags | The flags of the testing coverage report for Codecov.                             |
-| codecov_name  | The name of the testing coverage report for Codecov.                              |
+| option name   | option is optional or required | function content                                                                           |
+|---------------|--------------------------------|--------------------------------------------------------------------------------------------|
+| download_path | Required                       | The path to download testing coverage reports via _actions/download-artifact@v3_.          |
+| test_type     | Required                       | The testing type. In generally, it only has 2 options: _unit-test_ and _integration-test_. |
+| codecov_flags | Required                       | The flags of the testing coverage report for Codecov.                                      |
+| codecov_name  | Required                       | The name of the testing coverage report for Codecov.                                       |
 
 _Secret option_:
 
-| option name   | function content                                                |
-|---------------|-----------------------------------------------------------------|
-| codecov_token | The API token for uploading testing coverage report to Codecov. |
+| option name   | option is optional or required | function content                                                |
+|---------------|--------------------------------|-----------------------------------------------------------------|
+| codecov_token | Required                       | The API token for uploading testing coverage report to Codecov. |
 
 * Output: 
 
@@ -229,15 +195,16 @@ It has 2 different types option could use:
 
 _General option_:
 
-| option name   | function content                                                                  |
-|---------------|-----------------------------------------------------------------------------------|
-| download_path | The path to download testing coverage reports via _actions/download-artifact@v3_. |
+| option name   | option is optional or required | function content                                                                           |
+|---------------|--------------------------------|--------------------------------------------------------------------------------------------|
+| download_path | Optional                       | The path to download testing coverage reports via _actions/download-artifact@v3_.          |
+| test_type     | Required                       | The testing type. In generally, it only has 2 options: _unit-test_ and _integration-test_. |
 
 _Secret option_:
 
-| option name  | function content                                               |
-|--------------|----------------------------------------------------------------|
-| codacy_token | The API token for uploading testing coverage report to Codacy. |
+| option name  | option is optional or required | function content                                               |
+|--------------|--------------------------------|----------------------------------------------------------------|
+| codacy_token | Required                       | The API token for uploading testing coverage report to Codacy. |
 
 * Output: 
 
@@ -256,6 +223,7 @@ Before run this workflow, please make sure testing coverage report is ready.
       codacy_token: ${{ secrets.CODACY_PROJECT_TOKEN }}
     with:
       download_path: ./
+      test_type: all-test
 ```
 
 * The badges would be generated after this workflow done:
