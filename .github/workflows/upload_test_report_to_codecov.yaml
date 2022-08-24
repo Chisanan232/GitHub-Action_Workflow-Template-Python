@@ -58,12 +58,15 @@ jobs:
           name: final_project_testing_coverage_report
           path: ${{ inputs.download_path }}
 
+      - name: Rename the testing coverage report
+        run: mv coverage_${{ inputs.test_type }}.xml coverage.xml
+
       - name: Upload coverage report to platform Codecov
         uses: codecov/codecov-action@v3
         with:
           token: ${{ secrets.codecov_token }} # not required for public repos
-#          files: coverage.xml # optional
-          files: coverage_${{ inputs.test_type }}.xml # optional
+          files: coverage.xml # optional
+#          files: coverage_${{ inputs.test_type }}.xml # optional
           flags: ${{ inputs.codecov_flags }} # optional
           name: ${{ inputs.codecov_name }} # optional
           fail_ci_if_error: true # optional (default = false)

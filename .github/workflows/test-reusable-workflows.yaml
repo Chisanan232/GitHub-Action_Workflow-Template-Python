@@ -101,7 +101,7 @@ jobs:
     with:
       download_path: ./
       test_type: all-test
-      codecov_flags: unit,integration,github.ref_name
+      codecov_flags: unit,integration
       codecov_name: smoothcrawler-appintegration_github-actions_test # optional
 
 
