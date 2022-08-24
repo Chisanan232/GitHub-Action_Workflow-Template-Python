@@ -146,6 +146,7 @@ jobs:
       use_coveralls: true
       download_path: ./
       coveralls_flag: all-test
+      test_type: all-test
 
 
   codacy_finish:
