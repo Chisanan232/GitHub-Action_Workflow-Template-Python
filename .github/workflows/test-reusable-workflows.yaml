@@ -92,38 +92,38 @@ jobs:
       test_type: all-test
 
 
-#  unit-codecov_finish:
-##    name: Organize and generate the testing report and upload it to Codecov
-##    if: github.ref_name == 'release' || github.ref_name == 'master'
-#    needs: [unit-test_codecov]
-#    uses: ./.github/workflows/upload_test_report_to_codecov.yaml
-#    secrets:
-#      codecov_token: ${{ secrets.CODECOV_TOKEN }}
-#    with:
-#      download_path: ./
-#      test_type: unit-test
-#      codecov_flags: unit
-#      codecov_name: smoothcrawler-appintegration_github-actions_test # optional
-#
-#
-#  integration-codecov_finish:
-##    name: Organize and generate the testing report and upload it to Codecov
-##    if: github.ref_name == 'release' || github.ref_name == 'master'
-#    needs: [integration-test_codecov]
-#    uses: ./.github/workflows/upload_test_report_to_codecov.yaml
-#    secrets:
-#      codecov_token: ${{ secrets.CODECOV_TOKEN }}
-#    with:
-#      download_path: ./
-#      test_type: integration-test
-#      codecov_flags: integration
-#      codecov_name: smoothcrawler-appintegration_github-actions_test # optional
+  unit-codecov_finish:
+#    name: Organize and generate the testing report and upload it to Codecov
+#    if: github.ref_name == 'release' || github.ref_name == 'master'
+    needs: [unit-test_codecov]
+    uses: ./.github/workflows/upload_test_report_to_codecov.yaml
+    secrets:
+      codecov_token: ${{ secrets.CODECOV_TOKEN }}
+    with:
+      download_path: ./
+      test_type: unit-test
+      codecov_flags: unit
+      codecov_name: smoothcrawler-appintegration_github-actions_test # optional
+
+
+  integration-codecov_finish:
+#    name: Organize and generate the testing report and upload it to Codecov
+#    if: github.ref_name == 'release' || github.ref_name == 'master'
+    needs: [integration-test_codecov]
+    uses: ./.github/workflows/upload_test_report_to_codecov.yaml
+    secrets:
+      codecov_token: ${{ secrets.CODECOV_TOKEN }}
+    with:
+      download_path: ./
+      test_type: integration-test
+      codecov_flags: integration
+      codecov_name: smoothcrawler-appintegration_github-actions_test # optional
 
 
   codecov_finish:
 #    name: Organize and generate the testing report and upload it to Codecov
 #    if: github.ref_name == 'release' || github.ref_name == 'master'
-    needs: organize_all-test_codecov_and_generate_report
+    needs: [unit-codecov_finish, integration-codecov_finish]
     uses: ./.github/workflows/upload_test_report_to_codecov.yaml
     secrets:
       codecov_token: ${{ secrets.CODECOV_TOKEN }}
