@@ -75,7 +75,8 @@ jobs:
       - name: Download code coverage result file
         uses: actions/download-artifact@v3
         with:
-          name: final_project_testing_coverage_report
+#          name: final_project_testing_coverage_report
+          name: final_project_testing_coverage_xml_report
           path: ${{ inputs.download_path }}
 
       - name: Install Python 3.10
@@ -114,7 +115,7 @@ jobs:
         if: ${{ inputs.use_codecov == true && inputs.test_type == 'all-test' }}
         run: | 
           codecov -t ${{ secrets.codecov_token }} \
-                      --file ./.coverage.unit-test,./.coverage.integration-test \
+                      --file ./coverage_integration-test.xml \
                       --flags ${{ inputs.codecov_flags }} \
                       --env OS,PYTHON \
                       --name ${{ inputs.codecov_name }} \
