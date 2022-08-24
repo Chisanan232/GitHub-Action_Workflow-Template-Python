@@ -68,7 +68,7 @@ jobs:
   unit-test_codecov:
 #    name: Organize and generate the testing report and upload it to Codecov
     needs: run_unit-test
-    uses: ./.github/workflows/organize_all_testing_coverage_reports_with_different_os_and_py_version.yaml
+    uses: ./.github/workflows/organize_and_generate_testing_coverage_reports.yaml
     with:
       test_type: unit-test
 #      generate_xml_report_finally: false
@@ -77,7 +77,7 @@ jobs:
   integration-test_codecov:
 #    name: Organize and generate the testing report and upload it to Codecov
     needs: run_integration-test
-    uses: ./.github/workflows/organize_all_testing_coverage_reports_with_different_os_and_py_version.yaml
+    uses: ./.github/workflows/organize_and_generate_testing_coverage_reports.yaml
     with:
       test_type: integration-test
 #      generate_xml_report_finally: false
@@ -86,11 +86,9 @@ jobs:
   organize_all-test_codecov_and_generate_report:
 #    name: Organize and generate the testing report and upload it to Codecov
     needs: [unit-test_codecov, integration-test_codecov]
-#    uses: ./.github/workflows/organize_all_testing_reports_with_different_test_type.yaml
-    uses: ./.github/workflows/organize_all_testing_coverage_reports_with_different_os_and_py_version.yaml
+    uses: ./.github/workflows/organize_and_generate_testing_coverage_reports.yaml
     with:
       test_type: all-test
-#      generate_xml_report_finally: false
 
 
   codecov_finish:
