@@ -63,11 +63,6 @@ jobs:
       http_server_port: 30303
       http_server_app_module: test._http_server.app
       http_server_enter_point: app
-#      dockerfile: sample_Dockerfile
-#      docker_container_name: sample_container
-#      docker_cmd_options: -p 12345:12345
-#      docker_image_tag: sample:v1
-#      docker_context_path: ./
 
 
   unit-test_codecov:
@@ -120,6 +115,7 @@ jobs:
       codacy_token: ${{ secrets.CODACY_PROJECT_TOKEN }}
     with:
       download_path: ./
+      test_type: all-test
 
 
 #  pre-building_check:
