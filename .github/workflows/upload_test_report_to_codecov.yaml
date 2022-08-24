@@ -64,7 +64,7 @@ jobs:
         with:
           token: ${{ secrets.codecov_token }} # not required for public repos
 #          files: coverage.xml # optional
-          files: coverage_${{ inputs.test_type }}.xml # optional
+          files: ./coverage_${{ inputs.test_type }}.xml # optional
           flags: ${{ inputs.codecov_flags }} # optional
           name: ${{ inputs.codecov_name }} # optional
           fail_ci_if_error: true # optional (default = false)
@@ -76,7 +76,7 @@ jobs:
         with:
           token: ${{ secrets.codecov_token }} # not required for public repos
 #          files: coverage.xml # optional
-          files:  coverage_unit-test.xml,coverage_integration-test.xml
+          files:  ./coverage_unit-test.xml,./coverage_integration-test.xml
           flags: ${{ inputs.codecov_flags }} # optional
           name: ${{ inputs.codecov_name }} # optional
           fail_ci_if_error: true # optional (default = false)
