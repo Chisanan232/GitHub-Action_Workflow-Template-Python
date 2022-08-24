@@ -126,7 +126,7 @@ jobs:
     needs: [unit-test_codecov, integration-test_codecov]
     uses: ./.github/workflows/upload_test_report_to_codecov.yaml
     secrets:
-      codecov_token: ${{ secrets.CODECOV_TOKEN_NEW }}
+      codecov_token: ${{ secrets.CODECOV_TOKEN }}
     with:
       download_path: ./
       test_type: all-test
