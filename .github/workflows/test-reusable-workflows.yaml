@@ -128,6 +128,7 @@ jobs:
     secrets:
       codecov_token: ${{ secrets.CODECOV_TOKEN }}
     with:
+      use_codecov: true
       download_path: ./
       test_type: all-test
 #      codecov_flags: unit,integration
@@ -142,6 +143,7 @@ jobs:
     secrets:
       codecov_token: ${{ secrets.COVERALLS_TOKEN }}
     with:
+      use_coveralls: true
       coveralls_flag: all-test
 
 

@@ -30,6 +30,16 @@ on:
         description: "The testing type. In generally, it only has 2 options: 'unit-test' and 'integration-test'."
         type: string
         required: true
+      use_codecov:
+        description: "The flags of the testing coverage report for Codecov."
+        type: boolean
+        required: false
+        default: false
+      use_coveralls:
+        description: "The flags of the testing coverage report for Codecov."
+        type: boolean
+        required: false
+        default: false
       codecov_flags:
         description: "The flags of the testing coverage report for Codecov."
         type: string
@@ -66,7 +76,7 @@ jobs:
           path: ${{ inputs.download_path }}
 
       - name: Upload coverage report to platform Codecov
-        if: ${{ secrets.coveralls_token != '' || inputs.test_type != 'all-test' }}
+        if: ${{ inputs.use_codecov == true && inputs.test_type != 'all-test' }}
         uses: codecov/codecov-action@v3
         with:
           token: ${{ secrets.codecov_token }} # not required for public repos
@@ -85,7 +95,7 @@ jobs:
 #        run: mv ./coverage_integration-test.xml ./coverage2.xml
 
       - name: Upload coverage report to platform Codecov
-        if: ${{ secrets.codecov_token != '' || inputs.test_type == 'all-test' }}
+        if: ${{ inputs.use_coveralls == true && inputs.test_type == 'all-test' }}
         uses: codecov/codecov-action@v3
         with:
           token: ${{ secrets.codecov_token }} # not required for public repos
