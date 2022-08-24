@@ -60,9 +60,16 @@ jobs:
       - name: General testing coverage report as XML format with ${{ inputs.test_type }}
         run: coverage xml --data-file=.coverage.${{ inputs.test_type }} -o coverage_${{ inputs.test_type }}.xml
 
-      - name: Upload testing coverage report
+      - name: Upload testing coverage report (.coverage)
         uses: actions/upload-artifact@v3
         with:
           name: final_project_testing_coverage_report
+          path: .coverage.${{ inputs.test_type }}
+          if-no-files-found: error
+
+      - name: Upload testing coverage report (.xml)
+        uses: actions/upload-artifact@v3
+        with:
+          name: final_project_testing_coverage_xml_report
           path: coverage_${{ inputs.test_type }}.xml
           if-no-files-found: error

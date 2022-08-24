@@ -58,18 +58,6 @@ jobs:
           name: final_project_testing_coverage_report
           path: ${{ inputs.download_path }}
 
-      - name: Setup Python 3.10 in Ubuntu OS
-        uses: actions/setup-python@v2
-        with:
-          python-version: '3.10'
-
-      - name: Install Python tool 'coverage'
-        run: |
-          python -m pip install --upgrade pip
-          pip install -U pip
-          pip install coverage
-          pip install codecov
-
       - name: Upload coverage report to platform Codecov
         if: ${{ inputs.test_type != 'all-test' }}
         uses: codecov/codecov-action@v3
@@ -83,21 +71,21 @@ jobs:
           fail_ci_if_error: true # optional (default = false)
           verbose: true # optional (default = false)
 
-      - name: Rename (for test)
-        run: mv ./coverage_unit-test.xml ./coverage1.xml
-
-      - name: Rename (for test)
-        run: mv ./coverage_integration-test.xml ./coverage2.xml
+#      - name: Rename (for test)
+#        run: mv ./coverage_unit-test.xml ./coverage1.xml
+#
+#      - name: Rename (for test)
+#        run: mv ./coverage_integration-test.xml ./coverage2.xml
 
       - name: Upload coverage report to platform Codecov
         if: ${{ inputs.test_type == 'all-test' }}
         uses: codecov/codecov-action@v3
         with:
           token: ${{ secrets.codecov_token }} # not required for public repos
-          files:  ./coverage1.xml,./coverage2.xml # optional
+#          files:  ./coverage_unit-test.xml,./coverage_integration-test.xml
+          files:  ./.coverage_unit-test,./.coverage_integration-test # optional
+          flags: ${{ inputs.codecov_flags }} # optional
+          env_vars: OS,PYTHON # optional
+          name: ${{ inputs.codecov_name }} # optional
           fail_ci_if_error: true # optional (default = false)
           verbose: true # optional (default = false)
-#          files:  ./coverage_unit-test.xml,./coverage_integration-test.xml
-#          flags: ${{ inputs.codecov_flags }} # optional
-#          env_vars: OS,PYTHON # optional
-#          name: ${{ inputs.codecov_name }} # optional
