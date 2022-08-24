@@ -2,3 +2,4 @@
 
 codecov:
   token: $CODECOV_TOKEN
+  max_report_age: off
