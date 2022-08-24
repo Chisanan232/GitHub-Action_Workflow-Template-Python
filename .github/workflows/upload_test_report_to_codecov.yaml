@@ -75,18 +75,18 @@ jobs:
           name: final_project_testing_coverage_report
           path: ${{ inputs.download_path }}
 
-      - name: Upload coverage report to platform Codecov
-        if: ${{ inputs.use_codecov == true && inputs.test_type != 'all-test' }}
-        uses: codecov/codecov-action@v3
-        with:
-          token: ${{ secrets.codecov_token }} # not required for public repos
-#          files: coverage.xml # optional
-          files: ./coverage_${{ inputs.test_type }}.xml # optional
-          flags: ${{ inputs.codecov_flags }} # optional
-          env_vars: OS,PYTHON
-          name: ${{ inputs.codecov_name }} # optional
-          fail_ci_if_error: true # optional (default = false)
-          verbose: true # optional (default = false)
+#      - name: Upload coverage report to platform Codecov
+#        if: ${{ inputs.use_codecov == true && inputs.test_type != 'all-test' }}
+#        uses: codecov/codecov-action@v3
+#        with:
+#          token: ${{ secrets.codecov_token }} # not required for public repos
+##          files: coverage.xml # optional
+#          files: ./coverage_${{ inputs.test_type }}.xml # optional
+#          flags: ${{ inputs.codecov_flags }} # optional
+#          env_vars: OS,PYTHON
+#          name: ${{ inputs.codecov_name }} # optional
+#          fail_ci_if_error: true # optional (default = false)
+#          verbose: true # optional (default = false)
 
 #      - name: Rename (for test)
 #        run: mv ./coverage_unit-test.xml ./coverage1.xml
@@ -95,7 +95,7 @@ jobs:
 #        run: mv ./coverage_integration-test.xml ./coverage2.xml
 
       - name: Upload coverage report to platform Codecov
-        if: ${{ inputs.use_coveralls == true && inputs.test_type == 'all-test' }}
+        if: ${{ inputs.use_codecov == true && inputs.test_type == 'all-test' }}
         uses: codecov/codecov-action@v3
         with:
           token: ${{ secrets.codecov_token }} # not required for public repos
@@ -108,7 +108,7 @@ jobs:
           verbose: true # optional (default = false)
 
       - name: Upload coverage report to platform Coveralls
-        if: ${{ secrets.coveralls_token != '' || inputs.test_type == 'all-test' }}
+        if: ${{ inputs.use_coveralls == true && inputs.test_type == 'all-test' }}
         uses: coverallsapp/github-action@master
         with:
           github-token: ${{ secrets.coveralls_token }}
