@@ -130,8 +130,18 @@ jobs:
     with:
       download_path: ./
       test_type: all-test
-      codecov_flags: unit,integration
-      codecov_name: smoothcrawler-appintegration_github-actions_test # optional
+#      codecov_flags: unit,integration
+#      codecov_name: smoothcrawler-appintegration_github-actions_test # optional
+
+
+  coveralls_finish:
+#    name: Organize and generate the testing report and upload it to Coveralls
+#    if: github.ref_name == 'release' || github.ref_name == 'master'
+    needs: [unit-test_codecov, integration-test_codecov]
+    uses: ./.github/workflows/upload_test_report_to_codecov.yaml
+    with:
+      github-token: ${{ secrets.COVERALLS_TOKEN }}
+      flag-name: all-test
 
 
   codacy_finish:
