@@ -47,11 +47,9 @@ on:
       codecov_token:
         description: "The API token for uploading testing coverage report to Codecov."
         required: false
-        default: ""
       coveralls_token:
         description: "The API token for uploading testing coverage report to Coveralls."
         required: false
-        default: ""
 
 
 jobs:
