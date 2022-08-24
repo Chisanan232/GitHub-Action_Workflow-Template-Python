@@ -71,12 +71,19 @@ jobs:
           fail_ci_if_error: true # optional (default = false)
           verbose: true # optional (default = false)
 
+      - name: Rename (for test)
+        run: mv ./coverage_unit-test.xml ./coverage1.xml
+
+      - name: Rename (for test)
+        run: mv ./coverage_integration-test.xml ./coverage2.xml
+
       - name: Upload coverage report to platform Codecov
         if: ${{ inputs.test_type == 'all-test' }}
         uses: codecov/codecov-action@v3
         with:
           token: ${{ secrets.codecov_token }} # not required for public repos
-          files:  ./coverage_unit-test.xml,./coverage_integration-test.xml
+#          files:  ./coverage_unit-test.xml,./coverage_integration-test.xml
+          files:  ./coverage1.xml,./coverage2.xml # optional
           flags: ${{ inputs.codecov_flags }} # optional
           env_vars: OS,PYTHON
           name: ${{ inputs.codecov_name }} # optional
