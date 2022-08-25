@@ -145,19 +145,19 @@ jobs:
           fail_ci_if_error: true # optional (default = false)
           verbose: true # optional (default = false)
 
-      - name: Test the coverage report
-        if: ${{ inputs.use_coveralls == true && inputs.test_type == 'all-test' }}
-        run: |
-          pip3 install coverage-lcov
-          coverage-lcov --data_file_path ./.coverage.${{ inputs.test_type }} --output_file_path lcov.info
+#      - name: Test the coverage report
+#        if: ${{ inputs.use_coveralls == true && inputs.test_type == 'all-test' }}
+#        run: |
+#          pip3 install coverage-lcov
+#          coverage-lcov --data_file_path ./.coverage.${{ inputs.test_type }} --output_file_path lcov.info
 
       - name: Upload coverage report to platform Coveralls
         if: ${{ inputs.use_coveralls == true && inputs.test_type == 'all-test' }}
         env:
           COVERALLS_REPO_TOKEN: ${{ secrets.coveralls_token }}
-#        run: coveralls --service=github
-        uses: coverallsapp/github-action@master
-        with:
-          github-token: ${{ secrets.coveralls_token }}
-          path-to-lcov: ./lcov.info
-          flag-name: ${{ secrets.coveralls_flag }}
+        run: coveralls --service=github
+#        uses: coverallsapp/github-action@master
+#        with:
+#          github-token: ${{ secrets.coveralls_token }}
+#          path-to-lcov: ./lcov.info
+#          flag-name: ${{ secrets.coveralls_flag }}
