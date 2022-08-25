@@ -96,7 +96,6 @@ jobs:
           python3 -m pip install --upgrade pip
           pip3 install -U pip
           pip3 install coverage
-          pip3 install coverage-lcov
           pip3 install codecov
           pip3 install coveralls
           pip3 install PyYAML
@@ -145,7 +144,9 @@ jobs:
 
       - name: Test the coverage report
         if: ${{ inputs.use_coveralls == true && inputs.test_type == 'all-test' }}
-        run: coverage-lcov --data_file_path ./.coverage.integration-test --output_file_path lcov.info
+        run: |
+          pip3 install coverage-lcov
+          coverage-lcov --data_file_path ./.coverage.integration-test --output_file_path lcov.info
 
       - name: Upload coverage report to platform Coveralls
         if: ${{ inputs.use_coveralls == true && inputs.test_type == 'all-test' }}
