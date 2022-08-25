@@ -49,6 +49,10 @@ jobs:
     with:
       test_type: unit-test
       all_test_items_paths: ${{needs.prep-testbed_unit-test.outputs.all_test_items}}
+    secrets:
+      codecov_token: ${{ secrets.CODECOV_TOKEN }}
+      coveralls_token: ${{ secrets.COVERALLS_TOKEN }}
+      codacy_token: ${{ secrets.CODACY_PROJECT_TOKEN }}
 
 
   run_integration-test:
@@ -63,6 +67,10 @@ jobs:
       http_server_port: 30303
       http_server_app_module: _http_server.app
       http_server_enter_point: app
+    secrets:
+      codecov_token: ${{ secrets.CODECOV_TOKEN }}
+      coveralls_token: ${{ secrets.COVERALLS_TOKEN }}
+      codacy_token: ${{ secrets.CODACY_PROJECT_TOKEN }}
 
 
 #  unit-test_codecov:
@@ -83,17 +91,17 @@ jobs:
 ##      generate_xml_report_finally: false
 
 
-  all-test_codecov:
-#    name: Organize and generate the testing report and upload it to Codecov
-#    needs: [unit-test_codecov, integration-test_codecov]
-    needs: [run_unit-test, run_integration-test]
-    uses: ./.github/workflows/organize_and_generate_testing_reports.yaml
-    with:
-      test_type: all-test
-    secrets:
-      codecov_token: ${{ secrets.CODECOV_TOKEN }}
-      coveralls_token: ${{ secrets.COVERALLS_TOKEN }}
-      codacy_token: ${{ secrets.CODACY_PROJECT_TOKEN }}
+#  all-test_codecov:
+##    name: Organize and generate the testing report and upload it to Codecov
+##    needs: [unit-test_codecov, integration-test_codecov]
+#    needs: [run_unit-test, run_integration-test]
+#    uses: ./.github/workflows/organize_and_generate_testing_reports.yaml
+#    with:
+#      test_type: all-test
+#    secrets:
+#      codecov_token: ${{ secrets.CODECOV_TOKEN }}
+#      coveralls_token: ${{ secrets.COVERALLS_TOKEN }}
+#      codacy_token: ${{ secrets.CODACY_PROJECT_TOKEN }}
 
 
 #  unit-codecov_finish:
