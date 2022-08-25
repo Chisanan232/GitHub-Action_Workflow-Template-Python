@@ -113,7 +113,10 @@ jobs:
 
       - name: Upload coverage report to Codecov https://codecov.io
         if: ${{ inputs.upload-to-codecov == true }}
-        run: codecov -t ${{ secrets.codecov_token }}
+        run: |
+          codecov -t ${{ secrets.codecov_token }} --file coverage_integration-test.xml --flags unit,integration --env OS,PYTHON --name gh_workflow_template --branch develop
+
+#        run: codecov -t ${{ secrets.codecov_token }}
 
 #### Way 1
 #        run: bash <(curl -s https://codecov.io/bash)
@@ -146,7 +149,7 @@ jobs:
         uses: codacy/codacy-coverage-reporter-action@v1
         with:
           project-token: ${{ secrets.codacy_token }}
-          coverage-reports: coverage.xml
+          coverage-reports: coverage_integration-test.xml
 #          coverage-reports: coverage_integration-test.xml
 #          coverage-reports: coverage_unit-test.xml,coverage_integration-test.xml
 #          coverage-reports: cobertura.xml
