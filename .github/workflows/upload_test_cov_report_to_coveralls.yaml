@@ -36,6 +36,9 @@ jobs:
   upload_code_to_codacy_check_quality:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
       - name: Download testing coverage report
         uses: actions/download-artifact@v3
         with:
