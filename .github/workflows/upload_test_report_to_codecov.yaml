@@ -72,18 +72,18 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Download code coverage result file
-        uses: actions/download-artifact@v3
-        with:
-          name: coverage
-          path: ./
-
 #      - name: Download code coverage result file
 #        uses: actions/download-artifact@v3
 #        with:
-##          name: final_project_testing_coverage_report
+#          name: coverage
+#          path: ./
+
+      - name: Download code coverage result file
+        uses: actions/download-artifact@v3
+        with:
+          name: final_project_testing_coverage_report
 #          name: final_project_testing_coverage_xml_report
-#          path: ${{ inputs.download_path }}
+          path: ${{ inputs.download_path }}
 
       - name: Install Python 3.10
         uses: actions/setup-python@v2
@@ -97,17 +97,29 @@ jobs:
           pip3 install coverage
           pip3 install coveralls
 
+#      - name: Combine all testing code coverage result files with all test types
+#        run: coverage combine --data-file=.coverage.${{ inputs.test_type }} .coverage.*
+#
+#      - name: Report testing coverage of project code
+#        run: coverage report -m --data-file=.coverage.${{ inputs.test_type }}
+#
+#      - name: General testing coverage report as XML format with ${{ inputs.test_type }}
+#        run: coverage xml --data-file=.coverage.${{ inputs.test_type }} -o coverage_${{ inputs.test_type }}.xml
+#
+#      - name: Report testing coverage of project code
+#        run: coverage report -m --data-file=.coverage.${{ inputs.test_type }}
+
       - name: Combine all testing code coverage result files with all test types
-        run: coverage combine --data-file=.coverage.${{ inputs.test_type }} .coverage.*
+        run: coverage combine .coverage.*
 
       - name: Report testing coverage of project code
-        run: coverage report -m --data-file=.coverage.${{ inputs.test_type }}
+        run: coverage report -m
 
       - name: General testing coverage report as XML format with ${{ inputs.test_type }}
-        run: coverage xml --data-file=.coverage.${{ inputs.test_type }} -o coverage_${{ inputs.test_type }}.xml
+        run: coverage xml
 
       - name: Report testing coverage of project code
-        run: coverage report -m --data-file=.coverage.${{ inputs.test_type }}
+        run: coverage report -m
 
 #      - name: Upload coverage report to platform Codecov
 #        if: ${{ inputs.use_codecov == true && inputs.test_type != 'all-test' }}
@@ -142,7 +154,7 @@ jobs:
           token: ${{ secrets.codecov_token }} # not required for public repos
 #          files:  ./coverage_unit-test.xml,./coverage_integration-test.xml
 #          files:  ./.coverage.unit-test,./.coverage.integration-test # optional
-          files:  ./coverage_${{ inputs.test_type }}.xml
+          files:  ./coverage.xml
 #          flags: ${{ inputs.codecov_flags }} # optional
 #          env_vars: OS,PYTHON # optional
 #          name: ${{ inputs.codecov_name }} # optional
