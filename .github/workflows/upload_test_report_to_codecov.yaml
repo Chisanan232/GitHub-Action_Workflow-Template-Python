@@ -138,7 +138,7 @@ jobs:
 
       - name: Upload coverage report to platform Codecov
         if: ${{ inputs.use_codecov == true && inputs.test_type == 'all-test' }}
-#        run: bash <(curl -s https://codecov.io/bash)
+        run: bash <(curl -s https://codecov.io/bash)
 #        run: codecov -t ${{ secrets.codecov_token }}
 #        run: |
 #          codecov -t ${{ secrets.codecov_token }} \
@@ -147,9 +147,9 @@ jobs:
 ##                      --env OS,PYTHON \
 ##                      --name ${{ inputs.codecov_name }} \
 ##                      --branch github.ref_name
-        uses: codecov/codecov-action@v2
-        with:
-          file: .coverage
+#        uses: codecov/codecov-action@v2
+#        with:
+#          file: .coverage
 #          token: ${{ secrets.codecov_token }} # not required for public repos
 ##          files:  ./coverage_unit-test.xml,./coverage_integration-test.xml
 ##          files:  ./.coverage.unit-test,./.coverage.integration-test # optional
