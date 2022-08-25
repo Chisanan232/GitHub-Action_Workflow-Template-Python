@@ -75,16 +75,15 @@ jobs:
       - name: Download code coverage result file
         uses: actions/download-artifact@v3
         with:
-          name: final_project_testing_coverage_report
-#          name: final_project_testing_coverage_xml_report
-          path: ${{ inputs.download_path }}
+          name: coverage
+          path: ./
 
-      - name: Download code coverage result file
-        uses: actions/download-artifact@v3
-        with:
-#          name: final_project_testing_coverage_report
-          name: final_project_testing_coverage_xml_report
-          path: ${{ inputs.download_path }}
+#      - name: Download code coverage result file
+#        uses: actions/download-artifact@v3
+#        with:
+##          name: final_project_testing_coverage_report
+#          name: final_project_testing_coverage_xml_report
+#          path: ${{ inputs.download_path }}
 
       - name: Install Python 3.10
         uses: actions/setup-python@v2
@@ -96,12 +95,15 @@ jobs:
           python3 -m pip install --upgrade pip
           pip3 install -U pip
           pip3 install coverage
-          pip3 install codecov
-          pip3 install coveralls
-          pip3 install PyYAML
 
-      - name: Test the coverage report
+      - name: Combine all testing code coverage result files with all test types
+        run: coverage combine --data-file=.coverage.${{ inputs.test_type }} .coverage.*
+
+      - name: Report testing coverage of project code
         run: coverage report -m --data-file=.coverage.${{ inputs.test_type }}
+
+      - name: General testing coverage report as XML format with ${{ inputs.test_type }}
+        run: coverage xml --data-file=.coverage.${{ inputs.test_type }} -o coverage_${{ inputs.test_type }}.xml
 
 #      - name: Upload coverage report to platform Codecov
 #        if: ${{ inputs.use_codecov == true && inputs.test_type != 'all-test' }}
@@ -124,29 +126,30 @@ jobs:
 
       - name: Upload coverage report to platform Codecov
         if: ${{ inputs.use_codecov == true && inputs.test_type == 'all-test' }}
-        run: | 
-          codecov -t ${{ secrets.codecov_token }} \
-                      --file ./coverage_integration-test.xml \
-#                      --flags ${{ inputs.codecov_flags }} \
-#                      --env OS,PYTHON \
-#                      --name ${{ inputs.codecov_name }} \
-#                      --branch github.ref_name
-#        uses: codecov/codecov-action@v3
-#        with:
-#          token: ${{ secrets.codecov_token }} # not required for public repos
-##          files:  ./coverage_unit-test.xml,./coverage_integration-test.xml
+#        run: |
+#          codecov -t ${{ secrets.codecov_token }} \
+#                      --file ./coverage_integration-test.xml \
+##                      --flags ${{ inputs.codecov_flags }} \
+##                      --env OS,PYTHON \
+##                      --name ${{ inputs.codecov_name }} \
+##                      --branch github.ref_name
+        uses: codecov/codecov-action@v3
+        with:
+          token: ${{ secrets.codecov_token }} # not required for public repos
+#          files:  ./coverage_unit-test.xml,./coverage_integration-test.xml
 #          files:  ./.coverage.unit-test,./.coverage.integration-test # optional
-#          flags: ${{ inputs.codecov_flags }} # optional
-#          env_vars: OS,PYTHON # optional
-#          name: ${{ inputs.codecov_name }} # optional
-#          fail_ci_if_error: true # optional (default = false)
-#          verbose: true # optional (default = false)
+          files:  ./coverage_${{ inputs.test_type }}.xml
+          flags: ${{ inputs.codecov_flags }} # optional
+          env_vars: OS,PYTHON # optional
+          name: ${{ inputs.codecov_name }} # optional
+          fail_ci_if_error: true # optional (default = false)
+          verbose: true # optional (default = false)
 
       - name: Test the coverage report
         if: ${{ inputs.use_coveralls == true && inputs.test_type == 'all-test' }}
         run: |
           pip3 install coverage-lcov
-          coverage-lcov --data_file_path ./.coverage.integration-test --output_file_path lcov.info
+          coverage-lcov --data_file_path ./.coverage.${{ inputs.test_type }} --output_file_path lcov.info
 
       - name: Upload coverage report to platform Coveralls
         if: ${{ inputs.use_coveralls == true && inputs.test_type == 'all-test' }}
