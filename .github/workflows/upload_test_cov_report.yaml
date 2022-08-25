@@ -78,7 +78,7 @@ jobs:
       - name: Download code coverage result files which has be handled by different test type process
         uses: actions/download-artifact@v3
         with:
-          name: final_project_testing_coverage_report
+          name: test_coverage_report
           path: ${{ inputs.download_path }}
 
       - name: Install Python 3.10
@@ -107,10 +107,12 @@ jobs:
 
       - name: Upload coverage report to Codecov https://codecov.io
         if: ${{ inputs.upload-to-codecov == true }}
+        run: codecov -t ${{ secrets.codecov_token }}
+
 #### Way 1
 #        run: bash <(curl -s https://codecov.io/bash)
 #### Way 2
-        run: codecov -t ${{ secrets.codecov_token }}
+#        run: codecov -t ${{ secrets.codecov_token }}
 #### Way 3
 #        uses: codecov/codecov-action@v2
 #        with:
@@ -138,5 +140,7 @@ jobs:
         uses: codacy/codacy-coverage-reporter-action@v1
         with:
           project-token: ${{ secrets.codacy_token }}
-          coverage-reports: coverage.xml
+          coverage-reports: coverage_integration-test.xml
+#          coverage-reports: coverage_unit-test.xml,coverage_integration-test.xml
+#          coverage-reports: coverage.xml
 #          coverage-reports: cobertura.xml
