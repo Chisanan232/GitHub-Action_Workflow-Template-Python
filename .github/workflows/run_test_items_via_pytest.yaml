@@ -64,6 +64,9 @@ on:
       coveralls_token:
         description: "The API token for uploading testing coverage report to Coveralls."
         required: false
+      codacy_api_token:
+        description: "The API token for uploading testing coverage report to Codacy."
+        required: false
       codacy_token:
         description: "The API token for uploading testing coverage report to Codacy."
         required: false
@@ -171,6 +174,7 @@ jobs:
 #        if: ${{ inputs.upload-to-codacy == true }}
         uses: codacy/codacy-coverage-reporter-action@v1
         with:
+          api-token: ${{ secrets.codacy_api_token }}
           project-token: ${{ secrets.codacy_token }}
 #          coverage-reports: coverage.xml
           coverage-reports: cobertura.xml
