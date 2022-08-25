@@ -81,6 +81,12 @@ jobs:
           name: test_coverage_report
           path: ${{ inputs.download_path }}
 
+      - name: Download code coverage result files which has be handled by different test type process
+        uses: actions/download-artifact@v3
+        with:
+          name: test_coverage_xml_report
+          path: ${{ inputs.download_path }}
+
       - name: Install Python 3.10
         uses: actions/setup-python@v2
         with:
