@@ -56,6 +56,8 @@ jobs:
           python3 -m pip install --upgrade pip
           pip3 install -U pip
           pip3 install coverage
+          pip3 install codecov
+          pip3 install coveralls
 
       - name: Combine all testing code coverage result files with one specific test type
         if: ${{ inputs.test_type == 'unit-test' || inputs.test_type == 'integration-test' }}
