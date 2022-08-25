@@ -21,6 +21,17 @@ on:
         required: true
         type: string
 
+    secrets:
+      codecov_token:
+        description: "The API token for uploading testing coverage report to Codecov."
+        required: false
+      coveralls_token:
+        description: "The API token for uploading testing coverage report to Coveralls."
+        required: false
+      codacy_token:
+        description: "The API token for uploading testing coverage report to Codacy."
+        required: false
+
 
 jobs:
   organize_and_generate_test_reports:
@@ -52,25 +63,64 @@ jobs:
 
       - name: Combine all testing code coverage result files with all test types
         if: ${{ inputs.test_type == 'all-test' }}
-        run: coverage combine --data-file=.coverage .coverage.*
+        run: | 
+          coverage combine --data-file=.coverage .coverage.*
+          coverage report
+          coverage xml
 
-      - name: Report testing coverage of project code
-        run: coverage report -m --data-file=.coverage.${{ inputs.test_type }}
+#      - name: Report testing coverage of project code
+#        run: coverage report -m --data-file=.coverage.${{ inputs.test_type }}
+#
+#      - name: General testing coverage report as XML format with ${{ inputs.test_type }}
+#        run: coverage xml --data-file=.coverage.${{ inputs.test_type }} -o coverage_${{ inputs.test_type }}.xml
 
-      - name: General testing coverage report as XML format with ${{ inputs.test_type }}
-        run: coverage xml --data-file=.coverage.${{ inputs.test_type }} -o coverage_${{ inputs.test_type }}.xml
+#      - name: Upload testing coverage report (.coverage)
+#        uses: actions/upload-artifact@v3
+#        with:
+#          name: final_project_testing_coverage_report
+##          path: .coverage.${{ inputs.test_type }}
+#          path: .coverage
+#          if-no-files-found: error
+#
+#      - name: Upload testing coverage report (.xml)
+#        uses: actions/upload-artifact@v3
+#        with:
+#          name: final_project_testing_coverage_xml_report
+#          path: coverage_${{ inputs.test_type }}.xml
+#          if-no-files-found: error
 
-      - name: Upload testing coverage report (.coverage)
-        uses: actions/upload-artifact@v3
+      - name: Upload coverage report to Codecov https://codecov.io
+#        if: ${{ inputs.upload-to-codecov == true }}
+#### Way 1
+#        run: bash <(curl -s https://codecov.io/bash)
+#### Way 2
+        run: codecov -t ${{ secrets.codecov_token }}
+#### Way 3
+#        uses: codecov/codecov-action@v2
+#        with:
+#          file: .coverage
+#          token: ${{ secrets.codecov_token }} # not required for public repos
+#          files:  ./coverage.xml
+##          flags: ${{ inputs.codecov_flags }} # optional
+##          env_vars: OS,PYTHON # optional
+##          name: ${{ inputs.codecov_name }} # optional
+#          fail_ci_if_error: true # optional (default = false)
+#          verbose: true # optional (default = false)
+
+      - name: Install Python dependencies about tool of Coveralls
+#        if: ${{ inputs.upload-to-coveralls == true }}
+        run: pip3 install coveralls
+
+      - name: Upload coverage report to Coveralls https://coveralls.io
+#        if: ${{ inputs.upload-to-coveralls == true }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.coveralls_token }}
+        run: coveralls --verbose
+
+      - name: Upload testing report to Codacy https://app.codacy.com/
+#        if: ${{ inputs.upload-to-codacy == true }}
+        uses: codacy/codacy-coverage-reporter-action@v1
         with:
-          name: final_project_testing_coverage_report
-#          path: .coverage.${{ inputs.test_type }}
-          path: .coverage
-          if-no-files-found: error
-
-      - name: Upload testing coverage report (.xml)
-        uses: actions/upload-artifact@v3
-        with:
-          name: final_project_testing_coverage_xml_report
-          path: coverage_${{ inputs.test_type }}.xml
-          if-no-files-found: error
+          project-token: ${{ secrets.codacy_token }}
+          coverage-reports: coverage.xml
+#          coverage-reports: cobertura.xml
