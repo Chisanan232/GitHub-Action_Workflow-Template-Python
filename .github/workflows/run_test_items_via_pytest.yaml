@@ -164,21 +164,24 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.coveralls_token }}
         run: coveralls --verbose
 
+      - name: Generate testing report for Codacy
+        run: mv ./coverage.xml ./cobertura.xml
+
       - name: Upload testing report to Codacy https://app.codacy.com/
 #        if: ${{ inputs.upload-to-codacy == true }}
         uses: codacy/codacy-coverage-reporter-action@v1
         with:
           project-token: ${{ secrets.codacy_token }}
-          coverage-reports: coverage.xml
-#          coverage-reports: cobertura.xml
+#          coverage-reports: coverage.xml
+          coverage-reports: cobertura.xml
 
-      - name: Rename the code coverage result file
-        run: mv ./.coverage ./.coverage.${{ inputs.test_type }}.${{ matrix.os }}-${{ matrix.python-version }}
+#      - name: Rename the code coverage result file
+#        run: mv ./.coverage ./.coverage.${{ inputs.test_type }}.${{ matrix.os }}-${{ matrix.python-version }}
 
-      - name: Upload code coverage result file
-        uses: actions/upload-artifact@v3
-        with:
-          name: coverage
-          path: .coverage.${{ inputs.test_type }}.${{ matrix.os }}-${{ matrix.python-version }}
-          if-no-files-found: error
+#      - name: Upload code coverage result file
+#        uses: actions/upload-artifact@v3
+#        with:
+#          name: coverage
+#          path: .coverage.${{ inputs.test_type }}.${{ matrix.os }}-${{ matrix.python-version }}
+#          if-no-files-found: error
 
