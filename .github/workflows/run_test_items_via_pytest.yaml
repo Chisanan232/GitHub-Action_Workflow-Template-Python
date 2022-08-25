@@ -57,20 +57,6 @@ on:
         required: false
         default: app
 
-    secrets:
-      codecov_token:
-        description: "The API token for uploading testing coverage report to Codecov."
-        required: false
-      coveralls_token:
-        description: "The API token for uploading testing coverage report to Coveralls."
-        required: false
-      codacy_api_token:
-        description: "The API token for uploading testing coverage report to Codacy."
-        required: false
-      codacy_token:
-        description: "The API token for uploading testing coverage report to Codacy."
-        required: false
-
 
 jobs:
   run_test_items:
@@ -134,58 +120,13 @@ jobs:
         run: pytest ${{ matrix.test-path }}
         continue-on-error: true
 
-      - name: Combine all testing code coverage result files with all test types
-        run: | 
-          coverage report
-          coverage xml
+      - name: Rename the code coverage result file
+        run: mv ./.coverage ./.coverage.${{ inputs.test_type }}.${{ matrix.os }}-${{ matrix.python-version }}
 
-      - name: Upload coverage report to Codecov https://codecov.io
-#        if: ${{ inputs.upload-to-codecov == true }}
-#### Way 1
-#        run: bash <(curl -s https://codecov.io/bash)
-#### Way 2
-        run: codecov -t ${{ secrets.codecov_token }}
-#### Way 3
-#        uses: codecov/codecov-action@v2
-#        with:
-#          file: .coverage
-#          token: ${{ secrets.codecov_token }} # not required for public repos
-#          files:  ./coverage.xml
-##          flags: ${{ inputs.codecov_flags }} # optional
-##          env_vars: OS,PYTHON # optional
-##          name: ${{ inputs.codecov_name }} # optional
-#          fail_ci_if_error: true # optional (default = false)
-#          verbose: true # optional (default = false)
-
-      - name: Install Python dependencies about tool of Coveralls
-#        if: ${{ inputs.upload-to-coveralls == true }}
-        run: pip3 install coveralls
-
-      - name: Upload coverage report to Coveralls https://coveralls.io
-#        if: ${{ inputs.upload-to-coveralls == true }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.coveralls_token }}
-        run: coveralls --verbose
-
-      - name: Generate testing report for Codacy
-        run: mv ./coverage.xml ./cobertura.xml
-
-      - name: Upload testing report to Codacy https://app.codacy.com/
-#        if: ${{ inputs.upload-to-codacy == true }}
-        uses: codacy/codacy-coverage-reporter-action@v1
+      - name: Upload code coverage result file
+        uses: actions/upload-artifact@v3
         with:
-          api-token: ${{ secrets.codacy_api_token }}
-          project-token: ${{ secrets.codacy_token }}
-#          coverage-reports: coverage.xml
-          coverage-reports: cobertura.xml
-
-#      - name: Rename the code coverage result file
-#        run: mv ./.coverage ./.coverage.${{ inputs.test_type }}.${{ matrix.os }}-${{ matrix.python-version }}
-
-#      - name: Upload code coverage result file
-#        uses: actions/upload-artifact@v3
-#        with:
-#          name: coverage
-#          path: .coverage.${{ inputs.test_type }}.${{ matrix.os }}-${{ matrix.python-version }}
-#          if-no-files-found: error
+          name: coverage
+          path: .coverage.${{ inputs.test_type }}.${{ matrix.os }}-${{ matrix.python-version }}
+          if-no-files-found: error
 
