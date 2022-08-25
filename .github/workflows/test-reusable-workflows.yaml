@@ -120,28 +120,28 @@ jobs:
 #      codecov_name: smoothcrawler-appintegration_github-actions_test # optional
 
 
-  codecov_finish:
-#    name: Organize and generate the testing report and upload it to Codecov
-#    if: github.ref_name == 'release' || github.ref_name == 'master'
-    needs: [unit-test_codecov, integration-test_codecov]
-    uses: ./.github/workflows/upload_test_cov_report.yaml
-    secrets:
-      codecov_token: ${{ secrets.CODECOV_TOKEN }}
-    with:
-      upload-to-codecov: true
-#      codecov_flags: unit,integration
-#      codecov_name: smoothcrawler-appintegration_github-actions_test # optional
-
-
-  coveralls_finish:
-#    name: Organize and generate the testing report and upload it to Coveralls
-#    if: github.ref_name == 'release' || github.ref_name == 'master'
-    needs: [unit-test_codecov, integration-test_codecov]
-    uses: ./.github/workflows/upload_test_cov_report.yaml
-    secrets:
-      coveralls_token: ${{ secrets.COVERALLS_TOKEN }}
-    with:
-      upload-to-coveralls: true
+#  codecov_finish:
+##    name: Organize and generate the testing report and upload it to Codecov
+##    if: github.ref_name == 'release' || github.ref_name == 'master'
+#    needs: [unit-test_codecov, integration-test_codecov]
+#    uses: ./.github/workflows/upload_test_cov_report.yaml
+#    secrets:
+#      codecov_token: ${{ secrets.CODECOV_TOKEN }}
+#    with:
+#      upload-to-codecov: true
+##      codecov_flags: unit,integration
+##      codecov_name: smoothcrawler-appintegration_github-actions_test # optional
+#
+#
+#  coveralls_finish:
+##    name: Organize and generate the testing report and upload it to Coveralls
+##    if: github.ref_name == 'release' || github.ref_name == 'master'
+#    needs: [unit-test_codecov, integration-test_codecov]
+#    uses: ./.github/workflows/upload_test_cov_report.yaml
+#    secrets:
+#      coveralls_token: ${{ secrets.COVERALLS_TOKEN }}
+#    with:
+#      upload-to-coveralls: true
 
 
   codacy_finish:
