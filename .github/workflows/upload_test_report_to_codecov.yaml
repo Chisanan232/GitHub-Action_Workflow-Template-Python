@@ -147,8 +147,9 @@ jobs:
 ##                      --env OS,PYTHON \
 ##                      --name ${{ inputs.codecov_name }} \
 ##                      --branch github.ref_name
-        uses: codecov/codecov-action@v3
-#        with:
+        uses: codecov/codecov-action@v2
+        with:
+          file: .coverage
 #          token: ${{ secrets.codecov_token }} # not required for public repos
 ##          files:  ./coverage_unit-test.xml,./coverage_integration-test.xml
 ##          files:  ./.coverage.unit-test,./.coverage.integration-test # optional
