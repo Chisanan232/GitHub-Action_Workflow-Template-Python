@@ -65,7 +65,7 @@ on:
         required: false
       codacy_token:
         description: "The API token for uploading testing coverage report to Codacy."
-        required: true
+        required: false
 
 
 jobs:
