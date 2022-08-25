@@ -1,5 +1,5 @@
 [run]
-#parallel = True
+parallel = True
 #relative_files = True
 source=./test_gh_workflow
 
