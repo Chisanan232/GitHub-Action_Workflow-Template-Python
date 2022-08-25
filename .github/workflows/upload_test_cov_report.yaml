@@ -146,7 +146,7 @@ jobs:
         uses: codacy/codacy-coverage-reporter-action@v1
         with:
           project-token: ${{ secrets.codacy_token }}
-          coverage-reports: coverage_integration-test.xml
+          coverage-reports: coverage.xml
+#          coverage-reports: coverage_integration-test.xml
 #          coverage-reports: coverage_unit-test.xml,coverage_integration-test.xml
-#          coverage-reports: coverage.xml
 #          coverage-reports: cobertura.xml
