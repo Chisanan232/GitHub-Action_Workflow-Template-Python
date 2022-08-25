@@ -52,7 +52,7 @@ jobs:
 
       - name: Combine all testing code coverage result files with all test types
         if: ${{ inputs.test_type == 'all-test' }}
-        run: coverage combine --data-file=.coverage.${{ inputs.test_type }} .coverage.*
+        run: coverage combine --data-file=.coverage .coverage.*
 
       - name: Report testing coverage of project code
         run: coverage report -m --data-file=.coverage.${{ inputs.test_type }}
