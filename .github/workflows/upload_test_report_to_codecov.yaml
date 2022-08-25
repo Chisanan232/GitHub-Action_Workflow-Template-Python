@@ -153,8 +153,8 @@ jobs:
 
       - name: Upload coverage report to platform Coveralls
         if: ${{ inputs.use_coveralls == true && inputs.test_type == 'all-test' }}
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.coveralls_token }}
+        env:
+          COVERALLS_REPO_TOKEN: ${{ secrets.coveralls_token }}
 #        run: coveralls --service=github
         uses: coverallsapp/github-action@master
         with:
