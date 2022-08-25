@@ -138,7 +138,8 @@ jobs:
 
       - name: Upload coverage report to platform Codecov
         if: ${{ inputs.use_codecov == true && inputs.test_type == 'all-test' }}
-        run: codecov -t ${{ secrets.codecov_token }}
+#        run: bash <(curl -s https://codecov.io/bash)
+#        run: codecov -t ${{ secrets.codecov_token }}
 #        run: |
 #          codecov -t ${{ secrets.codecov_token }} \
 #                      --file ./coverage_integration-test.xml \
@@ -146,7 +147,7 @@ jobs:
 ##                      --env OS,PYTHON \
 ##                      --name ${{ inputs.codecov_name }} \
 ##                      --branch github.ref_name
-#        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v3
 #        with:
 #          token: ${{ secrets.codecov_token }} # not required for public repos
 ##          files:  ./coverage_unit-test.xml,./coverage_integration-test.xml
@@ -168,7 +169,7 @@ jobs:
         if: ${{ inputs.use_coveralls == true && inputs.test_type == 'all-test' }}
         env:
           GITHUB_TOKEN: ${{ secrets.coveralls_token }}
-        run: coveralls
+        run: coveralls --verbose
 #        uses: coverallsapp/github-action@master
 #        with:
 #          github-token: ${{ secrets.coveralls_token }}
