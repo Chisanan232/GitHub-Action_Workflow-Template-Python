@@ -1,5 +1,0 @@
-# # This test directory for testing to simulate a Python library project structure.
-
-codecov:
-  token: $CODECOV_TOKEN
-  max_report_age: off
