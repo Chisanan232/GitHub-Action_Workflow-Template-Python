@@ -56,8 +56,8 @@ jobs:
           pip3 install -U pip
           pip3 install coverage
 
-      - name: Combine all testing code coverage result files with all test types
-        run: coverage combine .coverage.*
+#      - name: Combine all testing code coverage result files with all test types
+#        run: coverage combine .coverage.*
 
       - name: Report testing coverage of project code
         run: coverage report -m

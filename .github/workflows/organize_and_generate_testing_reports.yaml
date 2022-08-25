@@ -64,7 +64,8 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: final_project_testing_coverage_report
-          path: .coverage.${{ inputs.test_type }}
+#          path: .coverage.${{ inputs.test_type }}
+          path: .coverage
           if-no-files-found: error
 
       - name: Upload testing coverage report (.xml)
