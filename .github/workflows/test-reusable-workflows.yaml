@@ -124,7 +124,7 @@ jobs:
 
   codecov_finish:
     needs: [integration-test_codecov]
-    uses: ./.github/workflows/upload_test_cov_report_to_codecov.yaml
+    uses: ./.github/workflows/upload_test_cov_report.yaml
     secrets:
       codecov_token: ${{ secrets.CODECOV_TOKEN }}
     with:
@@ -140,7 +140,7 @@ jobs:
 
   coveralls_finish:
     needs: [integration-test_codecov]
-    uses: ./.github/workflows/upload_test_cov_report_to_coveralls.yaml
+    uses: ./.github/workflows/upload_test_cov_report.yaml
     secrets:
       coveralls_token: ${{ secrets.COVERALLS_TOKEN }}
     with:
@@ -152,7 +152,7 @@ jobs:
 
   codacy_finish:
     needs: [integration-test_codecov]
-    uses: ./.github/workflows/upload_code_report_to_codacy.yaml
+    uses: ./.github/workflows/upload_test_cov_report.yaml
     secrets:
       codacy_token: ${{ secrets.CODACY_PROJECT_TOKEN }}
     with:
