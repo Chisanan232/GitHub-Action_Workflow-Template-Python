@@ -50,6 +50,6 @@ jobs:
         with:
           project-token: ${{ secrets.codacy_token }}
 #          coverage-reports: coverage_unit-test.xml,coverage_integration-test.xml
-          coverage-reports: coverage_all-test.xml
+          coverage-reports: coverage_integration-test.xml
 #          coverage-reports: cobertura.xml
 

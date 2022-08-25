@@ -152,11 +152,12 @@ jobs:
 
   codacy_finish:
     needs: [integration-test_codecov]
-    uses: ./.github/workflows/upload_test_cov_report.yaml
+    uses: ./.github/workflows/upload_code_report_to_codacy.yaml
     secrets:
       codacy_token: ${{ secrets.CODACY_PROJECT_TOKEN }}
-    with:
-      upload-to-codacy: true
+#    uses: ./.github/workflows/upload_test_cov_report.yaml
+#    with:
+#      upload-to-codacy: true
 #    name: Upload test report to Codacy to analyse and record code quality
 #    needs: [unit-test_codecov, integration-test_codecov]
 
