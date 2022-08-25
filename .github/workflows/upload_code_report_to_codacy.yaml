@@ -6,7 +6,6 @@
 # Workflow input parameters:
 #     * General arguments:
 #         * download_path: The path to download testing coverage reports via 'actions/download-artifact@v3'.
-#         * test_type: The testing type. In generally, it only has 2 options: 'unit-test' and 'integration-test'.
 #
 #     * Secret arguments:
 #         * codacy_token: The API token for uploading testing coverage report to Codacy.
@@ -26,10 +25,6 @@ on:
         type: string
         required: false
         default: ./
-      test_type:
-        description: "The testing type. In generally, it only has 2 options: 'unit-test' and 'integration-test'."
-        type: string
-        required: true
 
     secrets:
       codacy_token:
