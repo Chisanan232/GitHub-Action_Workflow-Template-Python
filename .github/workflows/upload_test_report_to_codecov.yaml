@@ -95,6 +95,7 @@ jobs:
           python3 -m pip install --upgrade pip
           pip3 install -U pip
           pip3 install coverage
+          pip3 install coveralls
 
       - name: Combine all testing code coverage result files with all test types
         run: coverage combine --data-file=.coverage.${{ inputs.test_type }} .coverage.*
