@@ -106,6 +106,9 @@ jobs:
       - name: General testing coverage report as XML format with ${{ inputs.test_type }}
         run: coverage xml --data-file=.coverage.${{ inputs.test_type }} -o coverage_${{ inputs.test_type }}.xml
 
+      - name: Report testing coverage of project code
+        run: coverage report -m --data-file=.coverage.${{ inputs.test_type }}
+
 #      - name: Upload coverage report to platform Codecov
 #        if: ${{ inputs.use_codecov == true && inputs.test_type != 'all-test' }}
 #        uses: codecov/codecov-action@v3
@@ -154,8 +157,8 @@ jobs:
 
       - name: Upload coverage report to platform Coveralls
         if: ${{ inputs.use_coveralls == true && inputs.test_type == 'all-test' }}
-#        env:
-#          COVERALLS_REPO_TOKEN: ${{ secrets.coveralls_token }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.coveralls_token }}
         run: coveralls
 #        uses: coverallsapp/github-action@master
 #        with:
