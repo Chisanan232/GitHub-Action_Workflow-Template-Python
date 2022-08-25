@@ -1,0 +1,74 @@
+############################################################################
+#
+# Workflow Description:
+#     Upload the testing coverage reports to Codacy.
+#
+# Workflow input parameters:
+#     * General arguments:
+#         * download_path: The path to download testing coverage reports via 'actions/download-artifact@v3'.
+#
+#     * Secret arguments:
+#         * codacy_token: The API token for uploading testing coverage report to Codacy.
+#
+# Workflow running output:
+#     No and do nothing.
+#
+############################################################################
+
+name: Upload code detail report to Codacy
+
+on:
+  workflow_call:
+    inputs:
+      download_path:
+        description: "The path to download testing coverage reports via 'actions/download-artifact@v3'."
+        type: string
+        required: false
+        default: ./
+
+    secrets:
+      coveralls_token:
+        description: "The API token for uploading testing coverage report to Codacy."
+        required: true
+
+
+jobs:
+  upload_code_to_codacy_check_quality:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download testing coverage report
+        uses: actions/download-artifact@v3
+        with:
+          name: final_project_testing_coverage_xml_report
+          path: ${{ inputs.download_path }}
+
+      - name: Install Python 3.10
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.10"
+
+      - name: Install Python dependencies about handling testing coverage report
+        run: |
+          python3 -m pip install --upgrade pip
+          pip3 install -U pip
+          pip3 install coverage
+
+      - name: Combine all testing code coverage result files with all test types
+        run: coverage combine .coverage.*
+
+      - name: Report testing coverage of project code
+        run: coverage report -m
+
+      - name: Report testing coverage of project code
+        run: coverage xml
+
+      - name: Install Python dependencies about tool of Coveralls
+#        if: ${{ inputs.upload-to-coveralls == true }}
+        run: pip3 install coveralls
+
+      - name: Upload coverage report to Coveralls https://coveralls.io
+#        if: ${{ inputs.upload-to-coveralls == true }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.coveralls_token }}
+        run: coveralls --verbose
+
