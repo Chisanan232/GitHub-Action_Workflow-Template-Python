@@ -111,12 +111,12 @@ jobs:
 #        run: coverage report -m --data-file=.coverage.${{ inputs.test_type }}
 
 ## Second usage
-#      - name: Combine all testing code coverage result files with all test types
-#        run: coverage combine .coverage.*
-#
-#      - name: Report testing coverage of project code
-#        run: coverage report -m
-#
+      - name: Combine all testing code coverage result files with all test types
+        run: coverage combine .coverage.*
+
+      - name: Report testing coverage of project code
+        run: coverage report -m
+
 #      - name: General testing coverage report as XML format with ${{ inputs.test_type }}
 #        run: coverage xml
 #
@@ -135,12 +135,6 @@ jobs:
 #          name: ${{ inputs.codecov_name }} # optional
 #          fail_ci_if_error: true # optional (default = false)
 #          verbose: true # optional (default = false)
-
-#      - name: Rename (for test)
-#        run: mv ./coverage_unit-test.xml ./coverage1.xml
-#
-#      - name: Rename (for test)
-#        run: mv ./coverage_integration-test.xml ./coverage2.xml
 
       - name: Upload coverage report to platform Codecov
         if: ${{ inputs.use_codecov == true && inputs.test_type == 'all-test' }}
