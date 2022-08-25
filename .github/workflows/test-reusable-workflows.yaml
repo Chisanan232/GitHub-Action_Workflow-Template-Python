@@ -70,8 +70,8 @@ jobs:
     secrets:
       codecov_token: ${{ secrets.CODECOV_TOKEN }}
       coveralls_token: ${{ secrets.COVERALLS_TOKEN }}
-      codacy_api_token: ${{ secrets.CODACY_API_TOKEN }}
-#      codacy_token: ${{ secrets.CODACY_PROJECT_TOKEN }}
+#      codacy_api_token: ${{ secrets.CODACY_API_TOKEN }}
+      codacy_token: ${{ secrets.CODACY_PROJECT_TOKEN }}
 
 
 #  unit-test_codecov:
