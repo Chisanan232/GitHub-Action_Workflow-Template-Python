@@ -140,9 +140,9 @@ jobs:
 #          files:  ./coverage_unit-test.xml,./coverage_integration-test.xml
 #          files:  ./.coverage.unit-test,./.coverage.integration-test # optional
           files:  ./coverage_${{ inputs.test_type }}.xml
-          flags: ${{ inputs.codecov_flags }} # optional
-          env_vars: OS,PYTHON # optional
-          name: ${{ inputs.codecov_name }} # optional
+#          flags: ${{ inputs.codecov_flags }} # optional
+#          env_vars: OS,PYTHON # optional
+#          name: ${{ inputs.codecov_name }} # optional
           fail_ci_if_error: true # optional (default = false)
           verbose: true # optional (default = false)
 
@@ -154,9 +154,9 @@ jobs:
 
       - name: Upload coverage report to platform Coveralls
         if: ${{ inputs.use_coveralls == true && inputs.test_type == 'all-test' }}
-        env:
-          COVERALLS_REPO_TOKEN: ${{ secrets.coveralls_token }}
-        run: coveralls --service=github
+#        env:
+#          COVERALLS_REPO_TOKEN: ${{ secrets.coveralls_token }}
+        run: coveralls
 #        uses: coverallsapp/github-action@master
 #        with:
 #          github-token: ${{ secrets.coveralls_token }}
