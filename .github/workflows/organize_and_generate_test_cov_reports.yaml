@@ -1,0 +1,77 @@
+############################################################################
+#
+# Workflow Description:
+#     Organize all the testing coverage reports. (it would save reports by 'actions/upload-artifact@v3').
+#
+# Workflow input parameters:
+#     * test_type: The testing type. In generally, it only has 2 options: 'unit-test' and 'integration-test'.
+#
+# Workflow running output:
+#     No, but it would save the testing coverage reports (coverage.xml) to provide after-process to organize and record.
+#
+############################################################################
+
+name: Organize all testing coverage reports which be tested in many different runtime OS and Python version as a testing coverage report
+
+on:
+  workflow_call:
+    inputs:
+      test_type:
+        description: "The testing type. In generally, it only has 2 options: 'unit-test' and 'integration-test'."
+        required: true
+        type: string
+
+
+jobs:
+  organize_and_generate_test_reports:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Download code coverage result file
+        uses: actions/download-artifact@v3
+        with:
+          name: coverage
+          path: ./
+
+      - name: Setup Python 3.10 in Ubuntu OS
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.10'
+
+      - name: Install Python tool 'coverage'
+        run: |
+          python3 -m pip install --upgrade pip
+          pip3 install -U pip
+          pip3 install coverage
+          pip3 install codecov
+          pip3 install coveralls
+
+      - name: Combine all testing code coverage result files with one specific test type
+        if: ${{ inputs.test_type == 'unit-test' || inputs.test_type == 'integration-test' }}
+        run: coverage combine --data-file=.coverage.${{ inputs.test_type }} .coverage.${{ inputs.test_type }}.*
+
+      - name: Combine all testing code coverage result files with all test types
+        if: ${{ inputs.test_type == 'all-test' }}
+        run: coverage combine --data-file=.coverage.${{ inputs.test_type }} .coverage.*
+
+      - name: Report testing coverage of project code
+        run: coverage report -m --data-file=.coverage.${{ inputs.test_type }}
+
+      - name: General testing coverage report as XML format with ${{ inputs.test_type }}
+        run: coverage xml --data-file=.coverage.${{ inputs.test_type }} -o coverage_${{ inputs.test_type }}.xml
+
+      - name: Upload testing coverage report (.coverage)
+        uses: actions/upload-artifact@v3
+        with:
+          name: test_coverage_report
+          path: .coverage.${{ inputs.test_type }}
+          if-no-files-found: error
+
+      - name: Upload testing coverage report (.xml)
+        uses: actions/upload-artifact@v3
+        with:
+          name: test_coverage_xml_report
+          path: coverage_${{ inputs.test_type }}.xml
+          if-no-files-found: error
