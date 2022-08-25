@@ -39,7 +39,7 @@ jobs:
       - name: Download testing coverage report
         uses: actions/download-artifact@v3
         with:
-          name: final_project_testing_coverage_xml_report
+          name: final_project_testing_coverage_report
           path: ${{ inputs.download_path }}
 
       - name: Install Python 3.10
