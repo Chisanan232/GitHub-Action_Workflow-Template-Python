@@ -72,6 +72,9 @@ jobs:
   upload_test_cov_report:
     runs-on: ubuntu-latest
     steps:
+      - name: Check the workflow input parameter
+        uses: actions/checkout@v2
+
       - name: Checkout
         uses: actions/checkout@v2
 
@@ -88,24 +91,29 @@ jobs:
           path: ${{ inputs.download_path }}
 
       - name: Install Python 3.10
+        if: ${{ inputs.upload-to-codecov == true || inputs.upload-to-coveralls == true }}
         uses: actions/setup-python@v2
         with:
           python-version: "3.10"
 
       - name: Install Python dependencies about handling testing coverage report
+        if: ${{ inputs.upload-to-codecov == true || inputs.upload-to-coveralls == true }}
         run: |
           python3 -m pip install --upgrade pip
           pip3 install -U pip
           pip3 install coverage
 
-      - name: Combine all testing code coverage result files with all test types
-        run: coverage combine .coverage.*
-
-      - name: Report testing coverage of project code
-        run: coverage report -m
-
-      - name: Report testing coverage of project code
-        run: coverage xml
+#      - name: Combine all testing code coverage result files with all test types
+#        if: ${{ inputs.upload-to-codecov == true || inputs.upload-to-coveralls == true }}
+#        run: coverage combine .coverage.*
+#
+#      - name: Report testing coverage of project code
+#        if: ${{ inputs.upload-to-codecov == true || inputs.upload-to-coveralls == true }}
+#        run: coverage report -m
+#
+#      - name: Generate test coverage report as XML format file
+#        if: ${{ inputs.upload-to-codecov == true || inputs.upload-to-coveralls == true }}
+#        run: coverage xml
 
       - name: Install Python dependencies about tool of Codecov
         if: ${{ inputs.upload-to-codecov == true }}
@@ -116,31 +124,12 @@ jobs:
         run: |
           codecov \
             -t ${{ secrets.codecov_token }} \
+            --file coverage_unit-test.xml \
             --file coverage_integration-test.xml \
             --flags unit,integration \
             --env OS,PYTHON \
             --name gh_workflow_template \
             --verbose
-
-#            --branch ${{ github.ref_name }} \
-
-#        run: codecov -t ${{ secrets.codecov_token }}
-
-#### Way 1
-#        run: bash <(curl -s https://codecov.io/bash)
-#### Way 2
-#        run: codecov -t ${{ secrets.codecov_token }}
-#### Way 3
-#        uses: codecov/codecov-action@v2
-#        with:
-#          file: .coverage
-#          token: ${{ secrets.codecov_token }} # not required for public repos
-#          files:  ./coverage.xml
-##          flags: ${{ inputs.codecov_flags }} # optional
-##          env_vars: OS,PYTHON # optional
-##          name: ${{ inputs.codecov_name }} # optional
-#          fail_ci_if_error: true # optional (default = false)
-#          verbose: true # optional (default = false)
 
       - name: Install Python dependencies about tool of Coveralls
         if: ${{ inputs.upload-to-coveralls == true }}
@@ -157,7 +146,6 @@ jobs:
         uses: codacy/codacy-coverage-reporter-action@v1
         with:
           project-token: ${{ secrets.codacy_token }}
-          coverage-reports: coverage_integration-test.xml
+          coverage-reports: coverage_unit-test.xml,coverage_integration-test.xml
 #          coverage-reports: coverage_integration-test.xml
-#          coverage-reports: coverage_unit-test.xml,coverage_integration-test.xml
 #          coverage-reports: cobertura.xml
