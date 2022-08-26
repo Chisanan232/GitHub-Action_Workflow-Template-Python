@@ -1,4 +1,4 @@
-name: github-action reusable workflows test
+name: Github-Action reusable workflows test (multi-tests)
 on:
   push:
     branches:
