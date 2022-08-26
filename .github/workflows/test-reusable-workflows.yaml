@@ -89,10 +89,10 @@ jobs:
     secrets:
       codecov_token: ${{ secrets.CODECOV_TOKEN }}
     with:
+      test_type: all-test
       upload-to-codecov: true
-
-#      codecov_flags: unit,integration
-#      codecov_name: smoothcrawler-appintegration_github-actions_test # optional
+      codecov_flags: unit,integration  # Required if 'upload-to-codecov' is true
+      codecov_name: gh_workflow_template  # Required if 'upload-to-codecov' is true
 
 
   coveralls_finish:
@@ -103,6 +103,7 @@ jobs:
     secrets:
       coveralls_token: ${{ secrets.COVERALLS_TOKEN }}
     with:
+      test_type: all-test
       upload-to-coveralls: true
 
 
@@ -113,6 +114,7 @@ jobs:
     secrets:
       codacy_token: ${{ secrets.CODACY_PROJECT_TOKEN }}
     with:
+      test_type: all-test
       upload-to-codacy: true
 
 
