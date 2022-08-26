@@ -82,13 +82,16 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
+      - name: Download shell script for checking input parameters
+        run: curl https://raw.githubusercontent.com/Chisanan232/GitHub-Action_Workflow-Template-Python/develop/scripts/ci/check-input-params.sh --output ./scripts/ci/check-input-params.sh
+
       - name: Check the workflow input parameter
         run: | 
           echo "Check the parameters of uploading report to Codecov ..."
-          bash scripts/ci/check-input-params.sh ${{ inputs.upload-to-codecov }} ${{ secrets.codecov_token }}
+          bash ./scripts/ci/check-input-params.sh ${{ inputs.upload-to-codecov }} ${{ secrets.codecov_token }}
 
           echo "Check the parameters of uploading report to Coveralls ..."
-          bash scripts/ci/check-input-params.sh ${{ inputs.upload-to-coveralls }} ${{ secrets.coveralls_token }}
+          bash ./scripts/ci/check-input-params.sh ${{ inputs.upload-to-coveralls }} ${{ secrets.coveralls_token }}
 
           echo "Check the parameters of uploading report to Codacy ..."
           bash ./scripts/ci/check-input-params.sh ${{ inputs.upload-to-codacy }} ${{ secrets.codacy_token }}
