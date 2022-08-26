@@ -1,4 +1,4 @@
-############################################################################
+#############################################################################################################
 #
 # Workflow Description:
 #     Run testing by specific type with all test items via PyTest and generate its testing
@@ -17,7 +17,7 @@
 # Workflow running output:
 #     No, but it would save the testing coverage reports to provide after-process to organize and record.
 #
-############################################################################
+#############################################################################################################
 
 name: Run test items via PyTest
 
