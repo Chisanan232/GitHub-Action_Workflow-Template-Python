@@ -78,7 +78,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check the workflow input parameter
-        uses: | 
+        run: | 
           echo "Check the parameters of uploading report to Codecov ..."
           bash ./scripts/ci/check-input-params.sh ${{ inputs.upload-to-codecov }} ${{ secrets.codecov_token }}
 
