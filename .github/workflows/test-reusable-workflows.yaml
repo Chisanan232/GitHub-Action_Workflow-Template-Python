@@ -81,49 +81,10 @@ jobs:
       test_type: integration-test
 
 
-#  all-test_codecov:
-##    name: Organize and generate the testing report and upload it to Codecov
-##    needs: [unit-test_codecov, integration-test_codecov]
-#    needs: [run_unit-test, run_integration-test]
-#    uses: ./.github/workflows/organize_and_generate_testing_reports.yaml
-#    with:
-#      test_type: all-test
-#    secrets:
-#      codecov_token: ${{ secrets.CODECOV_TOKEN }}
-#      coveralls_token: ${{ secrets.COVERALLS_TOKEN }}
-#      codacy_token: ${{ secrets.CODACY_PROJECT_TOKEN }}
-
-
-#  unit-codecov_finish:
-##    name: Organize and generate the testing report and upload it to Codecov
-##    if: github.ref_name == 'release' || github.ref_name == 'master'
-#    needs: [unit-test_codecov]
-#    uses: ./.github/workflows/upload_test_report_to_codecov.yaml
-#    secrets:
-#      codecov_token: ${{ secrets.CODECOV_TOKEN }}
-#    with:
-#      download_path: ./
-#      test_type: unit-test
-#      codecov_flags: unit
-#      codecov_name: smoothcrawler-appintegration_github-actions_test # optional
-#
-#
-#  integration-codecov_finish:
-##    name: Organize and generate the testing report and upload it to Codecov
-##    if: github.ref_name == 'release' || github.ref_name == 'master'
-#    needs: [integration-test_codecov]
-#    uses: ./.github/workflows/upload_test_report_to_codecov.yaml
-#    secrets:
-#      codecov_token: ${{ secrets.CODECOV_TOKEN }}
-#    with:
-#      download_path: ./
-#      test_type: integration-test
-#      codecov_flags: integration
-#      codecov_name: smoothcrawler-appintegration_github-actions_test # optional
-
-
   codecov_finish:
 #    name: Organize and generate the testing report and upload it to Codecov
+#    if: github.ref_name == 'release' || github.ref_name == 'master'
+#    needs: [unit-test_codecov, integration-test_codecov]
     needs: [integration-test_codecov]
     uses: ./.github/workflows/upload_test_cov_report.yaml
     secrets:
@@ -131,43 +92,31 @@ jobs:
     with:
       upload-to-codecov: true
 
-#    if: github.ref_name == 'release' || github.ref_name == 'master'
-#    needs: [unit-test_codecov, integration-test_codecov]
-
 #      codecov_flags: unit,integration
 #      codecov_name: smoothcrawler-appintegration_github-actions_test # optional
 
 
   coveralls_finish:
 #    name: Organize and generate the testing report and upload it to Coveralls
+#    if: github.ref_name == 'release' || github.ref_name == 'master'
+#    needs: [unit-test_codecov, integration-test_codecov]
     needs: [integration-test_codecov]
     uses: ./.github/workflows/upload_test_cov_report.yaml
     secrets:
       coveralls_token: ${{ secrets.COVERALLS_TOKEN }}
     with:
       upload-to-coveralls: true
-#    if: github.ref_name == 'release' || github.ref_name == 'master'
-#    needs: [unit-test_codecov, integration-test_codecov]
 
 
   codacy_finish:
 #    name: Upload test report to Codacy to analyse and record code quality
+#    needs: [unit-test_codecov, integration-test_codecov]
     needs: [integration-test_codecov]
     uses: ./.github/workflows/upload_test_cov_report.yaml
     secrets:
       codacy_token: ${{ secrets.CODACY_PROJECT_TOKEN }}
     with:
       upload-to-codacy: true
-
-#    needs: [integration-test_codecov]
-#    uses: ./.github/workflows/upload_code_report_to_codacy.yaml
-#    secrets:
-#      codacy_token: ${{ secrets.CODACY_PROJECT_TOKEN }}
-
-#    uses: ./.github/workflows/upload_test_cov_report.yaml
-#    with:
-#      upload-to-codacy: true
-#    needs: [unit-test_codecov, integration-test_codecov]
 
 
 #  pre-building_check:
