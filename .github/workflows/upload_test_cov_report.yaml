@@ -131,6 +131,10 @@ jobs:
             --name gh_workflow_template \
             --verbose
 
+      - name: Combine all testing code coverage result files with all test types
+        if: ${{ inputs.upload-to-coveralls == true }}
+        run: coverage combine .coverage.*
+
       - name: Install Python dependencies about tool of Coveralls
         if: ${{ inputs.upload-to-coveralls == true }}
         run: pip3 install coveralls
@@ -147,5 +151,4 @@ jobs:
         with:
           project-token: ${{ secrets.codacy_token }}
           coverage-reports: coverage_unit-test.xml,coverage_integration-test.xml
-#          coverage-reports: coverage_integration-test.xml
 #          coverage-reports: cobertura.xml
