@@ -12,6 +12,7 @@
 #     * http_server_port: The port number of HTTP server.
 #     * http_server_app_module: The module path of HTTP server.
 #     * http_server_enter_point: The object about the web application.
+#     * debug_mode: For debug, so it's matrix would one has os: ubuntu-22.04 & python-version: '3.10'.
 #
 # Workflow running output:
 #     No, but it would save the testing coverage reports to provide after-process to organize and record.
@@ -57,7 +58,7 @@ on:
         required: false
         default: app
       debug_mode:
-        description: "For debug so it's matrix would one has os: ubuntu-22.04 & python-version: '3.10'."
+        description: "For debug, so it's matrix would one has os: ubuntu-22.04 & python-version: '3.10'."
         type: boolean
         required: false
         default: false
