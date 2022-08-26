@@ -62,7 +62,7 @@ jobs:
       setup_http_server: true
       http_server_host: 0.0.0.0
       http_server_port: 30303
-      http_server_app_module: _http_server.app
+      http_server_app_module: test._http_server.app
       http_server_enter_point: app
       debug_mode: true
 
