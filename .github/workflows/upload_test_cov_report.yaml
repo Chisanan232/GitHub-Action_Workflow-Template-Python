@@ -8,7 +8,7 @@
 #         * download_path: The path to download testing coverage reports via 'actions/download-artifact@v3'.
 #         * test_type: The testing type. In generally, it only has 2 options: 'unit-test' and 'integration-test'.
 #         * upload-to-codecov: If it's true, it would upload testing coverage report for Codecov (https://codecov.io).
-#         * codecov_flags: The flags of the testing coverage report for Codecov. This option would be required if 'upload-to-codecov' is true..
+#         * codecov_flags: The flags of the testing coverage report for Codecov. This option would be required if 'upload-to-codecov' is true.
 #         * codecov_name: The name of the testing coverage report for Codecov. This option would be required if 'upload-to-codecov' is true.
 #         * upload-to-coveralls: If it's true, it would upload testing coverage report for Coveralls (https://coveralls.io).
 #         * upload-to-codacy: If it's true, it would upload testing coverage report for Codacy (https://app.codacy.com/).
