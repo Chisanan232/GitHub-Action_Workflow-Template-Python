@@ -77,19 +77,19 @@ jobs:
   upload_test_cov_report:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
       - name: Check the workflow input parameter
         run: | 
           echo "Check the parameters of uploading report to Codecov ..."
-          bash ./scripts/ci/check-input-params.sh ${{ inputs.upload-to-codecov }} ${{ secrets.codecov_token }}
+          bash scripts/ci/check-input-params.sh ${{ inputs.upload-to-codecov }} ${{ secrets.codecov_token }}
 
           echo "Check the parameters of uploading report to Coveralls ..."
-          bash ./scripts/ci/check-input-params.sh ${{ inputs.upload-to-coveralls }} ${{ secrets.coveralls_token }}
+          bash scripts/ci/check-input-params.sh ${{ inputs.upload-to-coveralls }} ${{ secrets.coveralls_token }}
 
           echo "Check the parameters of uploading report to Codacy ..."
           bash ./scripts/ci/check-input-params.sh ${{ inputs.upload-to-codacy }} ${{ secrets.codacy_token }}
-
-      - name: Checkout
-        uses: actions/checkout@v2
 
       - name: Download code coverage result files which has be handled by different test type process
         uses: actions/download-artifact@v3
