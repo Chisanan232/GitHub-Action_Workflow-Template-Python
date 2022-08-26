@@ -162,8 +162,8 @@ jobs:
         if: ${{ inputs.upload-to-codacy == true && (inputs.test_type == 'unit-test' || inputs.test_type == 'integration-test') }}
         uses: codacy/codacy-coverage-reporter-action@v1
         with:
-          project-token: coverage_${{ inputs.test_type }}.xml
-          coverage-reports: coverage_unit-test.xml
+          project-token: ${{ secrets.codacy_token }}
+          coverage-reports: coverage_${{ inputs.test_type }}.xml
 #          coverage-reports: cobertura.xml
 
       - name: Upload testing report to Codacy https://app.codacy.com/ (For all test types)
