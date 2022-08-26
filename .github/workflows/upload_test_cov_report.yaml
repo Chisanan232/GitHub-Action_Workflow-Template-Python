@@ -114,7 +114,15 @@ jobs:
       - name: Upload coverage report to Codecov https://codecov.io
         if: ${{ inputs.upload-to-codecov == true }}
         run: |
-          codecov -t ${{ secrets.codecov_token }} --file coverage_integration-test.xml --flags unit,integration --env OS,PYTHON --name gh_workflow_template --branch develop
+          codecov \
+            -t ${{ secrets.codecov_token }} \
+            --file coverage_integration-test.xml \
+            --flags unit,integration \
+            --env OS,PYTHON \
+            --name gh_workflow_template \
+            --verbose
+
+#            --branch ${{ github.ref_name }} \
 
 #        run: codecov -t ${{ secrets.codecov_token }}
 
