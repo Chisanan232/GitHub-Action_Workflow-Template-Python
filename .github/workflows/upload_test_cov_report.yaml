@@ -6,6 +6,7 @@
 # Workflow input parameters:
 #     * General arguments:
 #         * download_path: The path to download testing coverage reports via 'actions/download-artifact@v3'.
+#         * test_type: The testing type. In generally, it only has 2 options: 'unit-test' and 'integration-test'.
 #         * upload-to-codecov: If it's true, it would upload testing coverage report for Codecov (https://codecov.io).
 #         * upload-to-coveralls: If it's true, it would upload testing coverage report for Coveralls (https://coveralls.io).
 #         * upload-to-codacy: If it's true, it would upload testing coverage report for Codacy (https://app.codacy.com/).
@@ -30,6 +31,10 @@ on:
         type: string
         required: false
         default: ./
+      test_type:
+        description: "The testing type. In generally, it only has 2 options: 'unit-test' and 'integration-test'."
+        required: true
+        type: string
       upload-to-codecov:
         description: "If it's true, it would upload testing coverage report for Codecov (https://codecov.io)."
         type: boolean
@@ -45,16 +50,16 @@ on:
         type: boolean
         required: false
         default: false
-#      codecov_flags:
-#        description: "The flags of the testing coverage report for Codecov."
-#        type: string
-#        required: false
-#        default: ''
-#      codecov_name:
-#        description: "The name of the testing coverage report for Codecov."
-#        type: string
-#        required: false
-#        default: ''
+      codecov_flags:
+        description: "The flags of the testing coverage report for Codecov."
+        type: string
+        required: false
+        default: ''
+      codecov_name:
+        description: "The name of the testing coverage report for Codecov."
+        type: string
+        required: false
+        default: ''
 
     secrets:
       codecov_token:
@@ -73,7 +78,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check the workflow input parameter
-        uses: actions/checkout@v2
+        uses: | 
+          echo "Check the parameters of uploading report to Codecov ..."
+          bash ./scripts/ci/check-input-params.sh ${{ inputs.upload-to-codecov }} ${{ secrets.codecov_token }}
+
+          echo "Check the parameters of uploading report to Coveralls ..."
+          bash ./scripts/ci/check-input-params.sh ${{ inputs.upload-to-coveralls }} ${{ secrets.coveralls_token }}
+
+          echo "Check the parameters of uploading report to Codacy ..."
+          bash ./scripts/ci/check-input-params.sh ${{ inputs.upload-to-codacy }} ${{ secrets.codacy_token }}
 
       - name: Checkout
         uses: actions/checkout@v2
@@ -101,43 +114,43 @@ jobs:
         run: |
           python3 -m pip install --upgrade pip
           pip3 install -U pip
-          pip3 install coverage
-
-#      - name: Combine all testing code coverage result files with all test types
-#        if: ${{ inputs.upload-to-codecov == true || inputs.upload-to-coveralls == true }}
-#        run: coverage combine .coverage.*
-#
-#      - name: Report testing coverage of project code
-#        if: ${{ inputs.upload-to-codecov == true || inputs.upload-to-coveralls == true }}
-#        run: coverage report -m
-#
-#      - name: Generate test coverage report as XML format file
-#        if: ${{ inputs.upload-to-codecov == true || inputs.upload-to-coveralls == true }}
-#        run: coverage xml
 
       - name: Install Python dependencies about tool of Codecov
         if: ${{ inputs.upload-to-codecov == true }}
         run: pip3 install codecov
 
-      - name: Upload coverage report to Codecov https://codecov.io
-        if: ${{ inputs.upload-to-codecov == true }}
+      - name: Upload coverage report to Codecov https://codecov.io (For Unit-Test or Integration-Test)
+        if: ${{ inputs.upload-to-codecov == true && (inputs.test_type == 'unit-test' || inputs.test_type == 'integration-test') }}
+        run: |
+          codecov \
+            -t ${{ secrets.codecov_token }} \
+            --file coverage_${{ inputs.test_type }}.xml \
+            --flags ${{ inputs.codecov_flags }} \
+            --env OS,PYTHON \
+            --name ${{ inputs.codecov_name }} \
+            --verbose
+
+      - name: Upload coverage report to Codecov https://codecov.io (For all test types)
+        if: ${{ inputs.upload-to-codecov == true && inputs.test_type == 'all-test' }}
         run: |
           codecov \
             -t ${{ secrets.codecov_token }} \
             --file coverage_unit-test.xml \
             --file coverage_integration-test.xml \
-            --flags unit,integration \
+            --flags ${{ inputs.codecov_flags }} \
             --env OS,PYTHON \
-            --name gh_workflow_template \
+            --name ${{ inputs.codecov_name }} \
             --verbose
+
+      - name: Install Python dependencies about tool of Coveralls
+        if: ${{ inputs.upload-to-coveralls == true }}
+        run: |
+          pip3 install coveralls
+          pip3 install coverage
 
       - name: Combine all testing code coverage result files with all test types
         if: ${{ inputs.upload-to-coveralls == true }}
         run: coverage combine .coverage.*
-
-      - name: Install Python dependencies about tool of Coveralls
-        if: ${{ inputs.upload-to-coveralls == true }}
-        run: pip3 install coveralls
 
       - name: Upload coverage report to Coveralls https://coveralls.io
         if: ${{ inputs.upload-to-coveralls == true }}
@@ -145,8 +158,16 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.coveralls_token }}
         run: coveralls --verbose
 
-      - name: Upload testing report to Codacy https://app.codacy.com/
-        if: ${{ inputs.upload-to-codacy == true }}
+      - name: Upload testing report to Codacy https://app.codacy.com/ (For Unit-Test or Integration-Test)
+        if: ${{ inputs.upload-to-codacy == true && (inputs.test_type == 'unit-test' || inputs.test_type == 'integration-test') }}
+        uses: codacy/codacy-coverage-reporter-action@v1
+        with:
+          project-token: coverage_${{ inputs.test_type }}.xml
+          coverage-reports: coverage_unit-test.xml
+#          coverage-reports: cobertura.xml
+
+      - name: Upload testing report to Codacy https://app.codacy.com/ (For all test types)
+        if: ${{ inputs.upload-to-codacy == true && inputs.test_type == 'all-test' }}
         uses: codacy/codacy-coverage-reporter-action@v1
         with:
           project-token: ${{ secrets.codacy_token }}
