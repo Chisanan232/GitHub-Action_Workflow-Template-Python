@@ -75,7 +75,7 @@ And we could get this workflow output result via keyword _all_test_items_.
 | http_server_port        | string    | Optional, Default value is _12345_   | The port number of HTTP server.                                                            |
 | http_server_app_module  | string    | Optional, Default value is _app_     | The module path of HTTP server.                                                            |
 | http_server_enter_point | string    | Optional, Default value is _app_     | The object about the web application.                                                      |
-| debug_mode              | boolean   | Optional, Default value is _false_   | For debug, so it's matrix would one has os: ubuntu-22.04 & python-version: 3.10.           |
+| debug_mode              | boolean   | Optional, Default value is _false_   | For debug, so it's matrix would only has one os: ubuntu-22.04 & one python-version: 3.10.  |
 
 * Output: 
 
@@ -159,7 +159,7 @@ _General option_:
 | option name         | data type | optional or required                     | function content                                                                                                    |
 |---------------------|-----------|------------------------------------------|---------------------------------------------------------------------------------------------------------------------|
 | download_path       | string    | Optional. Default value is './'.         | The path to download testing coverage reports via _actions/download-artifact@v3_.                                   |
-| test_type           | string    | Required                                 | The testing type. In generally, it only has 2 options: _unit-test_ and _integration-test_.                          |
+| test_type           | string    | Required                                 | The testing type. In generally, it only has 3 options: _unit-test_, _integration-test_ and _all-type_.              |
 | upload-to-codecov   | boolean   | Optional. Default value is _false_.      | If it's true, it would upload testing coverage report for Codecov (https://codecov.io).                             |
 | codecov_flags       | string    | Optional. Default value is empty string. | The flags of the testing coverage report for Codecov. This option would be required if _upload-to-codecov_ is true. |
 | codecov_name        | string    | Optional. Default value is empty string. | The name of the testing coverage report for Codecov. This option would be required if _upload-to-codecov_ is true.  |
@@ -200,8 +200,8 @@ Nothing.
             with:
               test_type: unit-test
               upload-to-codecov: true
-              codecov_flags: unittests
-              codecov_name: smoothcrawler-cluster_github-actions_test # optional
+              codecov_flags: unittests # required if upload-to-codecov is true
+              codecov_name: smoothcrawler-cluster_github-actions_test # required if upload-to-codecov is true
         ```
       
         The badge it generates: 
