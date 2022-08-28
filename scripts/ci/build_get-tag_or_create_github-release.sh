@@ -240,6 +240,7 @@ elif [ "$release_type" == 'github-action-reusable-workflow' ]; then
     git switch "$current_branch"
     echo "Check the different between current git branch and master branch."
     release_notes_has_diff=$(git diff master "$current_branch" -- .github/release-notes.md | cat)
+    echo "release_notes_has_diff: $release_notes_has_diff"
     if [ "$release_notes_has_diff" != "" ]; then
         # 1. Yes, it has different. -> Build git tag, GitHub release and version branch
         build_git_tag_or_github_release

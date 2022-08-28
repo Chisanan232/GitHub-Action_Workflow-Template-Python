@@ -137,7 +137,9 @@ jobs:
 
       - name: Export the running result as environment variable 'RELEASE_TYPE'
         id: release_checking
-        run: echo "::set-output name=run_result::$(echo $RELEASE_TYPE)"
+        run: |
+          echo "RELEASE_TYPE: $RELEASE_TYPE"
+          echo "::set-output name=run_result::$(echo $RELEASE_TYPE)"
 
 
   deploy_as_new_branch:
