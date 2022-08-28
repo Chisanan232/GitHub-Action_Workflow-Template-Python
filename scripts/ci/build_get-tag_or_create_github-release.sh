@@ -106,6 +106,8 @@ fi
 
 current_branch=$(git branch --show-current)
 
+declare new_ver
+
 build_git_tag_or_github_release() {
     # Generate the new version from previous tag
     current_ver=$(git describe --tag --abbrev=0 --match "v[0-9]\.[0-9]\.[0-9]" | grep -E -o '[0-9]\.[0-9]\.[0-9]' | head -n1 | cut -d "." -f1)
@@ -123,6 +125,7 @@ build_git_tag_or_github_release() {
         echo " 🔍👀[DEBUG MODE] Build git tag $new_tag in git branch '$current_branch'."
     else
         git tag -a "$new_tag" -m "$new_tag"
+        git push -u origin --tags
     fi
 
     echo "Build git tag which named '$new_tag' with current branch '$current_branch' successfully!"
@@ -185,6 +188,7 @@ if [ "$release_type" == 'python-package' ]; then
             echo "build tag and create GitHub release, also push code to PyPi"
             build_git_tag_or_github_release
             echo "Done! This is Official-Release so please push source code to PyPi."
+            export RELEASE_TYPE="Official"
             echo "[Final Running Result] Official-Release"
         else
             echo "The version is a pre-release."
@@ -196,6 +200,7 @@ if [ "$release_type" == 'python-package' ]; then
             echo "build tag and create GitHub release only"
             build_git_tag_or_github_release
             echo "Done! This is Pre-Release so please don't push this to PyPi."
+            export RELEASE_TYPE="Pre"
             echo "[Final Running Result] Pre-Release"
         fi
 
@@ -225,6 +230,7 @@ elif [ "$release_type" == 'github-action-reusable-workflow' ]; then
         # 1. Yes, it has different. -> Build git tag, GitHub release and version branch
         build_git_tag_or_github_release
         echo "Done! This is Official-Release of GitHub Action reusable workflow, please create a version branch of it."
+        export RELEASE_TYPE="$new_ver"
         echo "[Final Running Result] Official-Release"
 
 #        current_ver=$(git describe --tag --abbrev=0 --match "v[0-9]\.[0-9]\.[0-9]" | grep -E -o '[0-9]\.[0-9]\.[0-9]' | head -n1 | cut -d "." -f1)
@@ -248,6 +254,7 @@ elif [ "$release_type" == 'github-action-reusable-workflow' ]; then
         # 1. No, do nothing.
         # Return nothing output
         echo "Release note file doesn't change. Don't do anything."
+        export RELEASE_TYPE="Pre"
         echo "[Final Running Result] Pre-Release"
     fi
 
