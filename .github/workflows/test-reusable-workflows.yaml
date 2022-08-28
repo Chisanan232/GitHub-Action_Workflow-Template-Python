@@ -143,6 +143,7 @@ jobs:
   deploy_as_new_branch:
 #    name: Create new git branch by the tagged commit
     needs: build_git-tag_and_create_github-release
+    runs-on: ubuntu-latest
     if: ${{ needs.build_git-tag_and_create_github-release.outputs.release_type != 'Pre' }}
     steps:
       - uses: actions/checkout@v2
