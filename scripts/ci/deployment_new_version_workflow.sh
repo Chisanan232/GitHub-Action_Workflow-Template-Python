@@ -8,7 +8,7 @@ if [ "$final_release_type" == "Pre" ]; then
 else
     echo "It detects Official-Release flag."
     if [ "$debug_mode" == true ]; then
-        echo " 🔍👀[DEBUG MODE] Create new git branch for the new version."
+        echo " 🔍👀[DEBUG MODE] Create new git branch for the new version $final_release_type."
     else
         echo "Add git remote reference."
         git remote add github-action_workflow-template https://github.com/Chisanan232/GitHub-Action-Template-Python.git
