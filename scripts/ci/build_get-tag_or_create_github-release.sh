@@ -107,6 +107,8 @@ fi
 #current_branch=$(git branch --show-current)
 echo "Verify the git branch info"
 git branch --list
+echo "Verify the git remote info"
+git remote -v
 echo "Get the current git branch info"
 current_branch=$(git branch --list | cat | grep -E '\* ([a-zA-Z0-9]{1,16})' | grep -E -o '([a-zA-Z0-9]{1,16})')
 echo "Current git branch: $current_branch"
