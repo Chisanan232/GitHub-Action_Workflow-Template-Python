@@ -236,8 +236,12 @@ elif [ "$release_type" == 'github-action-reusable-workflow' ]; then
     # Note 4: We should initial a git branch 'master' to provide git diff feature working
     echo "Initial and switch to git branch 'master'."
     git checkout -b master
+    git pull
     echo "Switch back to git branch '$current_branch'."
     git switch "$current_branch"
+    echo "+++++++++++++++++++++++++++++++++++"
+    git diff master "$current_branch" -- .github/release-notes.md | cat
+    echo "+++++++++++++++++++++++++++++++++++"
     echo "Check the different between current git branch and master branch."
     release_notes_has_diff=$(git diff master "$current_branch" -- .github/release-notes.md | cat)
     echo "release_notes_has_diff: $release_notes_has_diff"
