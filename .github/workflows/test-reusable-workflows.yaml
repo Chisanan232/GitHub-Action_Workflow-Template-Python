@@ -142,8 +142,8 @@ jobs:
 
   deploy_as_new_branch:
 #    name: Create new git branch by the tagged commit
-    if: ${{ github.event == 'push' && \
-                needs.build_git-tag_and_create_github-release.outputs.release_type != 'Initial' && \
+    if: ${{ github.event == 'push' && 
+                needs.build_git-tag_and_create_github-release.outputs.release_type != 'Initial' && 
                 needs.build_git-tag_and_create_github-release.outputs.release_type != 'Pre' }}
     needs: build_git-tag_and_create_github-release
     runs-on: ubuntu-latest
