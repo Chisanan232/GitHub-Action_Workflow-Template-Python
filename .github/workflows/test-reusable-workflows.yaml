@@ -122,6 +122,7 @@ jobs:
 
   build_git-tag_and_create_github-release:
 #    name: Build git tag and GitHub release if it needs
+    if: github.event == 'push'
     needs: [codecov_finish, coveralls_finish, codacy_finish]
     runs-on: ubuntu-latest
     env:
@@ -141,8 +142,10 @@ jobs:
 
   deploy_as_new_branch:
 #    name: Create new git branch by the tagged commit
+    if: ${{ github.event == 'push' && \
+                needs.build_git-tag_and_create_github-release.outputs.release_type != 'Initial' && \
+                needs.build_git-tag_and_create_github-release.outputs.release_type != 'Pre' }}
     needs: build_git-tag_and_create_github-release
-    if: ${{ needs.build_git-tag_and_create_github-release.outputs.release_type != 'Initial' && needs.build_git-tag_and_create_github-release.outputs.release_type != 'Pre' }}
     runs-on: ubuntu-latest
     env:
       RELEASE_TYPE: ${{ needs.build_git-tag_and_create_github-release.outputs.release_type }}
