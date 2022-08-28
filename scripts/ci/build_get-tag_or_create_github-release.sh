@@ -227,7 +227,7 @@ elif [ "$release_type" == 'github-action-reusable-workflow' ]; then
     # Note 2: Show the output result in stdout directly
     # https://stackoverflow.com/questions/17077973/how-to-make-git-diff-write-to-stdout
     # Note 3: Here code should be considered what git tag on master branch so we need to verify the info on master branch.
-    release_notes_has_diff=$(git diff master HEAD~1 .github/release-notes.md | cat)
+    release_notes_has_diff=$(git diff master HEAD~1 -- .github/release-notes.md | cat)
     if [ "$release_notes_has_diff" != "" ]; then
         # 1. Yes, it has different. -> Build git tag, GitHub release and version branch
         build_git_tag_or_github_release
