@@ -236,10 +236,10 @@ elif [ "$release_type" == 'github-action-reusable-workflow' ]; then
     # https://stackoverflow.com/questions/17077973/how-to-make-git-diff-write-to-stdout
     # Note 3: Here code should be considered what git tag on master branch so we need to verify the info on master branch.
     # Note 4: We should initial a git branch 'master' to provide git diff feature working
-    echo "Initial and switch to git branch 'master'."
-    git checkout -b master
-    echo "Switch back to git branch '$current_branch'."
-    git switch "$current_branch"
+#    echo "Initial and switch to git branch 'master'."
+#    git checkout -b master
+#    echo "Switch back to git branch '$current_branch'."
+#    git switch "$current_branch"
     echo "+++++++++++++++++++++++++++++++++++"
     git diff origin/master "$current_branch" -- .github/release-notes.md | cat
     echo "+++++++++++++++++++++++++++++++++++"
