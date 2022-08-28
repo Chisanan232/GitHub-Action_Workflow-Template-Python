@@ -227,6 +227,12 @@ elif [ "$release_type" == 'github-action-reusable-workflow' ]; then
     # Note 2: Show the output result in stdout directly
     # https://stackoverflow.com/questions/17077973/how-to-make-git-diff-write-to-stdout
     # Note 3: Here code should be considered what git tag on master branch so we need to verify the info on master branch.
+    # Note 4: We should initial a git branch 'master' to provide git diff feature working
+    echo "Initial and switch to git branch 'master'."
+    git checkout -b master
+    echo "Switch back to git branch '$current_branch'."
+    git switch "$current_branch"
+    echo "Check the different between current git branch and master branch."
     release_notes_has_diff=$(git diff master HEAD~1 -- .github/release-notes.md | cat)
     if [ "$release_notes_has_diff" != "" ]; then
         # 1. Yes, it has different. -> Build git tag, GitHub release and version branch
