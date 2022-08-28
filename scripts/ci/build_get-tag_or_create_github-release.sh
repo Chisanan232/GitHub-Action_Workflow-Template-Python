@@ -107,6 +107,8 @@ fi
 #current_branch=$(git branch --show-current)
 echo "Verify the git branch info"
 git branch --list
+echo "Verify all the git branch info"
+git branch -a
 echo "Verify the git remote info"
 git remote -v
 echo "Get the current git branch info"
@@ -241,9 +243,11 @@ elif [ "$release_type" == 'github-action-reusable-workflow' ]; then
 #    echo "Switch back to git branch '$current_branch'."
 #    git switch "$current_branch"
     echo "+++++++++++++++++++++++++++++++++++"
-    git diff "$current_branch" origin/master -- .github/release-notes.md | cat
+    git diff remotes/origin/master "$current_branch" -- .github/release-notes.md | cat
     echo "+++++++++++++++++++++++++++++++++++"
-    git diff origin/master -- .github/release-notes.md | cat
+    git diff "$current_branch" remotes/origin/master -- .github/release-notes.md | cat
+    echo "+++++++++++++++++++++++++++++++++++"
+    git diff remotes/origin/master -- .github/release-notes.md | cat
     echo "+++++++++++++++++++++++++++++++++++"
     echo "Check the different between current git branch and master branch."
     release_notes_has_diff=$(git diff master "$current_branch" -- .github/release-notes.md | cat)
