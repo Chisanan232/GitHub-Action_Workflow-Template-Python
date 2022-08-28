@@ -134,7 +134,7 @@ jobs:
       - name: Build git tag and create GitHub release
         run: bash ./scripts/ci/build_get-tag_or_create_github-release.sh 'github-action-reusable-workflow' 'true'
 
-      - name: Build git tag and create GitHub release
+      - name: Export the running result as environment variable 'RELEASE_TYPE'
         id: release_checking
         run: echo "::set-output name=run_result::$(echo $RELEASE_TYPE)"
 
@@ -142,11 +142,12 @@ jobs:
   deploy_as_new_branch:
 #    name: Create new git branch by the tagged commit
     needs: build_git-tag_and_create_github-release
+    if: ${{ needs.build_git-tag_and_create_github-release.outputs.release_type != 'Initial' && needs.build_git-tag_and_create_github-release.outputs.release_type != 'Pre' }}
     runs-on: ubuntu-latest
-    if: ${{ needs.build_git-tag_and_create_github-release.outputs.release_type != 'Pre' }}
+    env:
+      RELEASE_TYPE: ${{ needs.build_git-tag_and_create_github-release.outputs.release_type }}
     steps:
       - uses: actions/checkout@v2
-
       - name: Create new git branch by the tagged commit
         run: bash ./scripts/ci/deployment_new_version_workflow.sh 'github-action-reusable-workflow' 'true'
 
