@@ -120,6 +120,79 @@ jobs:
       upload-to-codacy: true
 
 
+  build_git-tag_and_create_github-release:
+#    name: Build git tag and GitHub release if it needs
+    needs: [codecov_finish, coveralls_finish, codacy_finish]
+    runs-on: ubuntu-latest
+    env:
+      RELEASE_TYPE: Initial
+    outputs:
+      release_type: ${{ steps.release_checking.outputs.run_result }}
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Build git tag and create GitHub release
+        id: release_checking
+        run: bash ./scripts/ci/build_get-tag_or_create_github-release.sh 'github-action-reusable-workflow' 'true'
+
+      - name: Build git tag and create GitHub release
+        id: release_checking
+        run: echo "::set-output name=run_result::$(echo $RELEASE_TYPE)"
+
+
+  deploy_as_new_branch:
+#    name: Create new git branch by the tagged commit
+    needs: build_git-tag_and_create_github-release
+    if: ${{ needs.build_git-tag_and_create_github-release.outputs.release_type != 'Pre' }}
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Create new git branch by the tagged commit
+        run: bash ./scripts/ci/deployment_new_version_workflow.sh 'github-action-reusable-workflow' 'true'
+
+
+#  create_version_tag:
+#    if: github.ref_name == 'release' || github.event == 'push'
+#    name: Build a tag in GitHub
+#    needs: [codecov_finish, coveralls_finish, codacy_finish]
+#    steps:
+#      - name: Get the latest version of package from '__pgk_info__' module
+#        run: cat ./test_gh_workflow/__pkg_info__.py | grep -e '__version__ = "[0-9].[0-9].[0-9]*"' | grep -o '[0-9].[0-9].[0-9]*'
+#
+#      - name: Get the latest git tag
+#        run: git describe --tag --abbrev=0 --match "v[0-9].[0-9].[0-9]*"
+#
+#      - name: Tag a version info on the latest commit
+#        run: git tag -a 'v2.0.0' -m 'Refactor and integrate the configurations to let configurations be more shorter and clear.'
+#
+#      - name: Release the source code with the tag and release note
+#        run: gh release create v2.0.0 --title 'v2.0.0 - More shorter and clear <0001f9f9>🍻' --notes-file .github/release-notes.md
+#
+#
+#  build_version_branch:
+#    if: github.ref_name == 'master' || github.event == 'push'
+#    name: Build a Git branch as version in GitHub
+#    needs: [codecov_finish, coveralls_finish, codacy_finish]
+#    steps:
+#      - name: Check whether it has a git tag on the latest commit or not.
+#        run: |
+#          git tag
+#
+#      - name: Do something
+#        run: |
+#          echo "Add git remote reference"
+#          git remote add github-action_workflow-template https://github.com/Chisanan232/GitHub-Action-Template-Python.git
+#
+#          echo "Verify the git remote info ..."
+#          git remote -v
+#
+#          echo "Create and switch git branch with version"
+#          git checkout -b v2
+#
+#          echo "Push the project to GitHub as the branch"
+#          git push -u github-action_workflow-template v2
+
+
 #  pre-building_check:
 ##    name: Check about it could work finely by installing the Python package with setup.py file
 #    needs: [codecov_finish, codacy_finish]
