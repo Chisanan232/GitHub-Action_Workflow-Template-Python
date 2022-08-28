@@ -3,6 +3,18 @@
 #set -ex
 
 # Check whether it has 'release-notes.md' or 'release-title.md' in the target directory '.github'.
+has_auto_release_flag=$(ls .github | grep -E "release-auto-flag.txt")
+if [ "$has_auto_release_flag" == "" ]; then
+    echo "It should have *release-auto-flag.txt* in '.github' directory of your project in HitHub."
+    exit 0
+else
+    auto_release_flag=$(cat .github/release-auto-flag.txt)
+    if [ "$auto_release_flag" == false ]; then
+        echo "Auto-release flag is 'false' so it won't build git tag or create GitHub release."
+        exit 0
+    fi
+fi
+
 has_release_notes=$(ls .github | grep -E "release-notes.md")
 has_release_title=$(ls .github | grep -E "release-title.md")
 if [ "$has_release_notes" == "" ]; then
