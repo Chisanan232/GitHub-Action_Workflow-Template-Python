@@ -243,12 +243,24 @@ elif [ "$release_type" == 'github-action-reusable-workflow' ]; then
 #    echo "Switch back to git branch '$current_branch'."
 #    git switch "$current_branch"
     echo "+++++++++++++++++++++++++++++++++++"
-    git diff remotes/origin/master "$current_branch" -- .github/release-notes.md | cat
+    git diff --name-only remotes/origin/master "$current_branch" -- .github/release-notes.md | cat
     echo "+++++++++++++++++++++++++++++++++++"
-    git diff "$current_branch" remotes/origin/master -- .github/release-notes.md | cat
+    git diff --name-only "$current_branch" remotes/origin/master -- .github/release-notes.md | cat
     echo "+++++++++++++++++++++++++++++++++++"
-    git diff remotes/origin/master -- .github/release-notes.md | cat
+    git diff --name-only remotes/origin/master -- .github/release-notes.md | cat
     echo "+++++++++++++++++++++++++++++++++++"
+
+    echo "run git fetch"
+    git fetch --no-tags --prune --depth=1 origin +refs/heads/*:refs/remotes/origin/*
+
+    echo "+++++++++++++++++++++++++++++++++++"
+    git diff --name-only remotes/origin/master "$current_branch" -- .github/release-notes.md | cat
+    echo "+++++++++++++++++++++++++++++++++++"
+    git diff --name-only "$current_branch" remotes/origin/master -- .github/release-notes.md | cat
+    echo "+++++++++++++++++++++++++++++++++++"
+    git diff --name-only remotes/origin/master -- .github/release-notes.md | cat
+    echo "+++++++++++++++++++++++++++++++++++"
+
     echo "Check the different between current git branch and master branch."
     release_notes_has_diff=$(git diff master "$current_branch" -- .github/release-notes.md | cat)
     echo "release_notes_has_diff: $release_notes_has_diff"
