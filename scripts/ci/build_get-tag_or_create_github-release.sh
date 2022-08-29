@@ -106,9 +106,9 @@ fi
 
 #current_branch=$(git branch --show-current)
 echo "Verify the git branch info"
-git branch --list
+git branch --list | cat
 echo "Verify all the git branch info"
-git branch -a
+git branch -a | cat
 echo "Verify the git remote info"
 git remote -v
 echo "Get the current git branch info"
@@ -244,7 +244,7 @@ elif [ "$release_type" == 'github-action-reusable-workflow' ]; then
     git fetch --no-tags --prune --depth=1 origin +refs/heads/*:refs/remotes/origin/*
 
     echo "Verify all the git branch info again after git fetch."
-    git branch -a
+    git branch -a | cat
 
     echo "Verify the git remote info again after git fetch."
     git remote -v
