@@ -125,8 +125,8 @@ jobs:
     if: github.event_name == 'push'
     needs: [codecov_finish, coveralls_finish, codacy_finish]
     runs-on: ubuntu-latest
-    env:
-      RELEASE_TYPE: Initial
+#    env:
+#      RELEASE_TYPE: Initial
     outputs:
       release_type: ${{ steps.release_checking.outputs.run_result }}
     steps:
@@ -148,7 +148,7 @@ jobs:
 
   deploy_as_new_branch:
 #    name: Create new git branch by the tagged commit
-    if: ${{ github.ref_name == 'master' && 
+    if: ${{ #github.ref_name == 'master' && 
                 github.event_name == 'push' && 
                 needs.build_git-tag_and_create_github-release.outputs.release_type != 'Initial' && 
                 needs.build_git-tag_and_create_github-release.outputs.release_type != 'Pre' }}
