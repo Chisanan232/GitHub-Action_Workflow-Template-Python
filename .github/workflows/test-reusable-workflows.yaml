@@ -136,8 +136,8 @@ jobs:
         run: | 
           bash ./scripts/ci/build_get-tag_or_create_github-release.sh 'github-action-reusable-workflow' 'true'
           echo "Shell script done. Start to set environment variable."
-          echo "[Final in job.steps.step] RELEASE_TYPE: $RELEASE_TYPE"
-          echo "::set-output name=run_result::$(echo $RELEASE_TYPE)"
+#          echo "::set-output name=run_result::$(echo $RELEASE_TYPE)"
+          echo ${{ outputs.release_type }}
 
 #      - name: Export the running result as environment variable 'RELEASE_TYPE'
 #        id: release_checking
@@ -159,7 +159,7 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Create new git branch by the tagged commit
-        run: bash ./scripts/ci/deployment_new_version_workflow.sh 'github-action-reusable-workflow' 'true'
+        run: bash ./scripts/ci/deployment_new_version_workflow.sh 'true'
 
 
 #  create_version_tag:

@@ -262,6 +262,7 @@ elif [ "$release_type" == 'github-action-reusable-workflow' ]; then
         echo "Set environment variable in GitHub"
         export RELEASE_TYPE="$new_ver"
         echo $RELEASE_TYPE
+        echo "::set-output name=run_result::$(echo $RELEASE_TYPE)"
 
 #        echo "Set environment variable in GitHub"
 #        echo "$new_ver" >> $RELEASE_TYPE
