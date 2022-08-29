@@ -120,6 +120,10 @@ declare new_ver
 
 build_git_tag_or_github_release() {
     # Generate the new version from previous tag
+    git_ver_desc=$(git describe --tag --abbrev=0)
+    git_ver=$(git describe --tag --abbrev=0 --match "v[0-9]\.[0-9]\.[0-9]")
+    echo "git_ver_desc: $git_ver_desc"
+    echo "git_ver: $git_ver"
     current_ver=$(git describe --tag --abbrev=0 --match "v[0-9]\.[0-9]\.[0-9]" | grep -E -o '[0-9]\.[0-9]\.[0-9]' | head -n1 | cut -d "." -f1)
     if [ "$current_ver" == "" ]; then
         current_ver=0
