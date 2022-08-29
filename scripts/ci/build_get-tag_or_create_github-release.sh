@@ -190,7 +190,6 @@ if [ "$release_type" == 'python-package' ]; then
         echo "is_pre_release_version: $is_pre_release_version"
         if [ "$is_pre_release_version" == "" ]; then
             echo "The version is not a pre-release."
-#            build_tag_and_create_release_and_push_pypi=true
             # do different things with different ranches
             # git event: push
             # all branch -> Build tag
@@ -198,12 +197,9 @@ if [ "$release_type" == 'python-package' ]; then
             echo "build tag and create GitHub release, also push code to PyPi"
             build_git_tag_or_github_release
             echo "Done! This is Official-Release so please push source code to PyPi."
-#            RELEASE_TYPE="Official"; export RELEASE_TYPE
-            echo "Official" >> $RELEASE_TYPE
             echo "[Final Running Result] Official-Release"
         else
             echo "The version is a pre-release."
-#            build_tag_and_create_release_only=true
             # do different things with different ranches
             # git event: push
             # all branch -> Build tag
@@ -211,8 +207,6 @@ if [ "$release_type" == 'python-package' ]; then
             echo "build tag and create GitHub release only"
             build_git_tag_or_github_release
             echo "Done! This is Pre-Release so please don't push this to PyPi."
-#            RELEASE_TYPE="Pre"; export RELEASE_TYPE
-            echo "Pre" >> $RELEASE_TYPE
             echo "[Final Running Result] Pre-Release"
         fi
 
@@ -257,16 +251,6 @@ elif [ "$release_type" == 'github-action-reusable-workflow' ]; then
         # 1. Yes, it has different. -> Build git tag, GitHub release and version branch
         build_git_tag_or_github_release
         echo "Done! This is Official-Release of GitHub Action reusable workflow, please create a version branch of it."
-#        RELEASE_TYPE="$new_ver"; export RELEASE_TYPE
-#        echo "$new_ver" >> $RELEASE_TYPE
-        echo "Set environment variable in GitHub"
-        export RELEASE_TYPE="$new_ver"
-        echo $RELEASE_TYPE
-
-#        echo "Set environment variable in GitHub"
-#        echo "$new_ver" >> $RELEASE_TYPE
-#        echo $RELEASE_TYPE
-
         echo "[Final Running Result] Official-Release and version: $new_ver"
 
 #        current_ver=$(git describe --tag --abbrev=0 --match "v[0-9]\.[0-9]\.[0-9]" | grep -E -o '[0-9]\.[0-9]\.[0-9]' | head -n1 | cut -d "." -f1)
@@ -290,8 +274,6 @@ elif [ "$release_type" == 'github-action-reusable-workflow' ]; then
         # 1. No, do nothing.
         # Return nothing output
         echo "Release note file doesn't change. Don't do anything."
-#        RELEASE_TYPE="Pre"; export RELEASE_TYPE
-        echo "Pre" >> $RELEASE_TYPE
         echo "[Final Running Result] Pre-Release"
     fi
 
