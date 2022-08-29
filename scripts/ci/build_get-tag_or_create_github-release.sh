@@ -116,6 +116,26 @@ current_branch=$(git branch --list | cat | grep -E '\* ([a-zA-Z0-9]{1,16})' | gr
 echo "Current git branch: $current_branch"
 
 
+declare tag_version
+
+get_latest_version_by_git_tag() {
+    # # # # The types to get version by tag: 'git' or 'github'
+    get_version_type=$1
+
+    if [ "$get_version_type" == "git" ]; then
+        echo ""
+        tag_version=$(git describe --tag --abbrev=0 --match "v[0-9]\.[0-9]\.[0-9]*" | grep -E -o '[0-9]\.[0-9]\.[0-9]*')
+    elif [ "$get_version_type" == "github" ]; then
+        echo ""
+        github_release=$(curl -s https://api.github.com/repos/Chisanan232/GitHub-Action_Workflow-Template-Python/releases/latest | jq -r '.tag_name')
+        tag_version=$(echo "$github_release" | grep -E -o '[0-9]\.[0-9]\.[0-9]*')
+    else
+        echo ""
+        exit 1
+    fi
+}
+
+
 declare new_ver
 
 build_git_tag_or_github_release() {
@@ -124,7 +144,12 @@ build_git_tag_or_github_release() {
     git_ver=$(git describe --tag --abbrev=0 --match "v[0-9]\.[0-9]\.[0-9]")
     echo "git_ver_desc: $git_ver_desc"
     echo "git_ver: $git_ver"
-    current_ver=$(git describe --tag --abbrev=0 --match "v[0-9]\.[0-9]\.[0-9]" | grep -E -o '[0-9]\.[0-9]\.[0-9]' | head -n1 | cut -d "." -f1)
+
+    get_latest_version_by_git_tag 'github'
+    current_ver=$(echo "$tag_version" | head -n1 | cut -d "." -f1)
+    echo "current_ver: $current_ver"
+
+#    current_ver=$(git describe --tag --abbrev=0 --match "v[0-9]\.[0-9]\.[0-9]" | grep -E -o '[0-9]\.[0-9]\.[0-9]' | head -n1 | cut -d "." -f1)
     if [ "$current_ver" == "" ]; then
         current_ver=0
     fi
