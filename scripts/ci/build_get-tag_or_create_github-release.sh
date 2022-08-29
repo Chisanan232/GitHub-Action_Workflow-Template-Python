@@ -253,12 +253,17 @@ elif [ "$release_type" == 'github-action-reusable-workflow' ]; then
     echo "run git fetch"
     git fetch --no-tags --prune --depth=1 origin +refs/heads/*:refs/remotes/origin/*
 
+    echo "Verify all the git branch info"
+    git branch -a
+    echo "Verify the git remote info"
+    git remote -v
+
     echo "+++++++++++++++++++++++++++++++++++"
-    git diff --name-only remotes/origin/master "$current_branch" -- .github/release-notes.md | cat
+    git diff origin/master "$current_branch" -- .github/release-notes.md | cat
     echo "+++++++++++++++++++++++++++++++++++"
-    git diff --name-only "$current_branch" remotes/origin/master -- .github/release-notes.md | cat
+    git diff "$current_branch" origin/master -- .github/release-notes.md | cat
     echo "+++++++++++++++++++++++++++++++++++"
-    git diff --name-only remotes/origin/master -- .github/release-notes.md | cat
+    git diff origin/master -- .github/release-notes.md | cat
     echo "+++++++++++++++++++++++++++++++++++"
 
     echo "Check the different between current git branch and master branch."
