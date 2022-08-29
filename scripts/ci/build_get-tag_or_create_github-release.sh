@@ -237,11 +237,9 @@ elif [ "$release_type" == 'github-action-reusable-workflow' ]; then
     # Note 2: Show the output result in stdout directly
     # https://stackoverflow.com/questions/17077973/how-to-make-git-diff-write-to-stdout
     # Note 3: Here code should be considered what git tag on master branch so we need to verify the info on master branch.
-    # Note 4: We should initial a git branch 'master' to provide git diff feature working
-#    echo "Initial and switch to git branch 'master'."
-#    git checkout -b master
-#    echo "Switch back to git branch '$current_branch'."
-#    git switch "$current_branch"
+    # Note 4: We should git fetch to provide git diff feature working
+    # https://github.com/actions/checkout/issues/160
+
     echo "Run git fetch to sync upstream with latest project in GitHub"
     git fetch --no-tags --prune --depth=1 origin +refs/heads/*:refs/remotes/origin/*
 
@@ -260,7 +258,15 @@ elif [ "$release_type" == 'github-action-reusable-workflow' ]; then
         build_git_tag_or_github_release
         echo "Done! This is Official-Release of GitHub Action reusable workflow, please create a version branch of it."
 #        RELEASE_TYPE="$new_ver"; export RELEASE_TYPE
+#        echo "$new_ver" >> $RELEASE_TYPE
+        echo "Set environment variable in GitHub"
+        export RELEASE_TYPE="$new_ver"
+        echo $RELEASE_TYPE
+
+        echo "Set environment variable in GitHub"
         echo "$new_ver" >> $RELEASE_TYPE
+        echo $RELEASE_TYPE
+
         echo "[Final Running Result] Official-Release"
 
 #        current_ver=$(git describe --tag --abbrev=0 --match "v[0-9]\.[0-9]\.[0-9]" | grep -E -o '[0-9]\.[0-9]\.[0-9]' | head -n1 | cut -d "." -f1)
