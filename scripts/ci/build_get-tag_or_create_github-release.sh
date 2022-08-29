@@ -262,13 +262,12 @@ elif [ "$release_type" == 'github-action-reusable-workflow' ]; then
         echo "Set environment variable in GitHub"
         export RELEASE_TYPE="$new_ver"
         echo $RELEASE_TYPE
-        echo "::set-output name=run_result::$(echo $RELEASE_TYPE)"
 
 #        echo "Set environment variable in GitHub"
 #        echo "$new_ver" >> $RELEASE_TYPE
 #        echo $RELEASE_TYPE
 
-        echo "[Final Running Result] Official-Release"
+        echo "[Final Running Result] Official-Release and version: $new_ver"
 
 #        current_ver=$(git describe --tag --abbrev=0 --match "v[0-9]\.[0-9]\.[0-9]" | grep -E -o '[0-9]\.[0-9]\.[0-9]' | head -n1 | cut -d "." -f1)
 #        if [ "$current_ver" == "" ]; then

@@ -133,17 +133,15 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Build git tag and create GitHub release
-        run: | 
-          bash ./scripts/ci/build_get-tag_or_create_github-release.sh 'github-action-reusable-workflow' 'true'
-#          echo "Shell script done. Start to set environment variable."
-#          echo "::set-output name=run_result::$(echo $RELEASE_TYPE)"
-#          echo "::get-output name=run_result"
+        run: release=$(bash ./scripts/ci/build_get-tag_or_create_github-release.sh 'github-action-reusable-workflow' 'true')
 
-#      - name: Export the running result as environment variable 'RELEASE_TYPE'
-#        id: release_checking
-#        run: |
-#          echo "RELEASE_TYPE: $RELEASE_TYPE"
-#          echo "::set-output name=run_result::$(echo $RELEASE_TYPE)"
+      - name: Export the running result as environment variable 'RELEASE_TYPE'
+        id: release_checking
+        run: |
+          echo "release: $release"
+          release_version=$(echo "$release" | grep -E "\[Final Running Result\] Official-Release and version: ([0-9]{1,})" | grep -E -o "([0-9]{1,})")
+          echo "release_version: $release_version"
+          echo "::set-output name=run_result::$(echo $release_version)"
 
 
   deploy_as_new_branch:
