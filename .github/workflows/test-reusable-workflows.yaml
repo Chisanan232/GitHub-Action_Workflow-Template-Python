@@ -135,9 +135,9 @@ jobs:
       - name: Build git tag and create GitHub release
         run: | 
           bash ./scripts/ci/build_get-tag_or_create_github-release.sh 'github-action-reusable-workflow' 'true'
-          echo "Shell script done. Start to set environment variable."
+#          echo "Shell script done. Start to set environment variable."
 #          echo "::set-output name=run_result::$(echo $RELEASE_TYPE)"
-          echo "::get-output name=run_result"
+#          echo "::get-output name=run_result"
 
 #      - name: Export the running result as environment variable 'RELEASE_TYPE'
 #        id: release_checking
