@@ -136,14 +136,17 @@ jobs:
         run: | 
           release=$(bash ./scripts/ci/build_get-tag_or_create_github-release.sh 'github-action-reusable-workflow' 'true')
           echo "release: $release"
-
-      - name: Export the running result as environment variable 'RELEASE_TYPE'
-        id: release_checking
-        run: |
-          echo "release: $release"
           release_version=$(echo "$release" | grep -E "\[Final Running Result\] Official-Release and version: ([0-9]{1,})" | grep -E -o "([0-9]{1,})")
           echo "release_version: $release_version"
           echo "::set-output name=run_result::$(echo $release_version)"
+
+#      - name: Export the running result as environment variable 'RELEASE_TYPE'
+#        id: release_checking
+#        run: |
+#          echo "release: $release"
+#          release_version=$(echo "$release" | grep -E "\[Final Running Result\] Official-Release and version: ([0-9]{1,})" | grep -E -o "([0-9]{1,})")
+#          echo "release_version: $release_version"
+#          echo "::set-output name=run_result::$(echo $release_version)"
 
 
   deploy_as_new_branch:
