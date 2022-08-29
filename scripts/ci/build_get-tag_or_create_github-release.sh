@@ -242,33 +242,19 @@ elif [ "$release_type" == 'github-action-reusable-workflow' ]; then
 #    git checkout -b master
 #    echo "Switch back to git branch '$current_branch'."
 #    git switch "$current_branch"
-    echo "+++++++++++++++++++++++++++++++++++"
-    git diff --name-only remotes/origin/master "$current_branch" -- .github/release-notes.md | cat
-    echo "+++++++++++++++++++++++++++++++++++"
-    git diff --name-only "$current_branch" remotes/origin/master -- .github/release-notes.md | cat
-    echo "+++++++++++++++++++++++++++++++++++"
-    git diff --name-only remotes/origin/master -- .github/release-notes.md | cat
-    echo "+++++++++++++++++++++++++++++++++++"
-
-    echo "run git fetch"
+    echo "Run git fetch to sync upstream with latest project in GitHub"
     git fetch --no-tags --prune --depth=1 origin +refs/heads/*:refs/remotes/origin/*
 
-    echo "Verify all the git branch info"
+    echo "Verify all the git branch info again after git fetch."
     git branch -a
-    echo "Verify the git remote info"
+
+    echo "Verify the git remote info again after git fetch."
     git remote -v
 
-    echo "+++++++++++++++++++++++++++++++++++"
-    git diff origin/master "$current_branch" -- .github/release-notes.md | cat
-    echo "+++++++++++++++++++++++++++++++++++"
-    git diff "$current_branch" origin/master -- .github/release-notes.md | cat
-    echo "+++++++++++++++++++++++++++++++++++"
-    git diff origin/master -- .github/release-notes.md | cat
-    echo "+++++++++++++++++++++++++++++++++++"
-
     echo "Check the different between current git branch and master branch."
-    release_notes_has_diff=$(git diff master "$current_branch" -- .github/release-notes.md | cat)
+    release_notes_has_diff=$(git diff origin/master "$current_branch" -- .github/release-notes.md | cat)
     echo "release_notes_has_diff: $release_notes_has_diff"
+
     if [ "$release_notes_has_diff" != "" ]; then
         # 1. Yes, it has different. -> Build git tag, GitHub release and version branch
         build_git_tag_or_github_release
