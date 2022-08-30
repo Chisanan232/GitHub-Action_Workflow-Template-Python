@@ -141,7 +141,7 @@ get_latest_version_by_git_tag() {
 }
 
 
-describe New_Release_Version, New_Release_Tag
+declare New_Release_Version, New_Release_Tag
 generate_new_version_as_tag() {
     project_type=$1
     if [ "$project_type" == "python" ]; then
