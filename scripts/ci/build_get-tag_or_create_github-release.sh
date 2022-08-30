@@ -166,7 +166,7 @@ generate_new_version_as_tag() {
 }
 
 
-declare New_Ver    # This is the return value of function 'build_git_tag_or_github_release'
+#declare New_Ver    # This is the return value of function 'build_git_tag_or_github_release'
 build_git_tag_or_github_release() {
 #    # Generate the new version from previous tag
 #    get_latest_version_by_git_tag 'github'
@@ -181,7 +181,7 @@ build_git_tag_or_github_release() {
 #    new_tag='v'$New_Ver'.0.0'
 
     project_type=$1
-    generate_new_version_as_tag project_type
+    generate_new_version_as_tag "$project_type"
 
     # git event: push
     # all branch -> Build tag
