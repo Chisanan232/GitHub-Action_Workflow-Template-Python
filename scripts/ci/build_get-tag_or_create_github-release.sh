@@ -141,8 +141,8 @@ get_latest_version_by_git_tag() {
 }
 
 
-declare New_Release_Version
-declare New_Release_Tag
+declare New_Release_Version    # This is the return value of function 'generate_new_version_as_tag'
+declare New_Release_Tag    # This is the return value of function 'generate_new_version_as_tag'
 generate_new_version_as_tag() {
     project_type=$1
     if [ "$project_type" == "python" ]; then
@@ -166,26 +166,13 @@ generate_new_version_as_tag() {
 }
 
 
-#declare New_Ver    # This is the return value of function 'build_git_tag_or_github_release'
 build_git_tag_or_github_release() {
-#    # Generate the new version from previous tag
-#    get_latest_version_by_git_tag 'github'
-#    current_ver=$(echo "$Tag_Version" | head -n1 | cut -d "." -f1)
-#    echo "current_ver: $current_ver"
-#
-##    current_ver=$(git describe --tag --abbrev=0 --match "v[0-9]\.[0-9]\.[0-9]" | grep -E -o '[0-9]\.[0-9]\.[0-9]' | head -n1 | cut -d "." -f1)
-#    if [ "$current_ver" == "" ]; then
-#        current_ver=0
-#    fi
-#    New_Ver=$(( current_ver + 1 ))
-#    new_tag='v'$New_Ver'.0.0'
-
-    project_type=$1
-    generate_new_version_as_tag "$project_type"
-
     # git event: push
     # all branch -> Build tag
     # master branch -> Build tag and create release
+
+    project_type=$1
+    generate_new_version_as_tag "$project_type"
 
     if [ "$Input_Arg_Debug_Mode" == true ]; then
         echo " 🔍👀[DEBUG MODE] Build git tag $New_Release_Tag in git branch '$Current_Branch'."
