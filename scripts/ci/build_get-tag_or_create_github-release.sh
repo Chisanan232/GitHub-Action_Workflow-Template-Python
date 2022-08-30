@@ -249,7 +249,7 @@ if [ "$Input_Arg_Release_Type" == 'python-package' ]; then
             echo "build tag and create GitHub release, also push code to PyPi"
             build_git_tag_or_github_release "python"
             echo "Done! This is Official-Release so please push source code to PyPi."
-            echo "[Final Running Result] Official-Release"
+            echo "[Python] [Final Running Result] Official-Release"
         else
             echo "The version is a pre-release."
             # do different things with different ranches
@@ -259,7 +259,7 @@ if [ "$Input_Arg_Release_Type" == 'python-package' ]; then
             echo "build tag and create GitHub release only"
             build_git_tag_or_github_release "python"
             echo "Done! This is Pre-Release so please don't push this to PyPi."
-            echo "[Final Running Result] Pre-Release"
+            echo "[Python] [Final Running Result] Pre-Release"
         fi
 
     fi
@@ -294,12 +294,12 @@ elif [ "$Input_Arg_Release_Type" == 'github-action-reusable-workflow' ]; then
         # 1. Yes, it has different. -> Build git tag, GitHub release and version branch
         build_git_tag_or_github_release "github-action_reusable-workflow"
         echo "Done! This is Official-Release of GitHub Action reusable workflow, please create a version branch of it."
-        echo "[Final Running Result] Official-Release and version: $New_Release_Version"
+        echo "[GitHub Action - Reusable workflow] [Final Running Result] Official-Release and version: $New_Release_Version"
     else
         # 1. No, do nothing.
         # Return nothing output
         echo "Release note file doesn't change. Don't do anything."
-        echo "[Final Running Result] Pre-Release"
+        echo "[GitHub Action - Reusable workflow] [Final Running Result] Pre-Release"
     fi
 
 fi
