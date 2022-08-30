@@ -120,6 +120,18 @@ jobs:
       upload-to-codacy: true
 
 
+#  pre-building_check:
+##    name: Check about it could work finely by installing the Python package with setup.py file
+#    needs: [codecov_finish, codacy_finish]
+#    uses: Chisanan232/GitHub-Action-Template-Python/.github/workflows/upload_code_report_to_codacy.yaml
+#    with:
+#      python_package_name: smoothcrawler
+#      test_import_package_code_1: import smoothcrawler as mr
+#      test_import_package_code_2: from smoothcrawler.crawler import SimpleCrawler
+#      test_import_package_code_3: from smoothcrawler.components.data import BaseHTTPResponseParser, BaseDataHandler
+#      test_python_script: ./scripts/test_crawler.py
+
+
   build_git-tag_and_create_github-release:
 #    name: Build git tag and GitHub release if it needs
     if: github.event_name == 'push'
@@ -156,58 +168,4 @@ jobs:
 
       - name: Create new git branch by the tagged commit
         run: bash ./scripts/ci/deployment_new_version_workflow.sh 'true'
-
-
-#  create_version_tag:
-#    if: github.ref_name == 'release' || github.event == 'push'
-#    name: Build a tag in GitHub
-#    needs: [codecov_finish, coveralls_finish, codacy_finish]
-#    steps:
-#      - name: Get the latest version of package from '__pgk_info__' module
-#        run: cat ./test_gh_workflow/__pkg_info__.py | grep -e '__version__ = "[0-9].[0-9].[0-9]*"' | grep -o '[0-9].[0-9].[0-9]*'
-#
-#      - name: Get the latest git tag
-#        run: git describe --tag --abbrev=0 --match "v[0-9].[0-9].[0-9]*"
-#
-#      - name: Tag a version info on the latest commit
-#        run: git tag -a 'v2.0.0' -m 'Refactor and integrate the configurations to let configurations be more shorter and clear.'
-#
-#      - name: Release the source code with the tag and release note
-#        run: gh release create v2.0.0 --title 'v2.0.0 - More shorter and clear <0001f9f9>🍻' --notes-file .github/release-notes.md
-#
-#
-#  build_version_branch:
-#    if: github.ref_name == 'master' || github.event == 'push'
-#    name: Build a Git branch as version in GitHub
-#    needs: [codecov_finish, coveralls_finish, codacy_finish]
-#    steps:
-#      - name: Check whether it has a git tag on the latest commit or not.
-#        run: |
-#          git tag
-#
-#      - name: Do something
-#        run: |
-#          echo "Add git remote reference"
-#          git remote add github-action_workflow-template https://github.com/Chisanan232/GitHub-Action-Template-Python.git
-#
-#          echo "Verify the git remote info ..."
-#          git remote -v
-#
-#          echo "Create and switch git branch with version"
-#          git checkout -b v2
-#
-#          echo "Push the project to GitHub as the branch"
-#          git push -u github-action_workflow-template v2
-
-
-#  pre-building_check:
-##    name: Check about it could work finely by installing the Python package with setup.py file
-#    needs: [codecov_finish, codacy_finish]
-#    uses: Chisanan232/GitHub-Action-Template-Python/.github/workflows/upload_code_report_to_codacy.yaml
-#    with:
-#      python_package_name: smoothcrawler
-#      test_import_package_code_1: import smoothcrawler as mr
-#      test_import_package_code_2: from smoothcrawler.crawler import SimpleCrawler
-#      test_import_package_code_3: from smoothcrawler.components.data import BaseHTTPResponseParser, BaseDataHandler
-#      test_python_script: ./scripts/test_crawler.py
 
