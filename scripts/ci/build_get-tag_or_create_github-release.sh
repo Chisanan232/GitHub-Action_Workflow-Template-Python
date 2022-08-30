@@ -28,23 +28,26 @@ fi
 
 
 # # # # python-package or github-action-reusable-workflow
-release_type=$1
+Input_Arg_Release_Type=$1
 
-if [ "$release_type" == 'python-package' ]; then
+if [ "$Input_Arg_Release_Type" == 'python-package' ]; then
     # # # # The name of Python package
-    python_pkg_name=$2
+    Input_Arg_Python_Pkg_Name=$2
     # # # # For development and troubleshooting
-    debug_mode=$4
-elif [ "$release_type" == 'github-action-reusable-workflow' ]; then
-    python_pkg_name=""
-    debug_mode=$2
+    Input_Arg_Debug_Mode=$4
+elif [ "$Input_Arg_Release_Type" == 'github-action-reusable-workflow' ]; then
+    Input_Arg_Python_Pkg_Name=""
+    Input_Arg_Debug_Mode=$2
 else
     echo "Currently, it only has 2 release type: 'python-package' or 'github-action-reusable-workflow'."
     exit 1
 fi
+if [ "$Input_Arg_Debug_Mode" == "" ]; then
+    Input_Arg_Debug_Mode=true
+fi
 
-if [ "$release_type" == "" ]; then
-    echo "The argument 'release_type' (first argument) cannot be empty."
+if [ "$Input_Arg_Release_Type" == "" ]; then
+    echo "The argument 'Input_Arg_Release_Type' (first argument) cannot be empty."
     exit 1
 fi
 
@@ -63,36 +66,36 @@ fi
 # 0.9,   1.0a1,   1.0a2,   1.0b1,   1.0rc1,   1.0
 # # “major.minor” versioning with developmental releases, release candidates and post-releases for minor corrections: (dev)
 # 0.9,   1.0.dev1,   1.0.dev2,   1.0.dev3,   1.0c1,   1.0,   1.0.post1,   1.1.dev1
-software_version_format=$3
+Input_Arg_Software_Version_Format=$3
 
-declare version_reg
-declare software_version_reg
-declare python_version_reg
+declare Software_Version_Reg
+declare Python_Version_Reg
 
-if [ "$release_type" == 'python-package' ]; then
+if [ "$Input_Arg_Release_Type" == 'python-package' ]; then
 
-    if [ "$python_pkg_name" == "" ]; then
-        echo "The argument 'python_pkg_name' (second argument) cannot be empty if option 'release_type' (first argument) is 'python-package'."
+    if [ "$Input_Arg_Python_Pkg_Name" == "" ]; then
+        echo "The argument 'Input_Arg_Python_Pkg_Name' (second argument) cannot be empty if option 'Input_Arg_Release_Type' (first argument) is 'python-package'."
         exit 1
     fi
 
-    if [ "$software_version_format" == "general-2" ]; then
+    declare version_reg
+    if [ "$Input_Arg_Software_Version_Format" == "general-2" ]; then
         version_reg="[0-9]\.[0-9]"
-    elif [ "$software_version_format" == "general-3" ]; then
+    elif [ "$Input_Arg_Software_Version_Format" == "general-3" ]; then
         version_reg="[0-9]\.[0-9]\.[0-9]"
-    elif [ "$software_version_format" == "date-based" ]; then
+    elif [ "$Input_Arg_Software_Version_Format" == "date-based" ]; then
         version_reg="[0-9]{4}\.([0-9]{1,})+"
     else
         # Default value
         version_reg="[0-9]\.[0-9]\.[0-9]"
     fi
 
-    software_version_reg="$version_reg*([\.,-]*([a-zA-Z]{1,})*([0-9]{0,})*){0,}"
-    python_version_reg="__version__ = \"$software_version_reg\""
+    Software_Version_Reg="$version_reg*([\.,-]*([a-zA-Z]{1,})*([0-9]{0,})*){0,}"
+    Python_Version_Reg="__version__ = \"$Software_Version_Reg\""
 
 fi
 
-#if [ "$release_type" == 'python-package' ]; then
+#if [ "$Input_Arg_Release_Type" == 'python-package' ]; then
 #    if [ "$software_version_evolution" == "sema" ]; then
 #        echo "*-*([a-zA-Z]{1,})*([0-9]{0,})"
 #    elif [ "$software_version_evolution" == "dev" ]; then
@@ -104,31 +107,33 @@ fi
 #fi
 
 
-#current_branch=$(git branch --show-current)
-echo "Verify the git branch info"
-git branch --list | cat
-echo "Verify all the git branch info"
-git branch -a | cat
-echo "Verify the git remote info"
-git remote -v
-echo "Get the current git branch info"
-current_branch=$(git branch --list | cat | grep -E '\* ([a-zA-Z0-9]{1,16})' | grep -E -o '([a-zA-Z0-9]{1,16})')
-echo "Current git branch: $current_branch"
+#Current_Branch=$(git branch --show-current)
+# # # # For debug
+#echo "Verify the git branch info"
+#git branch --list | cat
+#echo "Verify all the git branch info"
+#git branch -a | cat
+#echo "Verify the git remote info"
+#git remote -v
+#echo "Get the current git branch info"
+
+# This is the global value to provide after-handle to use
+Current_Branch=$(git branch --list | cat | grep -E '\* ([a-zA-Z0-9]{1,16})' | grep -E -o '([a-zA-Z0-9]{1,16})')
+echo "Current git branch: $Current_Branch"
 
 
-declare tag_version
-
+declare Tag_Version    # This is the return value of function 'get_latest_version_by_git_tag'
 get_latest_version_by_git_tag() {
     # # # # The types to get version by tag: 'git' or 'github'
     get_version_type=$1
 
     if [ "$get_version_type" == "git" ]; then
         echo ""
-        tag_version=$(git describe --tag --abbrev=0 --match "v[0-9]\.[0-9]\.[0-9]*" | grep -E -o '[0-9]\.[0-9]\.[0-9]*')
+        Tag_Version=$(git describe --tag --abbrev=0 --match "v[0-9]\.[0-9]\.[0-9]*" | grep -E -o '[0-9]\.[0-9]\.[0-9]*')
     elif [ "$get_version_type" == "github" ]; then
         echo ""
         github_release=$(curl -s https://api.github.com/repos/Chisanan232/GitHub-Action_Workflow-Template-Python/releases/latest | jq -r '.tag_name')
-        tag_version=$(echo "$github_release" | grep -E -o '[0-9]\.[0-9]\.[0-9]*')
+        Tag_Version=$(echo "$github_release" | grep -E -o '[0-9]\.[0-9]\.[0-9]*')
     else
         echo ""
         exit 1
@@ -136,45 +141,66 @@ get_latest_version_by_git_tag() {
 }
 
 
-declare new_ver
+describe New_Release_Version, New_Release_Tag
+generate_new_version_as_tag() {
+    project_type=$1
+    if [ "$project_type" == "python" ]; then
+        echo ""
+        New_Release_Version=$(cat ./"$Input_Arg_Python_Pkg_Name"/__pkg_info__.py | grep -E "$Python_Version_Reg" | grep -E -o "$Software_Version_Reg")
+    elif [ "$project_type" == "github-action_reusable-workflow" ]; then
+        echo ""
+        # Generate the new version from previous tag
+        get_latest_version_by_git_tag 'github'
+        current_ver=$(echo "$Tag_Version" | head -n1 | cut -d "." -f1)
+        echo "current_ver: $current_ver"
 
-build_git_tag_or_github_release() {
-    # Generate the new version from previous tag
-    git_ver_desc=$(git describe --tag --abbrev=0)
-    git_ver=$(git describe --tag --abbrev=0 --match "v[0-9]\.[0-9]\.[0-9]")
-    echo "git_ver_desc: $git_ver_desc"
-    echo "git_ver: $git_ver"
-
-    get_latest_version_by_git_tag 'github'
-    current_ver=$(echo "$tag_version" | head -n1 | cut -d "." -f1)
-    echo "current_ver: $current_ver"
-
-#    current_ver=$(git describe --tag --abbrev=0 --match "v[0-9]\.[0-9]\.[0-9]" | grep -E -o '[0-9]\.[0-9]\.[0-9]' | head -n1 | cut -d "." -f1)
-    if [ "$current_ver" == "" ]; then
-        current_ver=0
+#        current_ver=$(git describe --tag --abbrev=0 --match "v[0-9]\.[0-9]\.[0-9]" | grep -E -o '[0-9]\.[0-9]\.[0-9]' | head -n1 | cut -d "." -f1)
+        if [ "$current_ver" == "" ]; then
+            current_ver=0
+        fi
+        New_Release_Version=$(( current_ver + 1 ))
     fi
-    new_ver=$(( current_ver + 1 ))
-    new_tag='v'$new_ver'.0.0'
+
+    New_Release_Tag='v'$New_Release_Version'.0.0'
+}
+
+
+declare New_Ver    # This is the return value of function 'build_git_tag_or_github_release'
+build_git_tag_or_github_release() {
+#    # Generate the new version from previous tag
+#    get_latest_version_by_git_tag 'github'
+#    current_ver=$(echo "$Tag_Version" | head -n1 | cut -d "." -f1)
+#    echo "current_ver: $current_ver"
+#
+##    current_ver=$(git describe --tag --abbrev=0 --match "v[0-9]\.[0-9]\.[0-9]" | grep -E -o '[0-9]\.[0-9]\.[0-9]' | head -n1 | cut -d "." -f1)
+#    if [ "$current_ver" == "" ]; then
+#        current_ver=0
+#    fi
+#    New_Ver=$(( current_ver + 1 ))
+#    new_tag='v'$New_Ver'.0.0'
+
+    project_type=$1
+    generate_new_version_as_tag project_type
 
     # git event: push
     # all branch -> Build tag
     # master branch -> Build tag and create release
 
-    if [ "$debug_mode" == true ]; then
-        echo " 🔍👀[DEBUG MODE] Build git tag $new_tag in git branch '$current_branch'."
+    if [ "$Input_Arg_Debug_Mode" == true ]; then
+        echo " 🔍👀[DEBUG MODE] Build git tag $New_Release_Tag in git branch '$Current_Branch'."
     else
-        git tag -a "$new_tag" -m "$new_tag"
+        git tag -a "$New_Release_Tag" -m "$New_Release_Tag"
         git push -u origin --tags
     fi
 
-    echo "Build git tag which named '$new_tag' with current branch '$current_branch' successfully!"
-    if [ "$current_branch" == "master" ]; then
+    echo "Build git tag which named '$New_Release_Tag' with current branch '$Current_Branch' successfully!"
+    if [ "$Current_Branch" == "master" ]; then
         release_title=$(cat .github/release-title.md)
 
-        if [ "$debug_mode" == true ]; then
-            echo " 🔍👀[DEBUG MODE] Create GitHub release with tag '$new_tag' and title '$release_title' in git branch '$current_branch'."
+        if [ "$Input_Arg_Debug_Mode" == true ]; then
+            echo " 🔍👀[DEBUG MODE] Create GitHub release with tag '$New_Release_Tag' and title '$release_title' in git branch '$Current_Branch'."
         else
-            gh release create "$new_tag" --title "$release_title" --notes-file .github/release-notes.md
+            gh release create "$New_Release_Tag" --title "$release_title" --notes-file .github/release-notes.md
         fi
 
         echo "Create GitHub release with title '$release_title' successfully!"
@@ -183,7 +209,7 @@ build_git_tag_or_github_release() {
 
 
 # The truly running implementation of shell script
-if [ "$release_type" == 'python-package' ]; then
+if [ "$Input_Arg_Release_Type" == 'python-package' ]; then
 
     # # # # For Python package release
     echo 'do python package release'
@@ -191,7 +217,7 @@ if [ "$release_type" == 'python-package' ]; then
     git_tag=$(git describe --tag --abbrev=0 --match "v[0-9]\.[0-9]\.[0-9]*" | grep -o '[0-9]\.[0-9]\.[0-9]*')
     github_release=$(curl -s https://api.github.com/repos/Chisanan232/GitHub-Action_Workflow-Template-Python/releases/latest | jq -r '.tag_name')
     # shellcheck disable=SC2002
-    pkg_version=$(cat ./"$python_pkg_name"/__pkg_info__.py | grep -E "$python_version_reg" | grep -E -o "$software_version_reg")
+    pkg_version=$(cat ./"$Input_Arg_Python_Pkg_Name"/__pkg_info__.py | grep -E "$Python_Version_Reg" | grep -E -o "$Software_Version_Reg")
 
     build_git_tag=false
     create_github_release=false
@@ -204,12 +230,21 @@ if [ "$release_type" == 'python-package' ]; then
         build_git_tag=true
     fi
 
-    if [ "$current_branch" == "master" ] && [ "$pkg_version" == "$github_release" ]; then
+    if [ "$Current_Branch" == "master" ] && [ "$pkg_version" == "$github_release" ]; then
         echo "Version of GitHub release info are the same. So it verifies it has built and pushed before."
     else
         echo "Version of GitHub release info are different. So it verifies it doesn't build and push before."
         create_github_release=true
     fi
+
+    # 1. -> Same -> 1-1. Does it have built and pushed before?.
+    # 1. -> No (In generally, it should no) -> 1-2. Is it a pre-release version in source code?
+
+    # 1-1. Yes, it has built and pushed. -> Doesn't do anything.
+    # 1-1. No, it doesn't build and push before. -> Build and push directly.
+
+    # 1-2. Yes, it's pre-release. -> Doesn't build and push. Just build git tag and GitHub release.
+    # 1-2. No, it's not pre-release. -> It means that it's official version, e.g., 1.3.2 version. So it should build git tag and GitHub release first, and build and push.
 
     if [ "$build_git_tag" == true ] || [ "$create_github_release" == true ]; then
 
@@ -224,7 +259,7 @@ if [ "$release_type" == 'python-package' ]; then
             # all branch -> Build tag
             # master branch -> Build tag and create release
             echo "build tag and create GitHub release, also push code to PyPi"
-            build_git_tag_or_github_release
+            build_git_tag_or_github_release "python"
             echo "Done! This is Official-Release so please push source code to PyPi."
             echo "[Final Running Result] Official-Release"
         else
@@ -234,23 +269,14 @@ if [ "$release_type" == 'python-package' ]; then
             # all branch -> Build tag
             # master branch -> Build tag and create release
             echo "build tag and create GitHub release only"
-            build_git_tag_or_github_release
+            build_git_tag_or_github_release "python"
             echo "Done! This is Pre-Release so please don't push this to PyPi."
             echo "[Final Running Result] Pre-Release"
         fi
 
     fi
 
-    # 1. -> Same -> 1-1. Does it have built and pushed before?.
-    # 1. -> No (In generally, it should no) -> 1-2. Is it a pre-release version in source code?
-
-    # 1-1. Yes, it has built and pushed. -> Doesn't do anything.
-    # 1-1. No, it doesn't build and push before. -> Build and push directly.
-
-    # 1-2. Yes, it's pre-release. -> Doesn't build and push. Just build git tag and GitHub release.
-    # 1-2. No, it's not pre-release. -> It means that it's official version, e.g., 1.3.2 version. So it should build git tag and GitHub release first, and build and push.
-
-elif [ "$release_type" == 'github-action-reusable-workflow' ]; then
+elif [ "$Input_Arg_Release_Type" == 'github-action-reusable-workflow' ]; then
 
     echo 'do github-action-reusable-workflow release'
     # # # # For GitHub Action reusable workflow template release
@@ -273,32 +299,14 @@ elif [ "$release_type" == 'github-action-reusable-workflow' ]; then
     git remote -v
 
     echo "Check the different between current git branch and master branch."
-    release_notes_has_diff=$(git diff origin/master "$current_branch" -- .github/release-notes.md | cat)
+    release_notes_has_diff=$(git diff origin/master "$Current_Branch" -- .github/release-notes.md | cat)
     echo "release_notes_has_diff: $release_notes_has_diff"
 
     if [ "$release_notes_has_diff" != "" ]; then
         # 1. Yes, it has different. -> Build git tag, GitHub release and version branch
-        build_git_tag_or_github_release
+        build_git_tag_or_github_release "github-action_reusable-workflow"
         echo "Done! This is Official-Release of GitHub Action reusable workflow, please create a version branch of it."
-        echo "[Final Running Result] Official-Release and version: $new_ver"
-
-#        current_ver=$(git describe --tag --abbrev=0 --match "v[0-9]\.[0-9]\.[0-9]" | grep -E -o '[0-9]\.[0-9]\.[0-9]' | head -n1 | cut -d "." -f1)
-#        if [ "$current_ver" == "" ]; then
-#            current_ver=0
-#        fi
-#        new_ver=$(( current_ver + 1 ))
-#        # Return the new version as output
-#        # git event: push
-#        # all branch -> Build tag
-#        # master branch -> Build tag and create release
-#        new_tag='v'$new_ver'.0.0'
-#        git tag -a "$new_tag" -m "$new_tag"
-#        echo "Build git tag which named '$new_tag' with current branch '$current_branch' successfully!"
-#        if [ "$current_branch" == "master" ]; then
-#            release_title=$(cat .github/release-title.md)
-#            gh release create "$new_tag" --title "$release_title" --notes-file .github/release-notes.md
-#            echo "Create GitHub release with title '$release_title' successfully!"
-#        fi
+        echo "[Final Running Result] Official-Release and version: $New_Release_Version"
     else
         # 1. No, do nothing.
         # Return nothing output
