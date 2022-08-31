@@ -1,4 +1,5 @@
 name: Python project CI Test (one-test)
+
 on:
   push:
     branches:
@@ -18,6 +19,7 @@ on:
       - "release"
       - "release-**"
       - "release/**"
+      - "master"
     paths-ignore:
       - ".gitcommitrules"
       - ".gitignore"
@@ -25,7 +27,6 @@ on:
       - "README.md"
 
 jobs:
-
   prep-testbed_unit-test:
 #    name: Prepare all unit test items
     uses: ./.github/workflows/prepare_test_items.yaml
@@ -89,30 +90,11 @@ jobs:
       upload-to-codacy: true
 
 
-  build_git-tag_and_create_github-release:
-#    name: Build git tag and GitHub release if it needs
-    needs: [coveralls_finish, codacy_finish]
-    uses: ./.github/workflows/build_git-tag_and_create_github-release.yaml
-    with:
-      project_type: python-package
-      debug_mode: true
-      project_name: test_gh_workflow
-      software_version_format: general-3
-#      activate_git_event: push
-
-
-  pre-building_check:
-#    name: Check about it could work finely by installing the Python package with setup.py file
-    needs: build_git-tag_and_create_github-release
-    if: github.event_name == 'push'
-    runs-on: ubuntu-latest
-    steps:
-      - name: For testing about getting the software version info
-        run: | 
-          echo "Release version: ${{ needs.build_git-tag_and_create_github-release.outputs.python_release_version }}"
-
+#  pre-building_check:
+##    name: Check about it could work finely by installing the Python package with setup.py file
 #    if: github.event_name == 'push' && (github.ref_name == 'release' || github.ref_name == 'master')
-#    uses: Chisanan232/GitHub-Action-Template-Python/.github/workflows/upload_code_report_to_codacy.yaml
+#    needs: [codecov_finish, codacy_finish]
+#    uses: ./.github/workflows/pre-building_test_setup_package.yaml
 #    with:
 #      python_package_name: smoothcrawler
 #      test_import_package_code_1: import smoothcrawler as mr
@@ -121,18 +103,53 @@ jobs:
 #      test_python_script: ./scripts/test_crawler.py
 
 
+  build_git-tag_and_create_github-release:
+#    name: Build git tag and GitHub release if it needs
+    needs: [coveralls_finish, codacy_finish]
+    uses: ./.github/workflows/build_git-tag_and_create_github-release.yaml
+    with:
+      project_type: python-package
+      project_name: test_gh_workflow
+      software_version_format: general-3
+      debug_mode: true
+
+
+  fake_build_pkg_and_push_to_pypi:
+#    name: Check about it could work finely by installing the Python package with setup.py file
+    needs: build_git-tag_and_create_github-release
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    env:
+      RELEASE_TYPE: ${{ needs.build_git-tag_and_create_github-release.outputs.python_release_version }}
+    steps:
+      - name: Check it whether get the output of previous one job which has version info or not
+        run: |
+          release_version=$(echo $RELEASE_TYPE)
+          if [ "$release_version" != "" ]; then
+              echo "It gets data which is release version info!"
+              exit 0
+          else
+              echo "It doesn't get any data which is release version info."
+              exit 1
+          fi
+
+      - name: For testing about getting the software version info
+        run: | 
+          echo "Release version: $RELEASE_TYPE"
+
+
 #  compile_and_build_python_pkg:
 ##    name: Compile the Python source code and build it as Python package files
 #    if: github.event_name == 'push' && github.ref_name == 'master'
 #    needs: pre-building_check
-#    uses: Chisanan232/GitHub-Action-Template-Python/.github/workflows/build_package.yaml
+#    uses: ./.github/workflows/build_package.yaml
 
 
 #  push_python_pkg_to_pypi:
 ##    name: Upload the Python package files which has been compiled to PyPi
 #    if: github.event_name == 'push' && github.ref_name == 'master'
 #    needs: compile_and_build_python_pkg
-#    uses: Chisanan232/GitHub-Action-Template-Python/.github/workflows/push_pkg_to_pypi.yaml
+#    uses: ./.github/workflows/push_pkg_to_pypi.yaml
 #    secrets:
 #      pypi_user: ${{ secrets.PYPI_USERNAME }}
 #      pypi_token: ${{ secrets.PYPI_PASSWORD }}

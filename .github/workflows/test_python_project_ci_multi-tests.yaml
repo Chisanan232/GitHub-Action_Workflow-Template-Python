@@ -1,4 +1,5 @@
 name: Python project CI Test (multi-tests)
+
 on:
   push:
     branches:
@@ -12,12 +13,14 @@ on:
       - ".gitignore"
       - "LICENSE"
       - "README.md"
+
   pull_request:
     branches:
       - "develop"
       - "release"
       - "release-**"
       - "release/**"
+      - "master"
     paths-ignore:
       - ".gitcommitrules"
       - ".gitignore"
@@ -25,7 +28,6 @@ on:
       - "README.md"
 
 jobs:
-
   prep-testbed_unit-test:
 #    name: Prepare all unit test items
     uses: ./.github/workflows/prepare_test_items.yaml
@@ -123,7 +125,7 @@ jobs:
 #  pre-building_check:
 ##    name: Check about it could work finely by installing the Python package with setup.py file
 #    needs: [codecov_finish, codacy_finish]
-#    uses: Chisanan232/GitHub-Action-Template-Python/.github/workflows/upload_code_report_to_codacy.yaml
+#    uses: ./.github/workflows/pre-building_test_setup_package.yaml
 #    with:
 #      python_package_name: smoothcrawler
 #      test_import_package_code_1: import smoothcrawler as mr
@@ -134,27 +136,35 @@ jobs:
 
   build_git-tag_and_create_github-release:
 #    name: Build git tag and GitHub release if it needs
-    needs: [codecov_finish, coveralls_finish, codacy_finish]
+    needs: [coveralls_finish, codacy_finish]
     uses: ./.github/workflows/build_git-tag_and_create_github-release.yaml
     with:
-      project_type: github-action-reusable-workflow
-#      activate_git_event: push
+      project_type: python-package
+      project_name: test_gh_workflow
+      software_version_format: general-3
       debug_mode: true
 
 
-  deploy_as_new_branch:
-#    name: Create new git branch by the tagged commit
+  fake_build_pkg_and_push_to_pypi:
+#    name: Check about it could work finely by installing the Python package with setup.py file
     needs: build_git-tag_and_create_github-release
-    if: ${{ github.event_name == 'push' && 
-                needs.build_git-tag_and_create_github-release.outputs.github-action_reusable_workflow_release_version != 'Initial' && 
-                needs.build_git-tag_and_create_github-release.outputs.github-action_reusable_workflow_release_version != 'Pre' }}
+    if: github.event_name == 'push'
     runs-on: ubuntu-latest
     env:
-#      RELEASE_TYPE: ${{ needs.build_git-tag_and_create_github-release.outputs.release_type }}
-      RELEASE_TYPE: ${{ needs.build_git-tag_and_create_github-release.outputs.github-action_reusable_workflow_release_version }}
+      RELEASE_TYPE: ${{ needs.build_git-tag_and_create_github-release.outputs.python_release_version }}
     steps:
-      - uses: actions/checkout@v2
+      - name: Check it whether get the output of previous one job which has version info or not
+        run: |
+          release_version=$(echo $RELEASE_TYPE)
+          if [ "$release_version" != "" ]; then
+              echo "It gets data which is release version info!"
+              exit 0
+          else
+              echo "It doesn't get any data which is release version info."
+              exit 1
+          fi
 
-      - name: Create new git branch by the tagged commit
-        run: bash ./scripts/ci/deployment_new_version_workflow.sh 'true'
+      - name: For testing about getting the software version info
+        run: | 
+          echo "Release version: $RELEASE_TYPE"
 
