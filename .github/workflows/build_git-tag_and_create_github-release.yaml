@@ -36,11 +36,11 @@ on:
       project_name:
         description: "The project name."
         type: string
-        required: true
+        required: false
       software_version_format:
         description: "The format of software version."
         type: string
-        required: true
+        required: false
 
     outputs:
       python_release_version:
