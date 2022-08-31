@@ -138,7 +138,7 @@ jobs:
     needs: [codecov_finish, coveralls_finish, codacy_finish]
     uses: ./.github/workflows/build_git-tag_and_create_github-release.yaml
     with:
-      project_type: github-action_reusable-workflow
+      project_type: github-action-reusable-workflow
       activate_git_event: push
       debug_mode: true
 
@@ -167,12 +167,12 @@ jobs:
 #                needs.build_git-tag_and_create_github-release.outputs.release_type != 'Pre' }}
     needs: build_git-tag_and_create_github-release
     if: ${{ github.event_name == 'push' && 
-                needs.build_git-tag_and_create_github-release.outputs.release_version != 'Initial' && 
-                needs.build_git-tag_and_create_github-release.outputs.release_version != 'Pre' }}
+                needs.build_git-tag_and_create_github-release.outputs.github-action_reusable_workflow_release_version != 'Initial' && 
+                needs.build_git-tag_and_create_github-release.outputs.github-action_reusable_workflow_release_version != 'Pre' }}
     runs-on: ubuntu-latest
     env:
 #      RELEASE_TYPE: ${{ needs.build_git-tag_and_create_github-release.outputs.release_type }}
-      RELEASE_TYPE: ${{ needs.build_git-tag_and_create_github-release.outputs.release_version }}
+      RELEASE_TYPE: ${{ needs.build_git-tag_and_create_github-release.outputs.github-action_reusable_workflow_release_version }}
     steps:
       - uses: actions/checkout@v2
 

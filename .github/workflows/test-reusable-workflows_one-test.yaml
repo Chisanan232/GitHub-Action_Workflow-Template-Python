@@ -112,7 +112,7 @@ jobs:
     steps:
       - name: For testing about getting the software version info
         run: | 
-          echo "Release version: ${{ needs.build_git-tag_and_create_github-release.outputs.release_version }}"
+          echo "Release version: ${{ needs.build_git-tag_and_create_github-release.outputs.python_release_version }}"
 
 #    if: github.event_name == 'push' && (github.ref_name == 'release' || github.ref_name == 'master')
 #    uses: Chisanan232/GitHub-Action-Template-Python/.github/workflows/upload_code_report_to_codacy.yaml
