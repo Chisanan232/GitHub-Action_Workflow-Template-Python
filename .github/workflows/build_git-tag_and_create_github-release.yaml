@@ -57,8 +57,8 @@ jobs:
     if: github.event_name == 'push'
     runs-on: ubuntu-latest
     outputs:
-      matrix_python: ${{ steps.release_checking.outputs.python_release }}
-      matrix_github_action_reusable_workflow: ${{ steps.release_checking.outputs.github_action_reusable_workflow_release }}
+      matrix_python: ${{ steps.python_release.outputs.release_type }}
+      matrix_github_action_reusable_workflow: ${{ steps.github_action_reusable_workflow_release.outputs.release_version }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -77,7 +77,7 @@ jobs:
           release_version=$(echo "$release" | grep -E "\[Python\] \[Final Running Result\] ((Official\-Release)|(Pre\-Release))" | grep -E -o "((Official\-Release)|(Pre\-Release))")
           echo "release_version: $release_version"
 
-          echo "::set-output name=python_release::$(echo $release_version)"
+          echo "::set-output name=release_type::$(echo $release_version)"
 
       # This flow for the project type is GitHub Action reusable workflow
       - name: Build git tag and create GitHub release
@@ -90,5 +90,5 @@ jobs:
           release_version=$(echo "$release" | grep -E "\[GitHub Action - Reusable workflow\] \[Final Running Result\] Official-Release and version: ([0-9]{1,})" | grep -E -o "([0-9]{1,})")
           echo "release_version: $release_version"
 
-          echo "::set-output name=github_action_reusable_workflow_release::$(echo $release_version)"
+          echo "::set-output name=release_version::$(echo $release_version)"
 
