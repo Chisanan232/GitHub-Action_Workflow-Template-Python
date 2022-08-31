@@ -29,15 +29,18 @@ fi
 
 # # # # python-package or github-action-reusable-workflow
 Input_Arg_Release_Type=$1
+Input_Arg_Debug_Mode=$2
 
 if [ "$Input_Arg_Release_Type" == 'python-package' ]; then
     # # # # The name of Python package
-    Input_Arg_Python_Pkg_Name=$2
+    Input_Arg_Python_Pkg_Name=$3
     # # # # For development and troubleshooting
-    Input_Arg_Debug_Mode=$4
+#    Input_Arg_Debug_Mode=$4
+    Input_Arg_Software_Version_Format=$4
 elif [ "$Input_Arg_Release_Type" == 'github-action-reusable-workflow' ]; then
     Input_Arg_Python_Pkg_Name=""
-    Input_Arg_Debug_Mode=$2
+    Input_Arg_Software_Version_Format=""
+#    Input_Arg_Debug_Mode=$2
 else
     echo "Currently, it only has 2 release type: 'python-package' or 'github-action-reusable-workflow'."
     exit 1
@@ -66,7 +69,7 @@ fi
 # 0.9,   1.0a1,   1.0a2,   1.0b1,   1.0rc1,   1.0
 # # “major.minor” versioning with developmental releases, release candidates and post-releases for minor corrections: (dev)
 # 0.9,   1.0.dev1,   1.0.dev2,   1.0.dev3,   1.0c1,   1.0,   1.0.post1,   1.1.dev1
-Input_Arg_Software_Version_Format=$3
+#Input_Arg_Software_Version_Format=$3
 
 declare Software_Version_Reg
 declare Python_Version_Reg
