@@ -23,11 +23,11 @@ on:
         description: "Different project type would get the software version info in different way."
         required: true
         type: string    # Option: python, github-action_reusable-workflow
-      activate_git_event:
-        description: "Which git event should activate the workflow."
-        type: string
-        required: false
-        default: push
+#      activate_git_event:
+#        description: "Which git event should activate the workflow."
+#        type: string
+#        required: false
+#        default: push
       debug_mode:
         description: "It would run the tasks as log message, doesn't essentially run feature if this option is true."
         type: boolean
@@ -46,7 +46,7 @@ on:
 jobs:
   build_git-tag_and_create_github-release:
 #    name: Build git tag and GitHub release if it needs
-    if: github.event_name == ${{ inputs.activate_git_event }}
+    if: github.event_name == 'push'
     runs-on: ubuntu-latest
     outputs:
       matrix_python: ${{ steps.release_checking.outputs.release_version }}
