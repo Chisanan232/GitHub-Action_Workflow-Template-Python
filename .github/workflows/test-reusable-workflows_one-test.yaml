@@ -89,9 +89,32 @@ jobs:
       upload-to-codacy: true
 
 
-#  pre-building_check:
-##    name: Check about it could work finely by installing the Python package with setup.py file
-#    needs: [codecov_finish, codacy_finish]
+  build_git-tag_and_create_github-release:
+#    name: Build git tag and GitHub release if it needs
+    if: github.event_name == 'push'
+    needs: [codecov_finish, coveralls_finish, codacy_finish]
+    env:
+      # The environment variables for integration test.
+      PYTHON_PACKAGE_NAME: test_gh_workflow
+      SOFTWARE_VERSION_STYLE: general-3
+    uses: ./.github/workflows/build_git-tag_and_create_github-release.yaml
+    with:
+      project_type: python-package
+      activate_git_event: push
+      debug_mode: true
+
+
+  pre-building_check:
+#    name: Check about it could work finely by installing the Python package with setup.py file
+    needs: build_git-tag_and_create_github-release
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - name: For testing about getting the software version info
+        run: | 
+          echo "Release version: ${{ needs.build_git-tag_and_create_github-release.outputs.release_version }}"
+
+#    if: github.event_name == 'push' && (github.ref_name == 'release' || github.ref_name == 'master')
 #    uses: Chisanan232/GitHub-Action-Template-Python/.github/workflows/upload_code_report_to_codacy.yaml
 #    with:
 #      python_package_name: smoothcrawler
@@ -99,4 +122,21 @@ jobs:
 #      test_import_package_code_2: from smoothcrawler.crawler import SimpleCrawler
 #      test_import_package_code_3: from smoothcrawler.components.data import BaseHTTPResponseParser, BaseDataHandler
 #      test_python_script: ./scripts/test_crawler.py
+
+
+#  compile_and_build_python_pkg:
+##    name: Compile the Python source code and build it as Python package files
+#    if: github.event_name == 'push' && github.ref_name == 'master'
+#    needs: pre-building_check
+#    uses: Chisanan232/GitHub-Action-Template-Python/.github/workflows/build_package.yaml
+
+
+#  push_python_pkg_to_pypi:
+##    name: Upload the Python package files which has been compiled to PyPi
+#    if: github.event_name == 'push' && github.ref_name == 'master'
+#    needs: compile_and_build_python_pkg
+#    uses: Chisanan232/GitHub-Action-Template-Python/.github/workflows/push_pkg_to_pypi.yaml
+#    secrets:
+#      pypi_user: ${{ secrets.PYPI_USERNAME }}
+#      pypi_token: ${{ secrets.PYPI_PASSWORD }}
 
