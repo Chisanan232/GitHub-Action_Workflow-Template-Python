@@ -91,8 +91,8 @@ jobs:
 
   build_git-tag_and_create_github-release:
 #    name: Build git tag and GitHub release if it needs
-    if: github.event_name == 'push'
     needs: [codecov_finish, coveralls_finish, codacy_finish]
+#    if: github.event_name == 'push'
     env:
       # The environment variables for integration test.
       PYTHON_PACKAGE_NAME: test_gh_workflow
@@ -100,7 +100,7 @@ jobs:
     uses: ./.github/workflows/build_git-tag_and_create_github-release.yaml
     with:
       project_type: python-package
-      activate_git_event: push
+#      activate_git_event: push
       debug_mode: true
 
 

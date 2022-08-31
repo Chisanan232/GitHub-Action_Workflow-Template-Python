@@ -134,12 +134,12 @@ jobs:
 
   build_git-tag_and_create_github-release:
 #    name: Build git tag and GitHub release if it needs
-    if: github.event_name == 'push'
+#    if: github.event_name == 'push'
     needs: [codecov_finish, coveralls_finish, codacy_finish]
     uses: ./.github/workflows/build_git-tag_and_create_github-release.yaml
     with:
       project_type: github-action-reusable-workflow
-      activate_git_event: push
+#      activate_git_event: push
       debug_mode: true
 
 #    runs-on: ubuntu-latest
