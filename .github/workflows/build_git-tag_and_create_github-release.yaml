@@ -33,6 +33,14 @@ on:
         type: boolean
         required: false
         default: false
+      project_name:
+        description: "The project name."
+        type: string
+        required: true
+      software_version_format:
+        description: "The format of software version."
+        type: string
+        required: true
 
     outputs:
       python_release_version:
@@ -49,8 +57,8 @@ jobs:
     if: github.event_name == 'push'
     runs-on: ubuntu-latest
     outputs:
-      matrix_python: ${{ steps.release_checking.outputs.release_version }}
-      matrix_github_action_reusable_workflow: ${{ steps.release_checking.outputs.release_version }}
+      matrix_python: ${{ steps.release_checking.outputs.python_release }}
+      matrix_github_action_reusable_workflow: ${{ steps.release_checking.outputs.github_action_reusable_workflow_release }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -63,13 +71,13 @@ jobs:
         if: ${{ inputs.project_type == 'python-package' }}
         id: python_release
         run: | 
-          release=$(bash ./scripts/ci/build_git-tag_or_create_github-release.sh ${{ inputs.project_type }}  ${{ inputs.debug_mode }} $PYTHON_PACKAGE_NAME $SOFTWARE_VERSION_STYLE)
+          release=$(bash ./scripts/ci/build_git-tag_or_create_github-release.sh ${{ inputs.project_type }}  ${{ inputs.debug_mode }} ${{ inputs.project_name }} ${{ inputs.software_version_format }})
           echo "release: $release"
 
           release_version=$(echo "$release" | grep -E "\[Python\] \[Final Running Result\] ((Official\-Release)|(Pre\-Release))" | grep -E -o "((Official\-Release)|(Pre\-Release))")
           echo "release_version: $release_version"
 
-          echo "::set-output name=release_version::$(echo $release_version)"
+          echo "::set-output name=python_release::$(echo $release_version)"
 
       # This flow for the project type is GitHub Action reusable workflow
       - name: Build git tag and create GitHub release
@@ -82,5 +90,5 @@ jobs:
           release_version=$(echo "$release" | grep -E "\[GitHub Action - Reusable workflow\] \[Final Running Result\] Official-Release and version: ([0-9]{1,})" | grep -E -o "([0-9]{1,})")
           echo "release_version: $release_version"
 
-          echo "::set-output name=release_version::$(echo $release_version)"
+          echo "::set-output name=github_action_reusable_workflow_release::$(echo $release_version)"
 
