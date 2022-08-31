@@ -38,7 +38,7 @@ jobs:
 
   test_deploy_as_new_branch:
 #    name: Create new git branch by the tagged commit
-    needs: build_git-tag_and_create_github-release
+    needs: test_build_git-tag_and_create_github-release
     if: ${{ github.event_name == 'push' && 
                 needs.build_git-tag_and_create_github-release.outputs.github-action_reusable_workflow_release_version != 'Initial' && 
                 needs.build_git-tag_and_create_github-release.outputs.github-action_reusable_workflow_release_version != 'Pre' }}
