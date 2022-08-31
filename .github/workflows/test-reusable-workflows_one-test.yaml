@@ -95,12 +95,11 @@ jobs:
 #    if: github.event_name == 'push'
     # The environment variables for integration test.
     uses: ./.github/workflows/build_git-tag_and_create_github-release.yaml
-    env:
-      PYTHON_PACKAGE_NAME: test_gh_workflow
-      SOFTWARE_VERSION_STYLE: general-3
     with:
       project_type: python-package
       debug_mode: true
+      project_name: test_gh_workflow
+      software_version_format: general-3
 #      activate_git_event: push
 
 
