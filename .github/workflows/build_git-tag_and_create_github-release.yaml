@@ -6,11 +6,17 @@
 # Workflow input parameters:
 #     * General arguments:
 #         * project_type: Different project type would get the software version info in different way.
-#         * activate_git_event: Which git event should activate the workflow.
 #         * debug_mode: It would run the tasks as log message, doesn't essentially run feature if this option is true.
+#         * project_name: The project name.
+#         * software_version_format: The format of software version.
 #
 # Workflow running output:
 #     Yes, it has running result output. The output is the release version.
+#
+#     * Workflow output:
+#          It would output the version which would be build as git tag and create GitHub release version title.
+#         * python_release_version: Python project release version info.
+#         * github-action_reusable_workflow_release_version: GitHub Action reusable workflow project release version info.
 #
 ##############################################################################################
 
@@ -67,7 +73,7 @@ jobs:
         run: curl https://raw.githubusercontent.com/Chisanan232/GitHub-Action_Workflow-Template-Python/develop/scripts/ci/build_git-tag_or_create_github-release.sh --output ./scripts/ci/build_git-tag_or_create_github-release.sh
 
       # This flow for the project type is Python project
-      - name: Build git tag and create GitHub release
+      - name: Build git tag and create GitHub release for Python project
         if: ${{ inputs.project_type == 'python-package' }}
         id: python_release
         run: | 
@@ -80,7 +86,7 @@ jobs:
           echo "::set-output name=release_type::$(echo $release_version)"
 
       # This flow for the project type is GitHub Action reusable workflow
-      - name: Build git tag and create GitHub release
+      - name: Build git tag and create GitHub release for GitHub Action reusable workflow project
         if: ${{ inputs.project_type == 'github-action-reusable-workflow' }}
         id: github_action_reusable_workflow_release
         run: | 
