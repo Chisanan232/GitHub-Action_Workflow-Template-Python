@@ -49,15 +49,7 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Check it whether get the output of previous one job which has version info or not
-        run: |
-          release_version=$(echo $RELEASE_TYPE)
-          if [ "$release_version" != "" ]; then
-              echo "It gets data which is release version info!"
-              exit 0
-          else
-              echo "It doesn't get any data which is release version info."
-              exit 1
-          fi
+        run: bash scripts/ci/check_getting_output.sh
 
       - name: Create new git branch by the tagged commit
         run: bash ./scripts/ci/deployment_new_version_workflow.sh 'true'

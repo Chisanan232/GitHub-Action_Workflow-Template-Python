@@ -32,7 +32,7 @@ jobs:
 #    name: Prepare all unit test items
     uses: ./.github/workflows/prepare_test_items.yaml
     with:
-      shell_path: scripts/ci/get-unit-test-paths.sh
+      shell_path: scripts/ci/test/get-unit-test-paths.sh
       shell_arg: unix
 
 
@@ -40,7 +40,7 @@ jobs:
 #    name: Prepare all integration test items
     uses: ./.github/workflows/prepare_test_items.yaml
     with:
-      shell_path: scripts/ci/get-integration-test-paths.sh
+      shell_path: scripts/ci/test/get-integration-test-paths.sh
       shell_arg: unix
 
 
@@ -154,15 +154,7 @@ jobs:
       RELEASE_TYPE: ${{ needs.build_git-tag_and_create_github-release.outputs.python_release_version }}
     steps:
       - name: Check it whether get the output of previous one job which has version info or not
-        run: |
-          release_version=$(echo $RELEASE_TYPE)
-          if [ "$release_version" != "" ]; then
-              echo "It gets data which is release version info!"
-              exit 0
-          else
-              echo "It doesn't get any data which is release version info."
-              exit 1
-          fi
+        run: bash scripts/ci/check_getting_output.sh
 
       - name: For testing about getting the software version info
         run: | 
