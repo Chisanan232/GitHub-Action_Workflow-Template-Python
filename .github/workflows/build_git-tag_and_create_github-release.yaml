@@ -78,12 +78,12 @@ jobs:
         id: python_release
         run: | 
           release=$(bash ./scripts/ci/build_git-tag_or_create_github-release.sh ${{ inputs.project_type }}  ${{ inputs.debug_mode }} ${{ inputs.project_name }} ${{ inputs.software_version_format }})
-          echo "release: $release"
+          echo "📄 Release log: $release"
 
-          release_version=$(echo "$release" | grep -E "\[Python\] \[Final Running Result\] ((Official\-Release)|(Pre\-Release))" | grep -E -o "((Official\-Release)|(Pre\-Release))")
-          echo "release_version: $release_version"
+          release_type=$(echo "$release" | grep -E "\[Python\] \[Final Running Result\] ((Official\-Release)|(Pre\-Release))" | grep -E -o "((Official\-Release)|(Pre\-Release))")
+          echo "🐍 Release Type: $release_type"
 
-          echo "::set-output name=release_type::$(echo $release_version)"
+          echo "::set-output name=release_type::$(echo $release_type)"
 
       # This flow for the project type is GitHub Action reusable workflow
       - name: Build git tag and create GitHub release for GitHub Action reusable workflow project
@@ -91,10 +91,10 @@ jobs:
         id: github_action_reusable_workflow_release
         run: | 
           release=$(bash ./scripts/ci/build_git-tag_or_create_github-release.sh ${{ inputs.project_type }} ${{ inputs.debug_mode }})
-          echo "release: $release"
+          echo "📄 Release log: $release"
 
           release_version=$(echo "$release" | grep -E "\[GitHub Action - Reusable workflow\] \[Final Running Result\] Official-Release and version: ([0-9]{1,})" | grep -E -o "([0-9]{1,})")
-          echo "release_version: $release_version"
+          echo "🤖 Release Version: $release_version"
 
           echo "::set-output name=release_version::$(echo $release_version)"
 
