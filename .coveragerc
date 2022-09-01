@@ -1,11 +1,7 @@
-# # This test directory for testing to simulate a Python library project structure.
-
 [run]
+branch = True
 parallel = True
-relative_files = True
 source=./test_gh_workflow
 
 omit =
     */__init__.py
-
-#ignore_errors = True

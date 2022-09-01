@@ -1,0 +1,160 @@
+name: Python project CI Test (one-test)
+
+on:
+  push:
+    branches:
+      - "develop"
+      - "release"
+      - "release-**"
+      - "release/**"
+      - "master"
+    paths-ignore:
+      - ".gitcommitrules"
+      - ".gitignore"
+      - "LICENSE"
+      - "README.md"
+  pull_request:
+    branches:
+      - "develop"
+      - "release"
+      - "release-**"
+      - "release/**"
+      - "master"
+    paths-ignore:
+      - ".gitcommitrules"
+      - ".gitignore"
+      - "LICENSE"
+      - "README.md"
+
+jobs:
+  prep-testbed_unit-test:
+#    name: Prepare all unit test items
+    uses: ./.github/workflows/prepare_test_items.yaml
+    with:
+      shell_path: scripts/ci/test/get-unit-test-paths.sh
+      shell_arg: unix
+
+
+  run_unit-test:
+#    name: Run all unit test items
+    needs: prep-testbed_unit-test
+    uses: ./.github/workflows/run_test_items_via_pytest.yaml
+    with:
+      test_type: unit-test
+      all_test_items_paths: ${{needs.prep-testbed_unit-test.outputs.all_test_items}}
+      debug_mode: true
+
+
+  unit-test_codecov:
+#    name: Organize and generate the testing report and upload it to Codecov
+    needs: run_unit-test
+    uses: ./.github/workflows/organize_and_generate_test_cov_reports.yaml
+    with:
+      test_type: unit-test
+
+
+#  codecov_finish:
+##    name: Organize and generate the testing report and upload it to Codecov
+##    if: github.ref_name == 'release' || github.ref_name == 'master'
+#    needs: [unit-test_codecov]
+#    uses: ./.github/workflows/upload_test_cov_report.yaml
+#    secrets:
+#      codecov_token: ${{ secrets.CODECOV_TOKEN }}
+#    with:
+#      test_type: unit-test
+#      upload-to-codecov: true
+#      codecov_flags: unit  # Required if 'upload-to-codecov' is true
+#      codecov_name: gh_workflow_template  # Required if 'upload-to-codecov' is true
+
+
+  coveralls_finish:
+#    name: Organize and generate the testing report and upload it to Coveralls
+#    if: github.ref_name == 'release' || github.ref_name == 'master'
+    needs: [unit-test_codecov]
+    uses: ./.github/workflows/upload_test_cov_report.yaml
+    secrets:
+      coveralls_token: ${{ secrets.COVERALLS_TOKEN }}
+    with:
+      test_type: unit-test
+      upload-to-coveralls: true
+
+
+  codacy_finish:
+#    name: Upload test report to Codacy to analyse and record code quality
+    needs: [unit-test_codecov]
+    uses: ./.github/workflows/upload_test_cov_report.yaml
+    secrets:
+      codacy_token: ${{ secrets.CODACY_PROJECT_TOKEN }}
+    with:
+      test_type: unit-test
+      upload-to-codacy: true
+
+
+#  pre-building_check:
+##    name: Check about it could work finely by installing the Python package with setup.py file
+#    if: github.event_name == 'push' && (github.ref_name == 'release' || github.ref_name == 'master')
+#    needs: [codecov_finish, codacy_finish]
+#    uses: ./.github/workflows/pre-building_test_setup_package.yaml
+#    with:
+#      python_package_name: smoothcrawler
+#      test_import_package_code_1: import smoothcrawler as mr
+#      test_import_package_code_2: from smoothcrawler.crawler import SimpleCrawler
+#      test_import_package_code_3: from smoothcrawler.components.data import BaseHTTPResponseParser, BaseDataHandler
+#      test_python_script: ./scripts/test_crawler.py
+
+
+  build_git-tag_and_create_github-release:
+#    name: Build git tag and GitHub release if it needs
+    needs: [coveralls_finish, codacy_finish]
+    uses: ./.github/workflows/build_git-tag_and_create_github-release.yaml
+    with:
+      project_type: python-package
+      project_name: test_gh_workflow
+      software_version_format: general-3
+      debug_mode: true
+
+
+  fake_build_pkg_and_push_to_pypi:
+#    name: Check about it could work finely by installing the Python package with setup.py file
+    needs: build_git-tag_and_create_github-release
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    env:
+      RELEASE_TYPE: ${{ needs.build_git-tag_and_create_github-release.outputs.python_release_version }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Check it whether get the output of previous one job which has version info or not
+        run: bash scripts/ci/check_getting_output.sh
+#        run: |
+#          release_version=$(echo $RELEASE_TYPE)
+#          if [ "$release_version" != "" ]; then
+#              echo "📬🎉🍻 It gets data which is release version info!"
+#              exit 0
+#          else
+#              echo "📭🙈 It doesn't get any data which is release version info."
+#              exit 1
+#          fi
+
+      - name: For testing about getting the software version info
+        run: | 
+          echo "Release version: $RELEASE_TYPE"
+
+
+#  compile_and_build_python_pkg:
+##    name: Compile the Python source code and build it as Python package files
+#    if: github.event_name == 'push' && github.ref_name == 'master'
+#    needs: pre-building_check
+#    uses: ./.github/workflows/build_package.yaml
+
+
+#  push_python_pkg_to_pypi:
+##    name: Upload the Python package files which has been compiled to PyPi
+#    if: github.event_name == 'push' && github.ref_name == 'master'
+#    needs: compile_and_build_python_pkg
+#    uses: ./.github/workflows/push_pkg_to_pypi.yaml
+#    secrets:
+#      pypi_user: ${{ secrets.PYPI_USERNAME }}
+#      pypi_token: ${{ secrets.PYPI_PASSWORD }}
+
