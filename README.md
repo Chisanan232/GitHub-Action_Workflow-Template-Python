@@ -1,8 +1,10 @@
 # GitHub Action - Workflow template for Python library
 
-[![github-action reusable workflows test](https://github.com/Chisanan232/GitHub-Action-Template-Python/actions/workflows/test-reusable-workflows.yaml/badge.svg)](https://github.com/Chisanan232/GitHub-Action-Template-Python/actions/workflows/test-reusable-workflows.yaml)
 [![Release](https://img.shields.io/github/release/Chisanan232/GitHub-Action-Template-Python.svg?label=Release&logo=github)](https://github.com/Chisanan232/GitHub-Action-Template-Python/releases)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg?logo=apache)](https://opensource.org/licenses/Apache-2.0)
+[![Python project CI Test (one-test)](https://github.com/Chisanan232/GitHub-Action_Workflow-Template-Python/actions/workflows/test_python_project_ci_one-test.yaml/badge.svg)](https://github.com/Chisanan232/GitHub-Action_Workflow-Template-Python/actions/workflows/test_python_project_ci_one-test.yaml)
+[![Python project CI Test (multi-tests)](https://github.com/Chisanan232/GitHub-Action_Workflow-Template-Python/actions/workflows/test_python_project_ci_multi-tests.yaml/badge.svg)](https://github.com/Chisanan232/GitHub-Action_Workflow-Template-Python/actions/workflows/test_python_project_ci_multi-tests.yaml)
+[![GitHub Action reusable workflow project CI Test](https://github.com/Chisanan232/GitHub-Action_Workflow-Template-Python/actions/workflows/test_gh_reusable_workflow.yaml/badge.svg)](https://github.com/Chisanan232/GitHub-Action_Workflow-Template-Python/actions/workflows/test_gh_reusable_workflow.yaml)
 
 
 This is a GitHub Action workflow template for **_Python library_** project.
@@ -26,20 +28,22 @@ The usage of each workflow template.
 
 * [_prepare_test_items.yaml_](#prepare_test_itemsyaml)
 * [_run_test_items_via_pytest.yaml_](#run_test_items_via_pytestyaml)
-* [_organize_and_generate_testing_coverage_reports.yaml_](#organize_and_generate_testing_coverage_reportsyaml)
-* [_upload_test_report_to_codecov.yaml_](#upload_test_report_to_codecovyaml)
-* [_upload_code_report_to_codacy.yaml_](#upload_code_report_to_codacyyaml)
+* [_organize_and_generate_test_cov_reports.yaml_](#organize_and_generate_test_cov_reportsyaml)
+* [_upload_test_cov_report.yaml_](#upload_test_cov_reportyaml)
+* [_build_git-tag_and_create_github-release.yaml_](#build_git-tag_and_create_github-releaseyaml)
+
+<hr>
 
 
-#### _prepare_test_items.yaml_
+### _prepare_test_items.yaml_
 
 * Description: Prepare the test items.
 * Options:
 
-| option name | option is optional or required | function content                                     |
-|-------------|--------------------------------|------------------------------------------------------|
-| shell_path  | Required                       | The path shell script for getting the testing items. |
-| shell_arg   | Required                       | Input arguments of the shell script.                 |
+| option name | data type | optional or required | function content                                     |
+|-------------|-----------|----------------------|------------------------------------------------------|
+| shell_path  | string    | Required             | The path shell script for getting the testing items. |
+| shell_arg   | string    | Required             | Input arguments of the shell script.                 |
 
 * Output: 
   * all_test_items: All the test items it would run.
@@ -61,24 +65,29 @@ And we could get this workflow output result via keyword _all_test_items_.
 
 <hr>
 
-#### _run_test_items_via_pytest.yaml_
+### _run_test_items_via_pytest.yaml_
 
 * Description: Run testing by specific type with all test items via PyTest and generate its testing coverage report (it would save reports by _actions/upload-artifact@v3_).
 * Options:
 
-| option name             | option is optional or required       | function content                                                                           |
-|-------------------------|--------------------------------------|--------------------------------------------------------------------------------------------|
-| test_type               | Required                             | The testing type. In generally, it only has 2 options: _unit-test_ and _integration-test_. |
-| all_test_items_paths    | Required                             | The target paths of test items under test.                                                 |
-| setup_http_server       | Optional, Default value is _false_   | If it's true, it would set up and run HTTP server for testing.                             |
-| http_server_host        | Optional, Default value is _0.0.0.0_ | The host IPv4 address of HTTP server.                                                      |
-| http_server_port        | Optional, Default value is _12345_   | The port number of HTTP server.                                                            |
-| http_server_app_module  | Optional, Default value is _app_     | The module path of HTTP server.                                                            |
-| http_server_enter_point | Optional, Default value is _app_     | The object about the web application.                                                      |
+| option name             | data type | optional or required                 | function content                                                                           |
+|-------------------------|-----------|--------------------------------------|--------------------------------------------------------------------------------------------|
+| test_type               | string    | Required                             | The testing type. In generally, it only has 2 options: _unit-test_ and _integration-test_. |
+| all_test_items_paths    | string    | Required                             | The target paths of test items under test.                                                 |
+| setup_http_server       | string    | Optional, Default value is _false_   | If it's true, it would set up and run HTTP server for testing.                             |
+| http_server_host        | string    | Optional, Default value is _0.0.0.0_ | The host IPv4 address of HTTP server.                                                      |
+| http_server_port        | string    | Optional, Default value is _12345_   | The port number of HTTP server.                                                            |
+| http_server_app_module  | string    | Optional, Default value is _app_     | The module path of HTTP server.                                                            |
+| http_server_enter_point | string    | Optional, Default value is _app_     | The object about the web application.                                                      |
+| debug_mode              | boolean   | Optional, Default value is _false_   | For debug, so it's matrix would only has one os: ubuntu-22.04 & one python-version: 3.10.  |
 
 * Output: 
 
 No, but it would save the testing coverage reports to provide after-process to organize and record.
+
+| Upload-Artifact name | description                                                                                                                                                                                          |
+|----------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| coverage             | The test coverage report which be generated by PyTest, and it's recorded after run test done. The file name format would be .coverage.<inputs.test type>.<matrix.runtime os>-<matrix.python version> |
 
 * How to use it?
 
@@ -109,18 +118,23 @@ is provided by previous workflow? That is all testing items.
 
 <hr>
 
-#### _organize_and_generate_testing_coverage_reports.yaml_
+### _organize_and_generate_test_cov_reports.yaml_
 
 * Description: Organize all the testing coverage reports which be generated in different runtime OS with Python version. (it would save reports by _actions/upload-artifact@v3_).
 * Options:
 
-| option name                 | option is optional or required | function content                                                                                                                                                              |
-|-----------------------------|--------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| test_type                   | Required                       | The testing type. In generally, it only has 2 options: _unit-test_ and _integration-test_.                                                                                    |
+| option name | data type | optional or required | function content                                                                           |
+|-------------|-----------|----------------------|--------------------------------------------------------------------------------------------|
+| test_type   | string    | Required             | The testing type. In generally, it only has 2 options: _unit-test_ and _integration-test_. |
 
 * Output: 
 
-No, but it would save the testing coverage reports (coverage_<test_type>.xml) to provide after-process to organize and record.
+No, but it would save the testing coverage reports to provide after-process to organize and record.
+
+| Upload-Artifact name     | description                                                                                                     |
+|--------------------------|-----------------------------------------------------------------------------------------------------------------|
+| test_coverage_report     | The handled test coverage report (.coverage file). It's file name format would be .coverage.<inputs.test type>. |
+| test_coverage_xml_report | The handled test coverage report (.xml file). It's file name format would be coverage_<inputs.test type>.xml.   |
 
 * How to use it?
 
@@ -128,7 +142,7 @@ No, but it would save the testing coverage reports (coverage_<test_type>.xml) to
   unit-test_codecov:
 #    name: Organize and generate the testing report and upload it to Codecov
     needs: run_unit-test
-    uses: Chisanan232/GitHub-Action-Template-Python/.github/workflows/organize_and_generate_testing_coverage_reports.yaml@master
+    uses: Chisanan232/GitHub-Action-Template-Python/.github/workflows/organize_and_generate_test_cov_reports.yaml@master
     with:
       test_type: unit-test
 ```
@@ -137,7 +151,7 @@ It would upload the organized report via _actions/upload-artifact@v3_. And it do
 
 <hr>
 
-#### _upload_test_report_to_codecov.yaml_
+### _upload_test_cov_report.yaml_
 
 * Description: Upload the testing coverage reports to Codecov.
 * Options:
@@ -146,18 +160,23 @@ It has 2 different types option could use:
 
 _General option_:
 
-| option name   | option is optional or required | function content                                                                           |
-|---------------|--------------------------------|--------------------------------------------------------------------------------------------|
-| download_path | Required                       | The path to download testing coverage reports via _actions/download-artifact@v3_.          |
-| test_type     | Required                       | The testing type. In generally, it only has 2 options: _unit-test_ and _integration-test_. |
-| codecov_flags | Required                       | The flags of the testing coverage report for Codecov.                                      |
-| codecov_name  | Required                       | The name of the testing coverage report for Codecov.                                       |
+| option name         | data type | optional or required                     | function content                                                                                                    |
+|---------------------|-----------|------------------------------------------|---------------------------------------------------------------------------------------------------------------------|
+| download_path       | string    | Optional. Default value is './'.         | The path to download testing coverage reports via _actions/download-artifact@v3_.                                   |
+| test_type           | string    | Required                                 | The testing type. In generally, it only has 3 options: _unit-test_, _integration-test_ and _all-type_.              |
+| upload-to-codecov   | boolean   | Optional. Default value is _false_.      | If it's true, it would upload testing coverage report for Codecov (https://codecov.io).                             |
+| codecov_flags       | string    | Optional. Default value is empty string. | The flags of the testing coverage report for Codecov. This option would be required if _upload-to-codecov_ is true. |
+| codecov_name        | string    | Optional. Default value is empty string. | The name of the testing coverage report for Codecov. This option would be required if _upload-to-codecov_ is true.  |
+| upload-to-coveralls | boolean   | Optional. Default value is _false_.      | If it's true, it would upload testing coverage report for Coveralls (https://coveralls.io).                         |
+| upload-to-codacy    | boolean   | Optional. Default value is _false_.      | If it's true, it would upload testing coverage report for Codacy (https://app.codacy.com/).                         |
 
 _Secret option_:
 
-| option name   | option is optional or required | function content                                                |
-|---------------|--------------------------------|-----------------------------------------------------------------|
-| codecov_token | Required                       | The API token for uploading testing coverage report to Codecov. |
+| option name     | option is optional or required           | function content                                                                                                                  |
+|-----------------|------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------|
+| codecov_token   | Optional. Default value is empty string. | The API token for uploading testing coverage report to Codecov. This option would be required if _upload-to-codecov_ is true.     |
+| coveralls_token | Optional. Default value is empty string. | The API token for uploading testing coverage report to Coveralls. This option would be required if _upload-to-coveralls_ is true. |
+| codacy_token    | Optional. Default value is empty string. | The API token for uploading testing coverage report to Codacy. This option would be required if _upload-to-codacy_ is true.       |
 
 * Output: 
 
@@ -165,70 +184,127 @@ Nothing.
 
 * How to use it?
 
-Before run this workflow, please make sure testing coverage report is ready.
+   ⚠️ Before run this reusable workflow, please make sure testing coverage report is ready.<br>
 
-```yaml
-  codecov_finish:
-#    name: Organize and generate the testing report and upload it to Codecov
-    needs: [unit-test_codecov]
-    uses: Chisanan232/GitHub-Action-Template-Python/.github/workflows/upload_test_report_to_codecov.yaml@master
-    secrets:
-      codecov_token: ${{ secrets.CODECOV_TOKEN }}
-    with:
-      download_path: ./
-      codecov_flags: unittests
-      codecov_name: smoothcrawler-cluster_github-actions_test # optional
-```
+   ❔What format of test coverage report it could use? Different platform would need different format. But basically, it only accepts 2 types: _.coverage_ & _.xml_. 
+   
+   👀 This reusable work flow would check the input parameters first. The specific platform token shouldn't be empty where uploading flag is true. 
 
-* The badges would be generated after this workflow done:
+    * Uploading test coverage report to **_Codecov_** (accepted report format: _.xml_)
 
-[![codecov](https://codecov.io/gh/Chisanan232/GitHub-Action-Template-Python/branch/master/graph/badge.svg?token=wbPgJ4wxOl)](https://codecov.io/gh/Chisanan232/GitHub-Action-Template-Python)
+        In Codecov case, it would need other 2 necessary options _codecov_flags_ & _codecov_name_.
+
+        ```yaml
+          codecov_finish:
+        #    name: Organize and generate the testing report and upload it to Codecov
+            needs: [unit-test_codecov]
+            uses: Chisanan232/GitHub-Action-Template-Python/.github/workflows/upload_test_cov_report.yaml@master
+            secrets:
+              codecov_token: ${{ secrets.CODECOV_TOKEN }}
+            with:
+              test_type: unit-test
+              upload-to-codecov: true
+              codecov_flags: unittests # required if upload-to-codecov is true
+              codecov_name: smoothcrawler-cluster_github-actions_test # required if upload-to-codecov is true
+        ```
+      
+        The badge it generates: 
+        
+        [![codecov](https://codecov.io/gh/Chisanan232/GitHub-Action-Template-Python/branch/master/graph/badge.svg?token=wbPgJ4wxOl)](https://codecov.io/gh/Chisanan232/GitHub-Action-Template-Python)
+
+    * Uploading test coverage report to **_Coveralls_** (accepted report format: _.coverage_)
+
+        In Coveralls case, the Python tool _coveralls_ only accept _.coverage_ type report so that it would do coverage process again (integrate all test types report into one report).
+
+        ```yaml
+          codecov_finish:
+        #    name: Organize and generate the testing report and upload it to Coveralls
+            needs: [unit-test_codecov]
+            uses: Chisanan232/GitHub-Action-Template-Python/.github/workflows/upload_test_cov_report.yaml@master
+            secrets:
+              coveralls_token: ${{ secrets.COVERALLS_TOKEN }}
+            with:
+              test_type: unit-test
+              upload-to-coveralls: true
+        ```
+      
+        The badge it generates: 
+        
+        [![Coverage Status](https://coveralls.io/repos/github/Chisanan232/GitHub-Action-Template-Python/badge.svg?branch=master)](https://coveralls.io/github/Chisanan232/GitHub-Action-Template-Python?branch=master)
+
+    * Uploading test coverage report to **_Codacy_** (accepted report format: _.xml_) 
+
+        In Codacy case, please use **CODACY_PROJECT_TOKEN**, not **CODACY_API_TOKEN**.
+
+        ```yaml
+          codecov_finish:
+        #    name: Organize and generate the testing report and upload it to Codacy
+            needs: [unit-test_codecov]
+            uses: Chisanan232/GitHub-Action-Template-Python/.github/workflows/upload_test_cov_report.yaml@master
+            secrets:
+              codacy_token: ${{ secrets.CODACY_PROJECT_TOKEN }}
+            with:
+              test_type: unit-test
+              upload-to-codacy: true
+        ```
+      
+        The badge it generates: 
+        
+        [![Codacy Badge](https://app.codacy.com/project/badge/Grade/e8bfcd5830ba4232b45aca7c2d3e6310)](https://www.codacy.com/gh/Chisanan232/GitHub-Action-Template-Python/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Chisanan232/GitHub-Action-Template-Python&amp;utm_campaign=Badge_Grade)
+        [![Codacy Badge](https://app.codacy.com/project/badge/Coverage/e8bfcd5830ba4232b45aca7c2d3e6310)](https://www.codacy.com/gh/Chisanan232/GitHub-Action-Template-Python/dashboard?utm_source=github.com&utm_medium=referral&utm_content=Chisanan232/GitHub-Action-Template-Python&utm_campaign=Badge_Coverage)
 
 <hr>
 
-#### _upload_code_report_to_codacy.yaml_
+### _build_git-tag_and_create_github-release.yaml_
 
-* Description: Upload the testing coverage reports to Codacy.
+* Description: Build a git tag on a specific commit in every git branch. And create GitHub release if current git branch is 'master'.
 * Options:
 
-It has 2 different types option could use:
-
-_General option_:
-
-| option name   | option is optional or required | function content                                                                           |
-|---------------|--------------------------------|--------------------------------------------------------------------------------------------|
-| download_path | Optional                       | The path to download testing coverage reports via _actions/download-artifact@v3_.          |
-| test_type     | Required                       | The testing type. In generally, it only has 2 options: _unit-test_ and _integration-test_. |
-
-_Secret option_:
-
-| option name  | option is optional or required | function content                                               |
-|--------------|--------------------------------|----------------------------------------------------------------|
-| codacy_token | Required                       | The API token for uploading testing coverage report to Codacy. |
+| option name             | data type | optional or required                      | function content                                                                                                                                                     |
+|-------------------------|-----------|-------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| project_type            | string    | Required                                  | Different project type would get the software version info in different way. Currently, it only has 2 options: _python-package_ or _github-action-reusable-workflow_ |
+| debug_mode              | boolean   | Optional, Default value is _false_        | It would run the tasks as log message, doesn't essentially run feature if this option is true.                                                                       |
+| project_name            | string    | Optional, Default value is _empty string_ | The project name.                                                                                                                                                    |
+| software_version_format | string    | Optional, Default value is _empty string_ | The format of software version.                                                                                                                                      |
 
 * Output: 
 
-Nothing.
+Yes, it has running result output. It would output the version which could provide after-process to verify what thing it should do, e.g., release or not.
+
+| Workflow output                                 | description                                                                                          |
+|-------------------------------------------------|------------------------------------------------------------------------------------------------------|
+| python_release_version                          | Python project release version info. It only has 2 types value: _Official-Release_ or _Pre-Release_. |
+| github-action_reusable_workflow_release_version | Python project release version info.                                                                 |
 
 * How to use it?
 
-Before run this workflow, please make sure testing coverage report is ready.
+    * **_Python package_** usage case:
 
-```yaml
-  codacy_finish:
-#    name: Upload test report to Codacy to analyse and record code quality
-    needs: [unit-test_codecov]
-    uses: Chisanan232/GitHub-Action-Template-Python/.github/workflows/upload_code_report_to_codacy.yaml@master
-    secrets:
-      codacy_token: ${{ secrets.CODACY_PROJECT_TOKEN }}
-    with:
-      download_path: ./
-      test_type: all-test
-```
+    ```yaml
+      build_git-tag_and_create_github-release:
+    #    name: Build git tag and GitHub release if it needs for Python package project
+        needs: [coveralls_finish, codacy_finish]
+        uses: ./.github/workflows/build_git-tag_and_create_github-release.yaml
+        with:
+          project_type: python-package
+          project_name: test_gh_workflow
+          software_version_format: general-3
+          debug_mode: true
+    ```
 
-* The badges would be generated after this workflow done:
+    * **_GitHub Action reusable workflow_** usage case:
 
-[![Codacy Badge](https://app.codacy.com/project/badge/Grade/e8bfcd5830ba4232b45aca7c2d3e6310)](https://www.codacy.com/gh/Chisanan232/GitHub-Action-Template-Python/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Chisanan232/GitHub-Action-Template-Python&amp;utm_campaign=Badge_Grade)
-[![Codacy Badge](https://app.codacy.com/project/badge/Coverage/e8bfcd5830ba4232b45aca7c2d3e6310)](https://www.codacy.com/gh/Chisanan232/GitHub-Action-Template-Python/dashboard?utm_source=github.com&utm_medium=referral&utm_content=Chisanan232/GitHub-Action-Template-Python&utm_campaign=Badge_Coverage)
+    ```yaml
+      build_git-tag_and_create_github-release:
+    #    name: Build git tag and GitHub release if it needs for GitHub Action reusable workflow project
+        needs: [coveralls_finish, codacy_finish]
+        uses: ./.github/workflows/build_git-tag_and_create_github-release.yaml
+        with:
+          project_type: github-action-reusable-workflow
+          debug_mode: true
+    ```
 
-<hr>
+The badge it generates: 
+
+[![Release](https://img.shields.io/github/release/Chisanan232/GitHub-Action-Template-Python.svg?label=Release&logo=github)](https://github.com/Chisanan232/GitHub-Action-Template-Python/releases)
+

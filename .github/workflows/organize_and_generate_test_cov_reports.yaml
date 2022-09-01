@@ -1,4 +1,4 @@
-############################################################################
+###################################################################################################################################
 #
 # Workflow Description:
 #     Organize all the testing coverage reports. (it would save reports by 'actions/upload-artifact@v3').
@@ -9,7 +9,11 @@
 # Workflow running output:
 #     No, but it would save the testing coverage reports (coverage.xml) to provide after-process to organize and record.
 #
-############################################################################
+#     * Upload-Artifact:
+#         * test_coverage_report: The handled test coverage report (.coverage file). It's file name format would be .coverage.<inputs.test type>.
+#         * test_coverage_xml_report: The handled test coverage report (.xml file). It's file name format would be coverage_<inputs.test type>.xml.
+#
+###################################################################################################################################
 
 name: Organize all testing coverage reports which be tested in many different runtime OS and Python version as a testing coverage report
 
@@ -45,6 +49,8 @@ jobs:
           python3 -m pip install --upgrade pip
           pip3 install -U pip
           pip3 install coverage
+          pip3 install codecov
+          pip3 install coveralls
 
       - name: Combine all testing code coverage result files with one specific test type
         if: ${{ inputs.test_type == 'unit-test' || inputs.test_type == 'integration-test' }}
@@ -60,9 +66,16 @@ jobs:
       - name: General testing coverage report as XML format with ${{ inputs.test_type }}
         run: coverage xml --data-file=.coverage.${{ inputs.test_type }} -o coverage_${{ inputs.test_type }}.xml
 
-      - name: Upload testing coverage report
+      - name: Upload testing coverage report (.coverage)
         uses: actions/upload-artifact@v3
         with:
-          name: final_project_testing_coverage_report
+          name: test_coverage_report
+          path: .coverage.${{ inputs.test_type }}
+          if-no-files-found: error
+
+      - name: Upload testing coverage report (.xml)
+        uses: actions/upload-artifact@v3
+        with:
+          name: test_coverage_xml_report
           path: coverage_${{ inputs.test_type }}.xml
           if-no-files-found: error

@@ -1,0 +1,56 @@
+name: GitHub Action reusable workflow project CI Test
+
+on:
+  push:
+    branches:
+      - "develop"
+      - "release"
+      - "release-**"
+      - "release/**"
+      - "master"
+    paths-ignore:
+      - ".gitcommitrules"
+      - ".gitignore"
+      - "LICENSE"
+      - "README.md"
+
+  pull_request:
+    branches:
+      - "develop"
+      - "release"
+      - "release-**"
+      - "release/**"
+      - "master"
+    paths-ignore:
+      - ".gitcommitrules"
+      - ".gitignore"
+      - "LICENSE"
+      - "README.md"
+
+jobs:
+  test_build_git-tag_and_create_github-release:
+#    name: Build git tag and GitHub release if it needs
+    uses: ./.github/workflows/build_git-tag_and_create_github-release.yaml
+    with:
+      project_type: github-action-reusable-workflow
+      debug_mode: true
+
+
+  test_deploy_as_new_branch:
+#    name: Create new git branch by the tagged commit
+    needs: test_build_git-tag_and_create_github-release
+    if: ${{ github.event_name == 'push' && 
+                needs.test_build_git-tag_and_create_github-release.outputs.github-action_reusable_workflow_release_version != 'Initial' && 
+                needs.test_build_git-tag_and_create_github-release.outputs.github-action_reusable_workflow_release_version != 'Pre' }}
+    runs-on: ubuntu-latest
+    env:
+      RELEASE_TYPE: ${{ needs.test_build_git-tag_and_create_github-release.outputs.github-action_reusable_workflow_release_version }}
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Check it whether get the output of previous one job which has version info or not
+        run: bash scripts/ci/check_getting_output.sh
+
+      - name: Create new git branch by the tagged commit
+        run: bash ./scripts/ci/deployment_new_version_workflow.sh 'true'
+
