@@ -124,6 +124,12 @@ fi
 Current_Branch=$(git branch --list | cat | grep -E '\* ([a-zA-Z0-9]{1,16})' | grep -E -o '([a-zA-Z0-9]{1,16})')
 echo "🔎 🌳  Current git branch: $Current_Branch"
 
+git config --global user.name "Chisanan232"
+git config --global user.email "chi10211201@cycu.org.tw"
+git_global_username=$(git config --global user.name)
+git_global_user_email=$(git config --global user.email)
+echo "🔎 🌳  Current git name: $git_global_username"
+echo "🔎 🌳  Current git email: $git_global_user_email"
 
 declare Tag_Version    # This is the return value of function 'get_latest_version_by_git_tag'
 get_latest_version_by_git_tag() {
@@ -181,8 +187,6 @@ build_git_tag_or_github_release() {
         echo " 🔍👀 [DEBUG MODE] Build git tag $New_Release_Tag in git branch '$Current_Branch'."
     else
         git tag -a "$New_Release_Tag" -m "$New_Release_Tag"
-        git config --global user.email "chi10211201@cycu.org.tw"
-        git config --global user.name "Chisanan232"
         git push -u origin --tags
     fi
     echo "🎉 🍻 🌳 🏷  Build git tag which named '$New_Release_Tag' with current branch '$Current_Branch' successfully!"
