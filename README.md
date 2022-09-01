@@ -1,9 +1,10 @@
 # GitHub Action - Workflow template for Python library
 
-[![Github-Action reusable workflows test (one-test)](https://github.com/Chisanan232/GitHub-Action-Template-Python/actions/workflows/test-reusable-workflows_one-test.yaml/badge.svg)](https://github.com/Chisanan232/GitHub-Action-Template-Python/actions/workflows/test-reusable-workflows_one-test.yaml)
-[![Github-Action reusable workflows test (multi-tests)](https://github.com/Chisanan232/GitHub-Action-Template-Python/actions/workflows/test-reusable-workflows.yaml/badge.svg)](https://github.com/Chisanan232/GitHub-Action-Template-Python/actions/workflows/test-reusable-workflows.yaml)
 [![Release](https://img.shields.io/github/release/Chisanan232/GitHub-Action-Template-Python.svg?label=Release&logo=github)](https://github.com/Chisanan232/GitHub-Action-Template-Python/releases)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg?logo=apache)](https://opensource.org/licenses/Apache-2.0)
+[![Python project CI Test (one-test)](https://github.com/Chisanan232/GitHub-Action_Workflow-Template-Python/actions/workflows/test_python_project_ci_one-test.yaml/badge.svg)](https://github.com/Chisanan232/GitHub-Action_Workflow-Template-Python/actions/workflows/test_python_project_ci_one-test.yaml)
+[![Python project CI Test (multi-tests)](https://github.com/Chisanan232/GitHub-Action_Workflow-Template-Python/actions/workflows/test_python_project_ci_multi-tests.yaml/badge.svg)](https://github.com/Chisanan232/GitHub-Action_Workflow-Template-Python/actions/workflows/test_python_project_ci_multi-tests.yaml)
+[![GitHub Action reusable workflow project CI Test](https://github.com/Chisanan232/GitHub-Action_Workflow-Template-Python/actions/workflows/test_gh_reusable_workflow.yaml/badge.svg)](https://github.com/Chisanan232/GitHub-Action_Workflow-Template-Python/actions/workflows/test_gh_reusable_workflow.yaml)
 
 
 This is a GitHub Action workflow template for **_Python library_** project.
@@ -29,6 +30,7 @@ The usage of each workflow template.
 * [_run_test_items_via_pytest.yaml_](#run_test_items_via_pytestyaml)
 * [_organize_and_generate_test_cov_reports.yaml_](#organize_and_generate_test_cov_reportsyaml)
 * [_upload_test_cov_report.yaml_](#upload_test_cov_reportyaml)
+* [_build_git-tag_and_create_github-release.yaml_](#build_git-tag_and_create_github-releaseyaml)
 
 
 ### _prepare_test_items.yaml_
@@ -248,3 +250,59 @@ Nothing.
         
         [![Codacy Badge](https://app.codacy.com/project/badge/Grade/e8bfcd5830ba4232b45aca7c2d3e6310)](https://www.codacy.com/gh/Chisanan232/GitHub-Action-Template-Python/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Chisanan232/GitHub-Action-Template-Python&amp;utm_campaign=Badge_Grade)
         [![Codacy Badge](https://app.codacy.com/project/badge/Coverage/e8bfcd5830ba4232b45aca7c2d3e6310)](https://www.codacy.com/gh/Chisanan232/GitHub-Action-Template-Python/dashboard?utm_source=github.com&utm_medium=referral&utm_content=Chisanan232/GitHub-Action-Template-Python&utm_campaign=Badge_Coverage)
+
+<hr>
+
+### _build_git-tag_and_create_github-release.yaml_
+
+* Description: Build a git tag on a specific commit in every git branch. And create GitHub release if current git branch is 'master'.
+* Options:
+
+| option name             | data type | optional or required                      | function content                                                                                                                                                     |
+|-------------------------|-----------|-------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| project_type            | string    | Required                                  | Different project type would get the software version info in different way. Currently, it only has 2 options: _python-package_ or _github-action-reusable-workflow_ |
+| debug_mode              | boolean   | Optional, Default value is _false_        | It would run the tasks as log message, doesn't essentially run feature if this option is true.                                                                       |
+| project_name            | string    | Optional, Default value is _empty string_ | The project name.                                                                                                                                                    |
+| software_version_format | string    | Optional, Default value is _empty string_ | The format of software version.                                                                                                                                      |
+
+* Output: 
+
+Yes, it has running result output. It would output the version which could provide after-process to verify what thing it should do, e.g., release or not.
+
+| Workflow output                                 | description                                                                                          |
+|-------------------------------------------------|------------------------------------------------------------------------------------------------------|
+| python_release_version                          | Python project release version info. It only has 2 types value: _Official-Release_ or _Pre-Release_. |
+| github-action_reusable_workflow_release_version | Python project release version info.                                                                 |
+
+* How to use it?
+
+    * **_Python package_** usage case:
+
+    ```yaml
+      build_git-tag_and_create_github-release:
+    #    name: Build git tag and GitHub release if it needs for Python package project
+        needs: [coveralls_finish, codacy_finish]
+        uses: ./.github/workflows/build_git-tag_and_create_github-release.yaml
+        with:
+          project_type: python-package
+          project_name: test_gh_workflow
+          software_version_format: general-3
+          debug_mode: true
+    ```
+
+    * **_GitHub Action reusable workflow_** usage case:
+
+    ```yaml
+      build_git-tag_and_create_github-release:
+    #    name: Build git tag and GitHub release if it needs for GitHub Action reusable workflow project
+        needs: [coveralls_finish, codacy_finish]
+        uses: ./.github/workflows/build_git-tag_and_create_github-release.yaml
+        with:
+          project_type: github-action-reusable-workflow
+          debug_mode: true
+    ```
+
+The badge it generates: 
+
+[![Release](https://img.shields.io/github/release/Chisanan232/GitHub-Action-Template-Python.svg?label=Release&logo=github)](https://github.com/Chisanan232/GitHub-Action-Template-Python/releases)
+
