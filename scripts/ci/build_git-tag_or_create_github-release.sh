@@ -181,6 +181,8 @@ build_git_tag_or_github_release() {
         echo " 🔍👀 [DEBUG MODE] Build git tag $New_Release_Tag in git branch '$Current_Branch'."
     else
         git tag -a "$New_Release_Tag" -m "$New_Release_Tag"
+        git config --global user.email "chi10211201@cycu.org.tw"
+        git config --global user.name "Chisanan232"
         git push -u origin --tags
     fi
     echo "🎉 🍻 🌳 🏷  Build git tag which named '$New_Release_Tag' with current branch '$Current_Branch' successfully!"
@@ -208,7 +210,6 @@ if [ "$Input_Arg_Release_Type" == 'python-package' ]; then
     github_release=$(curl -s https://api.github.com/repos/Chisanan232/GitHub-Action_Workflow-Template-Python/releases/latest | jq -r '.tag_name')
     # shellcheck disable=SC2002
     generate_new_version_as_tag "python"
-#    pkg_version=$(cat ./"$Input_Arg_Python_Pkg_Name"/__pkg_info__.py | grep -E "$Python_Version_Reg" | grep -E -o "$Software_Version_Reg")
 
     build_git_tag=false
     create_github_release=false
@@ -240,7 +241,6 @@ if [ "$Input_Arg_Release_Type" == 'python-package' ]; then
     if [ "$build_git_tag" == true ] || [ "$create_github_release" == true ]; then
 
         echo "🔎 🐍 📦 Python package new release version: $New_Release_Version"
-#        is_pre_release_version=$(echo $pkg_version | sed -n 's/.*\([a-zA-Z][0-9]*\)/\1/p')
         is_pre_release_version=$(echo $New_Release_Version | grep -E -o '([\.-]*([a-zA-Z]{1,})+([0-9]{0,})*){1,}')
         echo "🔎 🤰 📦 is pre-release version: $is_pre_release_version"
         if [ "$is_pre_release_version" == "" ]; then
