@@ -32,6 +32,8 @@ The usage of each workflow template.
 * [_upload_test_cov_report.yaml_](#upload_test_cov_reportyaml)
 * [_build_git-tag_and_create_github-release.yaml_](#build_git-tag_and_create_github-releaseyaml)
 
+<hr>
+
 
 ### _prepare_test_items.yaml_
 
