@@ -27,6 +27,8 @@ jobs:
 #    name: Build git tag and GitHub release if it needs
     if: ${{ github.ref_name == 'master' && github.event_name == 'push' }}
     uses: ./.github/workflows/build_git-tag_and_create_github-release.yaml
+    secrets:
+      github_token: ${{ secrets.GITHUB_TOKEN }}
     with:
       project_type: github-action-reusable-workflow
       debug_mode: false
