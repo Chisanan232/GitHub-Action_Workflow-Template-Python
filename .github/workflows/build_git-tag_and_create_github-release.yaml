@@ -84,6 +84,8 @@ jobs:
           echo "🐍 Release Type: $release_type"
 
           echo "::set-output name=release_type::$(echo $release_type)"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       # This flow for the project type is GitHub Action reusable workflow
       - name: Build git tag and create GitHub release for GitHub Action reusable workflow project
@@ -97,4 +99,6 @@ jobs:
           echo "🤖 Release Version: $release_version"
 
           echo "::set-output name=release_version::$(echo $release_version)"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
