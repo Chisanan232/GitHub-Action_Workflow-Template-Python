@@ -49,7 +49,7 @@ on:
         required: false
 
     secrets:
-      github_token:
+      github_auth_token:
         description: "The authentication token for doing some operators with GitHub."
         required: false
 
@@ -90,7 +90,7 @@ jobs:
 
           echo "::set-output name=release_type::$(echo $release_type)"
         env:
-          GITHUB_TOKEN: ${{ secrets.github_token }}
+          GITHUB_TOKEN: ${{ secrets.github_auth_token }}
 
       # This flow for the project type is GitHub Action reusable workflow
       - name: Build git tag and create GitHub release for GitHub Action reusable workflow project
@@ -105,5 +105,5 @@ jobs:
 
           echo "::set-output name=release_version::$(echo $release_version)"
         env:
-          GITHUB_TOKEN: ${{ secrets.github_token }}
+          GITHUB_TOKEN: ${{ secrets.github_auth_token }}
 
