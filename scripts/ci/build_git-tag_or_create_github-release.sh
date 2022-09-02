@@ -131,6 +131,9 @@ git_global_user_email=$(git config --global user.email)
 echo "🔎 🌳  Current git name: $git_global_username"
 echo "🔎 🌳  Current git email: $git_global_user_email"
 
+git pull
+echo "📩 🌳  git pull done"
+
 declare Tag_Version    # This is the return value of function 'get_latest_version_by_git_tag'
 get_latest_version_by_git_tag() {
     # # # # The types to get version by tag: 'git' or 'github'
