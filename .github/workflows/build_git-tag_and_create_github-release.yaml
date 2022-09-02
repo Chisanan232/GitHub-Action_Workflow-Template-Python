@@ -93,7 +93,7 @@ jobs:
           release=$(bash ./scripts/ci/build_git-tag_or_create_github-release.sh ${{ inputs.project_type }} ${{ inputs.debug_mode }})
           echo "📄 Release log: $release"
 
-          release_version=$(echo "$release" | grep -E "\[GitHub Action - Reusable workflow\] \[Final Running Result\] Official-Release and version: ([0-9]{1,})" | grep -E -o "([0-9]{1,})")
+          release_version=$(echo "$release" | grep -E "\[GitHub Action - Reusable workflow\] \[Final Running Result\] (Official\-Release and version: ([0-9]{1,})|(Pre\-Release))" | grep -E -o "(([0-9]{1,})|(Pre\-Release))")
           echo "🤖 Release Version: $release_version"
 
           echo "::set-output name=release_version::$(echo $release_version)"

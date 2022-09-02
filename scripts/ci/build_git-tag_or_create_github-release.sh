@@ -131,6 +131,9 @@ git_global_user_email=$(git config --global user.email)
 echo "🔎 🌳  Current git name: $git_global_username"
 echo "🔎 🌳  Current git email: $git_global_user_email"
 
+git pull
+echo "📩 🌳  git pull done"
+
 declare Tag_Version    # This is the return value of function 'get_latest_version_by_git_tag'
 get_latest_version_by_git_tag() {
     # # # # The types to get version by tag: 'git' or 'github'
@@ -294,7 +297,16 @@ elif [ "$Input_Arg_Release_Type" == 'github-action-reusable-workflow' ]; then
     git remote -v
 
     echo "🔬 📄 🌳 ⛓ 🌳 Check the different of '.github/release-notes.md' between current git branch and master branch ..."
-    release_notes_has_diff=$(git diff origin/master "$Current_Branch" -- .github/release-notes.md | cat)
+    # # v1: compare by git branches
+#    release_notes_has_diff=$(git diff origin/master "$Current_Branch" -- .github/release-notes.md | cat)
+    # # v2: compare by git tag
+    all_git_tags=$(git tag -l | cat)
+    declare -a all_git_tags_array=( $(echo "$all_git_tags" | awk -v RS='' '{gsub("\n","  "); print}') )
+    all_git_tags_array_len=${#all_git_tags_array[@]}
+    latest_git_tag=${all_git_tags_array[$all_git_tags_array_len - 1]}
+    echo "🔎 🌳 🏷 The latest git tag: $latest_git_tag"
+
+    release_notes_has_diff=$(git diff "$latest_git_tag" "$Current_Branch" -- .github/release-notes.md | cat)
     echo "🔎 🔬 📄 different of '.github/release-notes.md': $release_notes_has_diff"
 
     if [ "$release_notes_has_diff" != "" ]; then
