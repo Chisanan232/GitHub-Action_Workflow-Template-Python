@@ -75,8 +75,8 @@ jobs:
 
     strategy:
       matrix:
-        python-version: [3.6,3.7,3.8,3.9,'3.10']
-        os: [ubuntu-18.04,ubuntu-20.04,ubuntu-22.04,macos-10.15,macos-11,macos-12]
+        python-version: [3.6,3.7,3.8,3.9,'3.10','3.11']
+        os: [ubuntu-latest,macos-latest]
         exclude:
           - os: ubuntu-18.04
             python-version: 3.6
@@ -103,10 +103,10 @@ jobs:
         test-path: ${{fromJson(inputs.all_test_items_paths)}}
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Install Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
 
@@ -151,10 +151,10 @@ jobs:
         test-path: ${{fromJson(inputs.all_test_items_paths)}}
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Install Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
 

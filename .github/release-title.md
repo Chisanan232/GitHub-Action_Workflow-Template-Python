@@ -1,1 +1,1 @@
-v2.0.0 - More short and clear <0001f9f9>🍻
+v3.0.0 - Modify under testing OS & Python versions and upgrade dependencies actions 🍻

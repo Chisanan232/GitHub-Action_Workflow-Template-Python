@@ -72,7 +72,7 @@ jobs:
       matrix_github_action_reusable_workflow: ${{ steps.github_action_reusable_workflow_release.outputs.release_version }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Download shell script for checking input parameters
         run: curl https://raw.githubusercontent.com/Chisanan232/GitHub-Action_Workflow-Template-Python/develop/scripts/ci/build_git-tag_or_create_github-release.sh --output ./scripts/ci/build_git-tag_or_create_github-release.sh
@@ -88,7 +88,7 @@ jobs:
           release_type=$(echo "$release" | grep -E "\[Python\] \[Final Running Result\] ((Official\-Release)|(Pre\-Release))" | grep -E -o "((Official\-Release)|(Pre\-Release))")
           echo "🐍 Release Type: $release_type"
 
-          echo "::set-output name=release_type::$(echo $release_type)"
+          echo "release_type=$(echo $release_type)" >> $GITHUB_OUTPUT
         env:
           GITHUB_TOKEN: ${{ secrets.github_auth_token }}
 
@@ -103,7 +103,7 @@ jobs:
           release_version=$(echo "$release" | grep -E "\[GitHub Action - Reusable workflow\] \[Final Running Result\] (Official\-Release and version: ([0-9]{1,})|(Pre\-Release))" | grep -E -o "(([0-9]{1,})|(Pre\-Release))")
           echo "🤖 Release Version: $release_version"
 
-          echo "::set-output name=release_version::$(echo $release_version)"
+          echo "release_version=$(echo $release_version)" >> $GITHUB_OUTPUT
         env:
           GITHUB_TOKEN: ${{ secrets.github_auth_token }}
 
