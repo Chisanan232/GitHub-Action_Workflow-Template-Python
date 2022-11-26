@@ -5,3 +5,6 @@ source=./test_gh_workflow
 
 omit =
     */__init__.py
+
+[path]
+source=./test_gh_workflow
