@@ -54,14 +54,14 @@ jobs:
 
       - name: Combine all testing code coverage result files with one specific test type
         if: ${{ inputs.test_type == 'unit-test' || inputs.test_type == 'integration-test' }}
-        run: coverage combine --data-file=.coverage.${{ inputs.test_type }} .coverage.${{ inputs.test_type }}.*
-
-      - name: Combine all testing code coverage result files with all test types
-        if: ${{ inputs.test_type == 'all-test' }}
         run: |
           pwd
           ls -la
-          coverage combine --data-file=.coverage.${{ inputs.test_type }} .coverage.*
+          coverage combine --data-file=.coverage.${{ inputs.test_type }} .coverage.${{ inputs.test_type }}.*
+
+      - name: Combine all testing code coverage result files with all test types
+        if: ${{ inputs.test_type == 'all-test' }}
+        run: coverage combine --data-file=.coverage.${{ inputs.test_type }} .coverage.*
 
       - name: Report testing coverage of project code
         run: coverage report -m --data-file=.coverage.${{ inputs.test_type }}
