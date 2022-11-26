@@ -55,20 +55,15 @@ jobs:
       - name: Combine all testing code coverage result files with one specific test type
         if: ${{ inputs.test_type == 'unit-test' || inputs.test_type == 'integration-test' }}
         run: |
-          pwd
-          ls -la
           coverage combine --data-file=.coverage.${{ inputs.test_type }} .coverage.${{ inputs.test_type }}.*
+          coverage report -m --data-file=.coverage.${{ inputs.test_type }}
 
       - name: Combine all testing code coverage result files with all test types
         if: ${{ inputs.test_type == 'all-test' }}
         run: coverage combine --data-file=.coverage.${{ inputs.test_type }} .coverage.*
 
       - name: Report testing coverage of project code
-        run: |
-          pwd
-          ls -la
-          ls -la ./test_gh_workflow
-          coverage report -m --data-file=.coverage.${{ inputs.test_type }}
+        run: coverage report -m --data-file=.coverage.${{ inputs.test_type }}
 
       - name: General testing coverage report as XML format with ${{ inputs.test_type }}
         run: coverage xml --data-file=.coverage.${{ inputs.test_type }} -o coverage_${{ inputs.test_type }}.xml
