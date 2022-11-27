@@ -60,8 +60,8 @@ jobs:
         if: ${{ inputs.test_type == 'all-test' }}
         run: coverage combine --data-file=.coverage.${{ inputs.test_type }} .coverage.*
 
-      - name: Report testing coverage of project code
-        run: coverage report -m --data-file=.coverage.${{ inputs.test_type }}
+#      - name: Report testing coverage of project code
+#        run: coverage report -m --data-file=.coverage.${{ inputs.test_type }}
 
       - name: General testing coverage report as XML format with ${{ inputs.test_type }}
         run: coverage xml --data-file=.coverage.${{ inputs.test_type }} -o coverage_${{ inputs.test_type }}.xml
