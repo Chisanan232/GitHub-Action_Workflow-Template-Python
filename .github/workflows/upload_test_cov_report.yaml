@@ -37,6 +37,11 @@ on:
         description: "The testing type. In generally, it only has 2 options: 'unit-test' and 'integration-test'."
         required: true
         type: string
+      test_os:
+        description: "The OS runtime environment in. If it has multiple values, please separate it by comma ','. In generally, it 
+                      only has 2 options: 'macos' and 'ubuntu'."
+        required: true
+        type: string
       upload-to-codecov:
         description: "If it's true, it would upload testing coverage report for Codecov (https://codecov.io)."
         type: boolean
@@ -100,7 +105,7 @@ jobs:
       - name: Download code coverage result files which has be handled by different test type process
         uses: actions/download-artifact@v3
         with:
-          name: test_coverage_report
+          name: test_coverage_data_file
           path: ${{ inputs.download_path }}
 
       # TODO: It's possible be better that open input parameter 'file_path' or 'download name' outside.
@@ -153,11 +158,11 @@ jobs:
         if: ${{ inputs.upload-to-coveralls == true }}
         run: |
           pip3 install coveralls
-          pip3 install coverage
+#          pip3 install coverage
 
-      - name: Combine all testing code coverage result files with all test types
-        if: ${{ inputs.upload-to-coveralls == true }}
-        run: coverage combine .coverage.*
+#      - name: Combine all testing code coverage result files with all test types
+#        if: ${{ inputs.upload-to-coveralls == true }}
+#        run: coverage combine .coverage.*
 
       - name: Upload coverage report to Coveralls https://coveralls.io
         if: ${{ inputs.upload-to-coveralls == true }}
