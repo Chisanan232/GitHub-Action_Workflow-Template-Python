@@ -51,6 +51,7 @@ jobs:
     uses: ./.github/workflows/organize_and_generate_test_cov_reports.yaml
     with:
       test_type: unit-test
+      test_os: ubuntu,macos
 
 
 #  codecov_finish:
