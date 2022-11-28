@@ -59,18 +59,18 @@ jobs:
           pip3 install coveralls
 
       - name: Combine all testing coverage data files with test type and runtime OS, and convert to XML format file finally
-        run: bash ./scripts/ci/combine_coverage_reports.sh ${{ inputs.test_type }} ${{ inputs.test_os }}
+        run: bash ./scripts/ci/combine_coverage_reports.sh ${{ inputs.test_type }} ${{ inputs.test_os }} true
 
       - name: Upload testing coverage report (.coverage)
         uses: actions/upload-artifact@v3
         with:
-          name: test_coverage_report
-          path: .coverage.${{ inputs.test_type }}
+          name: test_coverage_data_file
+          path: .coverage
           if-no-files-found: error
 
       - name: Upload testing coverage report (.xml)
         uses: actions/upload-artifact@v3
         with:
           name: test_coverage_xml_report
-          path: coverage_${{ inputs.test_type }}.xml
+          path: coverage**xml
           if-no-files-found: error
