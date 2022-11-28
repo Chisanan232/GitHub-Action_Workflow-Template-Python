@@ -14,14 +14,18 @@ if [ "$test_type" == "unit-test" ] || [ "$test_type" == "integration-test" ];
 then
   for oneos in "${allosarray[@]}" ;
   do
-    coverage combine --data-file=.coverage."$test_type"."$oneos" .coverage."$test_type"."$oneos"*
+    coveragedatafile=".coverage.$test_type.$oneos"
+    coverage combine --data-file="$coveragedatafile" .coverage."$test_type"."$oneos"*
+    coverage xml --data-file="$coveragedatafile" -o coverage_"$test_type"_"$oneos".xml
   done
   echo "✅ It's" && exit 0
 elif [ "$test_type" == "all-test" ];
 then
   for oneos in "${allosarray[@]}" ;
   do
-    coverage combine --data-file=.coverage."$test_type"."$oneos" .coverage.*."$oneos"*
+    coveragedatafile=".coverage.$test_type.$oneos"
+    coverage combine --data-file="$coveragedatafile" .coverage.*."$oneos"*
+    coverage xml --data-file="$coveragedatafile" -o coverage_"$test_type"_"$oneos".xml
   done
   echo "✅ It's" && exit 0
 else
