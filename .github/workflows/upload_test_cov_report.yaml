@@ -101,14 +101,12 @@ jobs:
           echo "Check the parameters of uploading report to Codacy ..."
           bash ./scripts/ci/check-input-params.sh ${{ inputs.upload-to-codacy }} ${{ secrets.codacy_token }}
 
-      # TODO: It's possible be better that open input parameter 'file_path' or 'download name' outside.
       - name: Download code coverage result files which has be handled by different test type process
         uses: actions/download-artifact@v3
         with:
           name: test_coverage_data_file
           path: ${{ inputs.download_path }}
 
-      # TODO: It's possible be better that open input parameter 'file_path' or 'download name' outside.
       - name: Download code coverage result files which has be handled by different test type process
         uses: actions/download-artifact@v3
         with:
@@ -131,63 +129,58 @@ jobs:
         if: ${{ inputs.upload-to-codecov == true }}
         run: pip3 install codecov
 
-#      - name: Upload coverage report to Codecov https://codecov.io (For Unit-Test or Integration-Test)
-#        if: ${{ inputs.upload-to-codecov == true && (inputs.test_type == 'unit-test' || inputs.test_type == 'integration-test') }}
-#        run: |
-#          codecov \
-#            -t ${{ secrets.codecov_token }} \
-#            --file coverage_${{ inputs.test_type }}_${{ inputs.test_os }}.xml \
-#            --flags ${{ inputs.codecov_flags }} \
-#            --env OS,PYTHON \
-#            --name ${{ inputs.codecov_name }} \
-#            --required \
-#            --verbose
-#
-#      - name: Upload coverage report to Codecov https://codecov.io (For all test types)
-#        if: ${{ inputs.upload-to-codecov == true && inputs.test_type == 'all-test' }}
-#        run: |
-#          codecov \
-#            -t ${{ secrets.codecov_token }} \
-#            --file coverage.xml \
-#            --flags ${{ inputs.codecov_flags }} \
-#            --env OS,PYTHON \
-#            --name ${{ inputs.codecov_name }} \
-#            --required \
-#            --verbose
-
       - name: Upload coverage report to Codecov https://codecov.io (For Unit-Test or Integration-Test)
         if: ${{ inputs.upload-to-codecov == true && (inputs.test_type == 'unit-test' || inputs.test_type == 'integration-test') }}
-        uses: codecov/codecov-action@v3
-        with:
-          token: ${{ secrets.codecov_token }} # not required for public repos
-          files: coverage_${{ inputs.test_type }}_${{ inputs.test_os }}.xml # optional
-          fail_ci_if_error: true # optional (default = false)
-          verbose: true # optional (default = false)
-#          flags: ${{ inputs.codecov_flags }} # optional
-#          env_vars: OS,PYTHON
-#          name: ${{ inputs.codecov_name }} # optional
+        run: |
+          codecov \
+            -t ${{ secrets.codecov_token }} \
+            --file coverage_${{ inputs.test_type }}_${{ inputs.test_os }}.xml \
+            --flags ${{ inputs.codecov_flags }} \
+            --env OS,PYTHON \
+            --name ${{ inputs.codecov_name }} \
+            --required \
+            --verbose
 
       - name: Upload coverage report to Codecov https://codecov.io (For all test types)
         if: ${{ inputs.upload-to-codecov == true && inputs.test_type == 'all-test' }}
-        uses: codecov/codecov-action@v3
-        with:
-          token: ${{ secrets.codecov_token }} # not required for public repos
-          files: coverage.xml # optional
-          flags: ${{ inputs.codecov_flags }} # optional
-          env_vars: OS,PYTHON
-          name: ${{ inputs.codecov_name }} # optional
-          fail_ci_if_error: true # optional (default = false)
-          verbose: true # optional (default = false)
+        run: |
+          codecov \
+            -t ${{ secrets.codecov_token }} \
+            --file coverage.xml \
+            --flags ${{ inputs.codecov_flags }} \
+            --env OS,PYTHON \
+            --name ${{ inputs.codecov_name }} \
+            --required \
+            --verbose
+
+#      - name: Upload coverage report to Codecov https://codecov.io (For Unit-Test or Integration-Test)
+#        if: ${{ inputs.upload-to-codecov == true && (inputs.test_type == 'unit-test' || inputs.test_type == 'integration-test') }}
+#        uses: codecov/codecov-action@v3
+#        with:
+#          token: ${{ secrets.codecov_token }} # not required for public repos
+#          files: coverage_${{ inputs.test_type }}_${{ inputs.test_os }}.xml # optional
+#          fail_ci_if_error: true # optional (default = false)
+#          verbose: true # optional (default = false)
+##          flags: ${{ inputs.codecov_flags }} # optional
+##          env_vars: OS,PYTHON
+##          name: ${{ inputs.codecov_name }} # optional
+#
+#      - name: Upload coverage report to Codecov https://codecov.io (For all test types)
+#        if: ${{ inputs.upload-to-codecov == true && inputs.test_type == 'all-test' }}
+#        uses: codecov/codecov-action@v3
+#        with:
+#          token: ${{ secrets.codecov_token }} # not required for public repos
+#          files: coverage.xml # optional
+#          flags: ${{ inputs.codecov_flags }} # optional
+#          env_vars: OS,PYTHON
+#          name: ${{ inputs.codecov_name }} # optional
+#          fail_ci_if_error: true # optional (default = false)
+#          verbose: true # optional (default = false)
 
       - name: Install Python dependencies about tool of Coveralls
         if: ${{ inputs.upload-to-coveralls == true }}
         run: |
           pip3 install coveralls
-#          pip3 install coverage
-
-#      - name: Combine all testing code coverage result files with all test types
-#        if: ${{ inputs.upload-to-coveralls == true }}
-#        run: coverage combine .coverage.*
 
       - name: Upload coverage report to Coveralls https://coveralls.io
         if: ${{ inputs.upload-to-coveralls == true }}
