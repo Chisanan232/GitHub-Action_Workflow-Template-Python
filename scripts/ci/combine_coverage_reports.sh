@@ -6,7 +6,7 @@ test_type=$1
 os=$2
 
 IFS=',' read -ra allosarray <<< "$os"
-
+g
 # shellcheck disable=SC2145
 echo "This is all OS array: ${allosarray[@]}"
 
@@ -18,7 +18,7 @@ then
     coverage combine --data-file="$coveragedatafile" .coverage."$test_type"."$oneos"*
     coverage xml --data-file="$coveragedatafile" -o coverage_"$test_type"_"$oneos".xml
   done
-  echo "✅ It's" && exit 0
+  echo "✅ All processing done." && exit 0
 elif [ "$test_type" == "all-test" ];
 then
   for oneos in "${allosarray[@]}" ;
@@ -27,7 +27,7 @@ then
     coverage combine --data-file="$coveragedatafile" .coverage.*."$oneos"*
     coverage xml --data-file="$coveragedatafile" -o coverage_"$test_type"_"$oneos".xml
   done
-  echo "✅ It's" && exit 0
+  echo "✅ All processing done." && exit 0
 else
-  echo "❌ It's" && exit 1
+  echo "❌ It doesn't support $test_type currently. Please change to use options 'unit-test', 'integration-test' or 'all-test'." && exit 1
 fi
