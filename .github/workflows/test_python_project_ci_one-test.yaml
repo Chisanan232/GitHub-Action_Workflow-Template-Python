@@ -77,6 +77,7 @@ jobs:
       coveralls_token: ${{ secrets.COVERALLS_TOKEN }}
     with:
       test_type: unit-test
+      test_os: ubuntu
       upload-to-coveralls: true
 
 
@@ -88,6 +89,7 @@ jobs:
       codacy_token: ${{ secrets.CODACY_PROJECT_TOKEN }}
     with:
       test_type: unit-test
+      test_os: ubuntu
       upload-to-codacy: true
 
 

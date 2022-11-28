@@ -136,10 +136,11 @@ jobs:
         run: |
           codecov \
             -t ${{ secrets.codecov_token }} \
-            --file coverage_${{ inputs.test_type }}.xml \
+            --file coverage_${{ inputs.test_type }}_${{ inputs.test_os }}.xml \
             --flags ${{ inputs.codecov_flags }} \
             --env OS,PYTHON \
             --name ${{ inputs.codecov_name }} \
+            --required
             --verbose
 
       - name: Upload coverage report to Codecov https://codecov.io (For all test types)
@@ -147,11 +148,11 @@ jobs:
         run: |
           codecov \
             -t ${{ secrets.codecov_token }} \
-            --file coverage_unit-test.xml \
-            --file coverage_integration-test.xml \
+            --file coverage.xml \
             --flags ${{ inputs.codecov_flags }} \
             --env OS,PYTHON \
             --name ${{ inputs.codecov_name }} \
+            --required
             --verbose
 
       - name: Install Python dependencies about tool of Coveralls
@@ -175,7 +176,7 @@ jobs:
         uses: codacy/codacy-coverage-reporter-action@v1
         with:
           project-token: ${{ secrets.codacy_token }}
-          coverage-reports: coverage_${{ inputs.test_type }}.xml
+          coverage-reports: coverage_${{ inputs.test_type }}_${{ inputs.test_os }}.xml
 #          coverage-reports: cobertura.xml
 
       - name: Upload testing report to Codacy https://app.codacy.com/ (For all test types)
@@ -183,5 +184,5 @@ jobs:
         uses: codacy/codacy-coverage-reporter-action@v1
         with:
           project-token: ${{ secrets.codacy_token }}
-          coverage-reports: coverage_unit-test.xml,coverage_integration-test.xml
+          coverage-reports: coverage.xml
 #          coverage-reports: cobertura.xml
