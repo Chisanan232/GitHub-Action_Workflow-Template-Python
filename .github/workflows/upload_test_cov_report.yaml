@@ -140,7 +140,7 @@ jobs:
             --flags ${{ inputs.codecov_flags }} \
             --env OS,PYTHON \
             --name ${{ inputs.codecov_name }} \
-            --required
+            --required \
             --verbose
 
       - name: Upload coverage report to Codecov https://codecov.io (For all test types)
@@ -152,7 +152,7 @@ jobs:
             --flags ${{ inputs.codecov_flags }} \
             --env OS,PYTHON \
             --name ${{ inputs.codecov_name }} \
-            --required
+            --required \
             --verbose
 
       - name: Install Python dependencies about tool of Coveralls
