@@ -6,7 +6,7 @@ test_type=$1
 os=$2
 
 IFS=',' read -ra allosarray <<< "$os"
-g
+
 # shellcheck disable=SC2145
 echo "This is all OS array: ${allosarray[@]}"
 
