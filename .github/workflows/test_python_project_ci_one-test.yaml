@@ -109,7 +109,7 @@ jobs:
 
   build_git-tag_and_create_github-release:
 #    name: Build git tag and GitHub release if it needs
-    needs: [coveralls_finish, codacy_finish]
+    needs: [coveralls_finish, codecov_finish, codacy_finish]
     uses: ./.github/workflows/build_git-tag_and_create_github-release.yaml
     with:
       project_type: python-package
