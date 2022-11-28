@@ -161,11 +161,11 @@ jobs:
         with:
           token: ${{ secrets.codecov_token }} # not required for public repos
           files: coverage_${{ inputs.test_type }}_${{ inputs.test_os }}.xml # optional
-          flags: ${{ inputs.codecov_flags }} # optional
-          env_vars: OS,PYTHON
-          name: ${{ inputs.codecov_name }} # optional
           fail_ci_if_error: true # optional (default = false)
           verbose: true # optional (default = false)
+#          flags: ${{ inputs.codecov_flags }} # optional
+#          env_vars: OS,PYTHON
+#          name: ${{ inputs.codecov_name }} # optional
 
       - name: Upload coverage report to Codecov https://codecov.io (For all test types)
         if: ${{ inputs.upload-to-codecov == true && inputs.test_type == 'all-test' }}
