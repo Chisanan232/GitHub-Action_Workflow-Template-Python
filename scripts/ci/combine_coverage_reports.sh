@@ -31,7 +31,7 @@ fi
 
 coverage report -m --data-file="$coveragedatafile"
 coverage xml --data-file="$coveragedatafile" -o coverage_"$test_type".xml
-cp coveragedatafile .coverage
+cp "$coveragedatafile" .coverage
 echo "✅ All processing done." && exit 0
 
 #if [ "$calculate_all_finally" == "false" ]; then
