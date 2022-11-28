@@ -37,11 +37,6 @@ on:
         description: "The testing type. In generally, it only has 2 options: 'unit-test' and 'integration-test'."
         required: true
         type: string
-      test_os:
-        description: "The OS runtime environment in. If it has multiple values, please separate it by comma ','. In generally, it 
-                      only has 2 options: 'macos' and 'ubuntu'."
-        required: true
-        type: string
       upload-to-codecov:
         description: "If it's true, it would upload testing coverage report for Codecov (https://codecov.io)."
         type: boolean
@@ -129,24 +124,12 @@ jobs:
         if: ${{ inputs.upload-to-codecov == true }}
         run: pip3 install codecov
 
-      - name: Upload coverage report to Codecov https://codecov.io (For Unit-Test or Integration-Test)
-        if: ${{ inputs.upload-to-codecov == true && (inputs.test_type == 'unit-test' || inputs.test_type == 'integration-test') }}
+      - name: Upload coverage report to Codecov https://codecov.io
+        if: ${{ inputs.upload-to-codecov == true }}
         run: |
           codecov \
             -t ${{ secrets.codecov_token }} \
-            --file coverage_${{ inputs.test_type }}_${{ inputs.test_os }}.xml \
-            --flags ${{ inputs.codecov_flags }} \
-            --env OS,PYTHON \
-            --name ${{ inputs.codecov_name }} \
-            --required \
-            --verbose
-
-      - name: Upload coverage report to Codecov https://codecov.io (For all test types)
-        if: ${{ inputs.upload-to-codecov == true && inputs.test_type == 'all-test' }}
-        run: |
-          codecov \
-            -t ${{ secrets.codecov_token }} \
-            --file coverage.xml \
+            --file coverage_${{ inputs.test_type }}.xml \
             --flags ${{ inputs.codecov_flags }} \
             --env OS,PYTHON \
             --name ${{ inputs.codecov_name }} \
@@ -163,18 +146,10 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.coveralls_token }}
         run: coveralls --verbose
 
-      - name: Upload testing report to Codacy https://app.codacy.com/ (For Unit-Test or Integration-Test)
-        if: ${{ inputs.upload-to-codacy == true && (inputs.test_type == 'unit-test' || inputs.test_type == 'integration-test') }}
+      - name: Upload testing report to Codacy https://app.codacy.com/
+        if: ${{ inputs.upload-to-codacy == true }}
         uses: codacy/codacy-coverage-reporter-action@v1
         with:
           project-token: ${{ secrets.codacy_token }}
-          coverage-reports: coverage_${{ inputs.test_type }}_${{ inputs.test_os }}.xml
-#          coverage-reports: cobertura.xml
-
-      - name: Upload testing report to Codacy https://app.codacy.com/ (For all test types)
-        if: ${{ inputs.upload-to-codacy == true && inputs.test_type == 'all-test' }}
-        uses: codacy/codacy-coverage-reporter-action@v1
-        with:
-          project-token: ${{ secrets.codacy_token }}
-          coverage-reports: coverage.xml
+          coverage-reports: coverage_${{ inputs.test_type }}.xml
 #          coverage-reports: cobertura.xml
