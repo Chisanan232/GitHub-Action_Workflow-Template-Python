@@ -2,9 +2,7 @@
 branch = True
 parallel = True
 source=./test_gh_workflow
+relative_files = True
 
 omit =
     */__init__.py
-
-[path]
-source=./test_gh_workflow
