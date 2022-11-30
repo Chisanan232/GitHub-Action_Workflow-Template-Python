@@ -30,8 +30,8 @@ The usage of each workflow template.
 * [_run_test_items_via_pytest.yaml_](#run_test_items_via_pytestyaml)
 * [_organize_and_generate_test_cov_reports.yaml_](#organize_and_generate_test_cov_reportsyaml)
 * [_upload_test_cov_report.yaml_](#upload_test_cov_reportyaml)
-* [_build_git-tag_and_create_github-release.yaml_](#build_git-tag_and_create_github-releaseyaml)
 * [_pre-building_test.yaml_](#pre-building_testyaml)
+* [_build_git-tag_and_create_github-release.yaml_](#build_git-tag_and_create_github-releaseyaml)
 
 <hr>
 
