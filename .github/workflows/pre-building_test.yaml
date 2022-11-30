@@ -1,7 +1,7 @@
-##############################################################################################
+###################################################################################################################
 #
 # Workflow Description:
-#     Build the Python source code to be Python package.
+#     Test Python package by simple way, i.e., import modules, after running setup.py script to install package.
 #
 # Workflow input parameters:
 #     * General arguments:
@@ -14,9 +14,9 @@
 # Workflow running output:
 #     No and do nothing.
 #
-##############################################################################################
+###################################################################################################################
 
-name: Build and compile the code to be Python package
+name: Running pre-testing before building with running setup.py script
 
 on:
   workflow_call:
