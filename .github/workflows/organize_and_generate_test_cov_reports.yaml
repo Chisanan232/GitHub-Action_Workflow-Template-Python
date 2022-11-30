@@ -52,7 +52,7 @@ jobs:
 
       - name: Combine all testing coverage data files with test type and runtime OS, and convert to XML format file finally
         run: |
-          curl https://raw.githubusercontent.com/Chisanan232/GitHub-Action_Workflow-Template-Python/develop/scripts/ci/combine_coverage_reports.sh --output ./scripts/ci/combine_coverage_reports.sh
+          curl https://raw.githubusercontent.com/Chisanan232/GitHub-Action_Reusable_Workflows-Python/develop/scripts/ci/combine_coverage_reports.sh --output ./scripts/ci/combine_coverage_reports.sh
           bash ./scripts/ci/combine_coverage_reports.sh ${{ inputs.test_type }}
 
       - name: Upload testing coverage report (.coverage)

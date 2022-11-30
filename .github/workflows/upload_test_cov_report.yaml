@@ -83,7 +83,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Download shell script for checking input parameters
-        run: curl https://raw.githubusercontent.com/Chisanan232/GitHub-Action_Workflow-Template-Python/develop/scripts/ci/check-input-params.sh --output ./scripts/ci/check-input-params.sh
+        run: curl https://raw.githubusercontent.com/Chisanan232/GitHub-Action_Reusable_Workflows-Python/develop/scripts/ci/check-input-params.sh --output ./scripts/ci/check-input-params.sh
 
       - name: Check the workflow input parameter
         run: | 
