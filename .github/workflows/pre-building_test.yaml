@@ -5,8 +5,11 @@
 #
 # Workflow input parameters:
 #     * General arguments:
-#         * upload_artifact_name: The option 'name' of reusable action 'actions/upload-artifact@v3'.
-#         * upload_artifact_path: The option 'path' of reusable action 'actions/upload-artifact@v3'.
+#         * python_package_name: The Python package name.
+#         * test_import_package_code_1: Test for importing the Python package.
+#         * test_import_package_code_2: Test for importing the Python package.
+#         * test_import_package_code_3: Run a Python script for testing the Python package.
+#         * test_python_script: Test for importing the Python package.
 #
 # Workflow running output:
 #     No and do nothing.
@@ -60,7 +63,7 @@ jobs:
           pip3 install wheel
           pip install -U -r ./requirements/requirements-test.txt
 
-      - name: Install SmoothCrawler with by setup.py
+      - name: Install Python package by setup.py
         run: python3 setup.py install --user || exit 1
 
       - name: Show the Python package information
