@@ -31,6 +31,7 @@ The usage of each workflow template.
 * [_organize_and_generate_test_cov_reports.yaml_](#organize_and_generate_test_cov_reportsyaml)
 * [_upload_test_cov_report.yaml_](#upload_test_cov_reportyaml)
 * [_build_git-tag_and_create_github-release.yaml_](#build_git-tag_and_create_github-releaseyaml)
+* [_pre-building_test.yaml_](#pre-building_testyaml)
 
 <hr>
 
@@ -252,6 +253,38 @@ Nothing.
         
         [![Codacy Badge](https://app.codacy.com/project/badge/Grade/e8bfcd5830ba4232b45aca7c2d3e6310)](https://www.codacy.com/gh/Chisanan232/GitHub-Action-Template-Python/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Chisanan232/GitHub-Action-Template-Python&amp;utm_campaign=Badge_Grade)
         [![Codacy Badge](https://app.codacy.com/project/badge/Coverage/e8bfcd5830ba4232b45aca7c2d3e6310)](https://www.codacy.com/gh/Chisanan232/GitHub-Action-Template-Python/dashboard?utm_source=github.com&utm_medium=referral&utm_content=Chisanan232/GitHub-Action-Template-Python&utm_campaign=Badge_Coverage)
+
+<hr>
+
+### _pre-building_test.yaml_
+
+* Description: Test package by simple way after running setup.py script to install Python package
+* Options:
+
+| option name                | data type | optional or required                      | function content                                    |
+|----------------------------|-----------|-------------------------------------------|-----------------------------------------------------|
+| python_package_name        | string    | Required                                  | The Python package name.                            |
+| test_import_package_code_1 | string    | Optional, Default value is _empty string_ | Test for importing the Python package.              |
+| test_import_package_code_2 | string    | Optional, Default value is _empty string_ | Test for importing the Python package.              |
+| test_import_package_code_3 | string    | Optional, Default value is _empty string_ | Test for importing the Python package.              |
+| test_python_script         | string    | Optional, Default value is _empty string_ | Run a Python script for testing the Python package. |
+
+* Output: 
+
+No, nothing at all.
+
+* How to use it?
+
+```yaml
+  pre-building_test:
+#    name: Check about it could work finely by installing the Python package with setup.py file
+    uses: ./.github/workflows/pre-building_test.yaml
+    with:
+      python_package_name: Test-GitHub-Action-workflow
+      test_import_package_code_1: from test_gh_workflow import sample
+      test_import_package_code_2: sample.hello_python()
+      test_python_script: ./scripts/ci/test/test_pgk_install.py
+```
 
 <hr>
 
