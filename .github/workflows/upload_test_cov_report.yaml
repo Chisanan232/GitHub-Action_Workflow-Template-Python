@@ -101,14 +101,12 @@ jobs:
         with:
           name: test_coverage_data_file
           path: ${{ inputs.download_path }}
-          if-no-files-found: error
 
       - name: Download code coverage result files which has be handled by different test type process
         uses: actions/download-artifact@v3
         with:
           name: test_coverage_xml_report
           path: ${{ inputs.download_path }}
-          if-no-files-found: error
 
       - name: Install Python 3.10
         if: ${{ inputs.upload-to-codecov == true || inputs.upload-to-coveralls == true }}
