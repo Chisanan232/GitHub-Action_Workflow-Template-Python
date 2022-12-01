@@ -144,7 +144,7 @@ get_latest_version_by_git_tag() {
         Tag_Version=$(git describe --tag --abbrev=0 --match "v[0-9]\.[0-9]\.[0-9]*" | grep -E -o '[0-9]\.[0-9]\.[0-9]*')
     elif [ "$get_version_type" == "github" ]; then
         echo "🔎 🐙 🐈 🏷  Get the version info from GitHub release."
-        github_release=$(curl -s https://api.github.com/repos/Chisanan232/GitHub-Action_Workflow-Template-Python/releases/latest | jq -r '.tag_name')
+        github_release=$(curl -s https://api.github.com/repos/Chisanan232/GitHub-Action_Reusable_Workflows-Python/releases/latest | jq -r '.tag_name')
         Tag_Version=$(echo "$github_release" | grep -E -o '[0-9]\.[0-9]\.[0-9]*')
     else
         echo "❌ Currently, it only has 2 valid options could use: 'git' or 'github'."
@@ -214,7 +214,7 @@ if [ "$Input_Arg_Release_Type" == 'python-package' ]; then
     echo "🏃‍♂ ️🐍 𝌚 Run python package releasing process"
 
     git_tag=$(git describe --tag --abbrev=0 --match "v[0-9]\.[0-9]\.[0-9]*" | grep -o '[0-9]\.[0-9]\.[0-9]*')
-    github_release=$(curl -s https://api.github.com/repos/Chisanan232/GitHub-Action_Workflow-Template-Python/releases/latest | jq -r '.tag_name')
+    github_release=$(curl -s https://api.github.com/repos/Chisanan232/GitHub-Action_Reusable_Workflows-Python/releases/latest | jq -r '.tag_name')
     # shellcheck disable=SC2002
     generate_new_version_as_tag "python"
 
