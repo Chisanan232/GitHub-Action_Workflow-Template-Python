@@ -32,6 +32,7 @@ The usage of each workflow template.
 * [_upload_test_cov_report.yaml_](#upload_test_cov_reportyaml)
 * [_pre-building_test.yaml_](#pre-building_testyaml)
 * [_build_git-tag_and_create_github-release.yaml_](#build_git-tag_and_create_github-releaseyaml)
+* [_push_pkg_to_pypi.yaml_](#push_pkg_to_pypiyaml)
 
 <hr>
 
@@ -340,4 +341,45 @@ Yes, it has running result output. It would output the version which could provi
 The badge it generates: 
 
 [![Release](https://img.shields.io/github/release/Chisanan232/GitHub-Action-Template-Python.svg?label=Release&logo=github)](https://github.com/Chisanan232/GitHub-Action-Template-Python/releases)
+
+<hr>
+
+### _push_pkg_to_pypi.yaml_
+
+* Description: Compile source code and push the Python package to PyPI. (Official release the Python package)
+* Options:
+
+It has 2 different types option could use:
+
+_General option_:
+
+| option name  | data type | optional or required                      | function content                                                                                                                                     |
+|--------------|-----------|-------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------|
+| release-type | string    | Required                                  | The type of release processing. It has 2 type options: 'Official-Release' or 'Pre-Release'. It won't push the package to PyPI if it's 'Pre-Release'. |
+| push-to-PyPI | string    | Optional, Default value is _empty string_ | Push Python package to official PyPI or test PyPI. It has 2 type options: 'official' or 'test'.                                                      |
+
+_Secret option_:
+
+| option name | option is optional or required | function content            |
+|-------------|--------------------------------|-----------------------------|
+| PyPI_user   | Required                       | The username of PyPI.       |
+| PyPI_token  | Required                       | The password token of PyPI. |
+
+* Output: 
+
+No, nothing at all.
+
+* How to use it?
+
+```yaml
+  push_python_pkg_to_pypi:
+#    name: Upload the Python package files which has been compiled to PyPi
+    uses: ./.github/workflows/push_pkg_to_pypi.yaml
+    with:
+      release-type: 'Official-Release'
+      push-to-PyPI: test
+    secrets:
+      pypi_user: ${{ secrets.PYPI_USERNAME }}
+      pypi_token: ${{ secrets.PYPI_PASSWORD }}
+```
 
