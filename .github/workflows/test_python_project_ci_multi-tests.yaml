@@ -69,26 +69,18 @@ jobs:
       debug_mode: true
 
 
-  unit-test_codecov:
+  all-test_codecov:
 #    name: Organize and generate the testing report and upload it to Codecov
-    needs: run_unit-test
+    needs: [run_unit-test, run_integration-test]
     uses: ./.github/workflows/organize_and_generate_test_cov_reports.yaml
     with:
-      test_type: unit-test
-
-
-  integration-test_codecov:
-#    name: Organize and generate the testing report and upload it to Codecov
-    needs: run_integration-test
-    uses: ./.github/workflows/organize_and_generate_test_cov_reports.yaml
-    with:
-      test_type: integration-test
+      test_type: all-test
 
 
   codecov_finish:
 #    name: Organize and generate the testing report and upload it to Codecov
 #    if: github.ref_name == 'release' || github.ref_name == 'master'
-    needs: [unit-test_codecov, integration-test_codecov]
+    needs: [all-test_codecov]
     uses: ./.github/workflows/upload_test_cov_report.yaml
     secrets:
       codecov_token: ${{ secrets.CODECOV_TOKEN }}
@@ -102,7 +94,7 @@ jobs:
   coveralls_finish:
 #    name: Organize and generate the testing report and upload it to Coveralls
 #    if: github.ref_name == 'release' || github.ref_name == 'master'
-    needs: [unit-test_codecov, integration-test_codecov]
+    needs: [all-test_codecov]
     uses: ./.github/workflows/upload_test_cov_report.yaml
     secrets:
       coveralls_token: ${{ secrets.COVERALLS_TOKEN }}
@@ -113,7 +105,7 @@ jobs:
 
   codacy_finish:
 #    name: Upload test report to Codacy to analyse and record code quality
-    needs: [unit-test_codecov, integration-test_codecov]
+    needs: [all-test_codecov]
     uses: ./.github/workflows/upload_test_cov_report.yaml
     secrets:
       codacy_token: ${{ secrets.CODACY_PROJECT_TOKEN }}
@@ -122,21 +114,22 @@ jobs:
       upload-to-codacy: true
 
 
-#  pre-building_check:
-##    name: Check about it could work finely by installing the Python package with setup.py file
-#    needs: [codecov_finish, codacy_finish]
-#    uses: ./.github/workflows/pre-building_test_setup_package.yaml
-#    with:
-#      python_package_name: smoothcrawler
-#      test_import_package_code_1: import smoothcrawler as mr
-#      test_import_package_code_2: from smoothcrawler.crawler import SimpleCrawler
-#      test_import_package_code_3: from smoothcrawler.components.data import BaseHTTPResponseParser, BaseDataHandler
-#      test_python_script: ./scripts/test_crawler.py
+  pre-building_test:
+#    name: Check about it could work finely by installing the Python package with setup.py file
+    if: github.event_name == 'push' && (github.ref_name == 'release' || github.ref_name == 'master')
+    needs: [codecov_finish, coveralls_finish, codacy_finish]
+    uses: ./.github/workflows/pre-building_test.yaml
+    with:
+      python_package_name: Test-GitHub-Action-workflow
+      test_import_package_code_1: import test_gh_workflow
+      test_import_package_code_2: from test_gh_workflow import sample
+      test_import_package_code_3: sample.hello_python()
+      test_python_script: ./scripts/ci/test/test_pgk_install.py
 
 
   build_git-tag_and_create_github-release:
 #    name: Build git tag and GitHub release if it needs
-    needs: [coveralls_finish, codacy_finish]
+    needs: pre-building_test
     uses: ./.github/workflows/build_git-tag_and_create_github-release.yaml
     with:
       project_type: python-package

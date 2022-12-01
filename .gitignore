@@ -4,8 +4,11 @@
 __pycache__
 .coverage
 .coverage.*
+*.egg-info/
 .pypirc
 .pytest_cache/
 .python-version
+build/
 code_source/
 coverage.xml
+dist/

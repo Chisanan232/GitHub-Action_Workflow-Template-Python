@@ -1,0 +1,82 @@
+#########################################################################################################################
+#
+# Workflow Description:
+#     Push the Python package to PyPI. (Official release the Python package)
+#
+# Workflow input parameters:
+#     * General arguments:
+#         * release-type: The type of release processing. It has 2 type options: 'Official-Release' or 'Pre-Release'.
+#                         It won't push the package to PyPI if it's 'Pre-Release'.
+#         * push-to-PyPI: Push Python package to official PyPI or test PyPI. It has 2 type options: 'official' or 'test'.
+#
+#     * Secret arguments:
+#         * PyPI_user: The username of PyPI.
+#         * PyPI_token: The password token of PyPI.
+#
+# Workflow running output:
+#     No and do nothing.
+#
+#########################################################################################################################
+
+name: Push the Python package to PyPI
+
+on:
+  workflow_call:
+    inputs:
+      release-type:
+        description: "The type of release processing. It has 2 type options: 'Official-Release' or 'Pre-Release'. It won't 
+                      push the package to PyPI if it's 'Pre-Release'."
+        type: string
+        required: true
+      push-to-PyPI:
+        description: "Push Python package to official PyPI or test PyPI. It has 2 type options: 'official' or 'test'."
+        type: string
+        required: false
+        default: 'test'
+
+    secrets:
+      PyPI_user:
+        description: "The username of PyPI."
+        required: true
+      PyPI_token:
+        description: "The password token of PyPI."
+        required: true
+
+
+jobs:
+  push_to_PyPI:
+    if: ${{ inputs.release-type == 'Official-Release' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Python 3.10 in Ubuntu OS
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install Python dependencies
+        run: |
+          python3 -m pip install --upgrade pip
+          pip3 install -U pip
+          pip3 install -U setuptools
+          pip3 install wheel
+          pip3 install twine
+
+      - name: Compile and package the code as Python package formatter
+        run: python3 setup.py sdist bdist_wheel
+
+      - name: Push Python package to test PyPI
+        if: ${{ inputs.push-to-PyPI == 'test' }}
+        run: python3 -m twine upload --repository testpypi ./dist/*
+        env:
+          TWINE_USERNAME: ${{ secrets.PyPI_user }}
+          TWINE_PASSWORD: ${{ secrets.PyPI_token }}
+
+      - name: Push Python package to official PyPI
+        if: ${{ inputs.push-to-PyPI == 'official' }}
+        run: python3 -m twine upload ./dist/*
+        env:
+          TWINE_USERNAME: ${{ secrets.PyPI_user }}
+          TWINE_PASSWORD: ${{ secrets.PyPI_token }}

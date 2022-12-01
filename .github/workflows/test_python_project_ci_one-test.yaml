@@ -42,7 +42,7 @@ jobs:
     with:
       test_type: unit-test
       all_test_items_paths: ${{needs.prep-testbed_unit-test.outputs.all_test_items}}
-      debug_mode: true
+#      debug_mode: true
 
 
   unit-test_codecov:
@@ -53,18 +53,18 @@ jobs:
       test_type: unit-test
 
 
-#  codecov_finish:
-##    name: Organize and generate the testing report and upload it to Codecov
-##    if: github.ref_name == 'release' || github.ref_name == 'master'
-#    needs: [unit-test_codecov]
-#    uses: ./.github/workflows/upload_test_cov_report.yaml
-#    secrets:
-#      codecov_token: ${{ secrets.CODECOV_TOKEN }}
-#    with:
-#      test_type: unit-test
-#      upload-to-codecov: true
-#      codecov_flags: unit  # Required if 'upload-to-codecov' is true
-#      codecov_name: gh_workflow_template  # Required if 'upload-to-codecov' is true
+  codecov_finish:
+#    name: Organize and generate the testing report and upload it to Codecov
+#    if: github.ref_name == 'release' || github.ref_name == 'master'
+    needs: [unit-test_codecov]
+    uses: ./.github/workflows/upload_test_cov_report.yaml
+    secrets:
+      codecov_token: ${{ secrets.CODECOV_TOKEN }}
+    with:
+      test_type: unit-test
+      upload-to-codecov: true
+      codecov_flags: unit  # Required if 'upload-to-codecov' is true
+      codecov_name: gh_workflow_template  # Required if 'upload-to-codecov' is true
 
 
   coveralls_finish:
@@ -90,22 +90,21 @@ jobs:
       upload-to-codacy: true
 
 
-#  pre-building_check:
-##    name: Check about it could work finely by installing the Python package with setup.py file
-#    if: github.event_name == 'push' && (github.ref_name == 'release' || github.ref_name == 'master')
-#    needs: [codecov_finish, codacy_finish]
-#    uses: ./.github/workflows/pre-building_test_setup_package.yaml
-#    with:
-#      python_package_name: smoothcrawler
-#      test_import_package_code_1: import smoothcrawler as mr
-#      test_import_package_code_2: from smoothcrawler.crawler import SimpleCrawler
-#      test_import_package_code_3: from smoothcrawler.components.data import BaseHTTPResponseParser, BaseDataHandler
-#      test_python_script: ./scripts/test_crawler.py
+  pre-building_test:
+#    name: Check about it could work finely by installing the Python package with setup.py file
+    needs: [codecov_finish, coveralls_finish, codacy_finish]
+    uses: ./.github/workflows/pre-building_test.yaml
+    with:
+      python_package_name: Test-GitHub-Action-workflow
+      test_import_package_code_1: import test_gh_workflow
+      test_import_package_code_2: from test_gh_workflow import sample
+      test_import_package_code_3: sample.hello_python()
+      test_python_script: ./scripts/ci/test/test_pgk_install.py
 
 
   build_git-tag_and_create_github-release:
 #    name: Build git tag and GitHub release if it needs
-    needs: [coveralls_finish, codacy_finish]
+    needs: pre-building_test
     uses: ./.github/workflows/build_git-tag_and_create_github-release.yaml
     with:
       project_type: python-package
@@ -114,47 +113,15 @@ jobs:
       debug_mode: true
 
 
-  fake_build_pkg_and_push_to_pypi:
-#    name: Check about it could work finely by installing the Python package with setup.py file
+  push_python_pkg_to_pypi:
+#    name: Upload the Python package files which has been compiled to PyPi
+    if: github.event_name == 'push' && github.ref_name == 'release'
     needs: build_git-tag_and_create_github-release
-    if: github.event_name == 'push'
-    runs-on: ubuntu-latest
-    env:
-      RELEASE_TYPE: ${{ needs.build_git-tag_and_create_github-release.outputs.python_release_version }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Check it whether get the output of previous one job which has version info or not
-        run: bash scripts/ci/check_getting_output.sh
-#        run: |
-#          release_version=$(echo $RELEASE_TYPE)
-#          if [ "$release_version" != "" ]; then
-#              echo "📬🎉🍻 It gets data which is release version info!"
-#              exit 0
-#          else
-#              echo "📭🙈 It doesn't get any data which is release version info."
-#              exit 1
-#          fi
-
-      - name: For testing about getting the software version info
-        run: | 
-          echo "Release version: $RELEASE_TYPE"
-
-
-#  compile_and_build_python_pkg:
-##    name: Compile the Python source code and build it as Python package files
-#    if: github.event_name == 'push' && github.ref_name == 'master'
-#    needs: pre-building_check
-#    uses: ./.github/workflows/build_package.yaml
-
-
-#  push_python_pkg_to_pypi:
-##    name: Upload the Python package files which has been compiled to PyPi
-#    if: github.event_name == 'push' && github.ref_name == 'master'
-#    needs: compile_and_build_python_pkg
-#    uses: ./.github/workflows/push_pkg_to_pypi.yaml
-#    secrets:
-#      pypi_user: ${{ secrets.PYPI_USERNAME }}
-#      pypi_token: ${{ secrets.PYPI_PASSWORD }}
+    uses: ./.github/workflows/push_pkg_to_pypi.yaml
+    with:
+      release-type: ${{ needs.build_git-tag_and_create_github-release.outputs.python_release_version }}
+      push-to-PyPI: test
+    secrets:
+      pypi_user: ${{ secrets.PYPI_USERNAME }}
+      pypi_token: ${{ secrets.PYPI_PASSWORD }}
 
