@@ -51,11 +51,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Download shell script for checking input parameters
-        run: |
-          curl https://raw.githubusercontent.com/Chisanan232/GitHub-Action_Reusable_Workflows-Python/develop/scripts/ci/check_getting_output.sh --output ./scripts/ci/check_getting_output.sh
-          bash ./scripts/ci/check_getting_output.sh
-
       - name: Setup Python 3.10 in Ubuntu OS
         uses: actions/setup-python@v4
         with:
