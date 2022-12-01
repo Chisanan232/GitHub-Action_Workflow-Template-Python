@@ -48,6 +48,9 @@ jobs:
     if: ${{ inputs.release-type == 'Official-Release' }}
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
       - name: Download shell script for checking input parameters
         run: |
           curl https://raw.githubusercontent.com/Chisanan232/GitHub-Action_Reusable_Workflows-Python/develop/scripts/ci/check_getting_output.sh --output ./scripts/ci/check_getting_output.sh
