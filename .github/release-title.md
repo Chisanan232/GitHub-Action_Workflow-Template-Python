@@ -1,1 +1,1 @@
-v3.0.0 - Modify under testing OS & Python versions and upgrade dependencies actions 🍻
+v4.0.0 🍻🍾 - Add new reusable workflows and fix setup issue with the latest version Ubuntu OS.

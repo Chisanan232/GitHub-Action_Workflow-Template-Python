@@ -1,42 +1,40 @@
-[//]: # (### 🎉🎊🍾 New feature)
+### 🎉🎊🍾 New feature
+<hr>
 
-[//]: # (<hr>)
+1. Add new reusable workflows.
+    * _pre-building_test.yaml_: Running pre-testing by simple way with running _setup.py_ script.
+    * _push_pkg_to_pypi.yaml_: Compile Python source code and push the Python package to PyPI.
 
-[//]: # ()
-[//]: # (1. Add new options about set up and run a sample HTTP server for testing if it needs in some testing scenario &#40;_run_test_items_via_pytest.yaml_&#41;.)
-
-[//]: # ()
 ### 🛠⚙️🔩 **Breaking Change**
 <hr>
 
-1. Clear the under testing environments or settings to reduce resource.
+1. Modify the workflows detail about testing coverage report processing.
+    * All report types, e.g., .coverage format data file or XML format report, would be handled and generated in workflow _organize_and_generate_test_cov_reports.yaml_.
+    * It only processes uploading testing reports in workflow _upload_test_cov_report.yaml_.
 
-    1-1. Deprecate and remove some runtime OS versions.
+### 🛠🐛💣 **Bug Fix**
+<hr>
 
-    * Deprecated settings: _ubuntu-18.04_, _ubuntu-20.04_, _ubuntu-22.04_, _macos-10.15_, _macos-11_, _macos-12_
-    * New settings: _ubuntu-latest_, _macos-latest_
+1. Fix issue of setup processing would fail with Python version 3.6 in runtime OS Ubuntu 22.04.
+    * Modify to test code with Python 3.6 version in Ubuntu 20.04.
 
-    1-2. Add more Python version for testing
-
-    * New version: _Python 3.11_
-
-[//]: # (### ⚒⚒💣 **Bug Fix** )
-
+[//]: # (### 🔬🧪🧬 **Refactor**)
 [//]: # (<hr>)
 
 [//]: # ()
-[//]: # (1. Fix the issue about uploading test coverage report cannot work at all.)
+[//]: # (1. Upgrade the GitHub Action syntax usage about set-output commands.)
 
-### 🔬🧪🧬 **Refactor**
-<hr>
+[//]: # ()
+[//]: # (    * Change to use environment variable _GITHUB_OUTPUT_.)
 
-1. Upgrade the GitHub Action syntax usage about set-output commands.
+[//]: # (    * Refer: https://github.blog/changelog/2022-10-11-github-actions-deprecating-save-state-and-set-output-commands/)
 
-    * Change to use environment variable _GITHUB_OUTPUT_.
-    * Refer: https://github.blog/changelog/2022-10-11-github-actions-deprecating-save-state-and-set-output-commands/
+[//]: # ()
+[//]: # (2. Upgrade the actions which depends on Node.JS version 12 to newer version.)
 
-2. Upgrade the actions which depends on Node.JS version 12 to newer version.
+[//]: # ()
+[//]: # (    * Upgrade _actions/checkout_ to version 3.)
 
-    * Upgrade _actions/checkout_ to version 3.
-    * Upgrade _actions/setup-python_ to version 4.
-    * Refer: https://github.blog/changelog/2022-09-22-github-actions-all-actions-will-begin-running-on-node16-instead-of-node12/
+[//]: # (    * Upgrade _actions/setup-python_ to version 4.)
+
+[//]: # (    * Refer: https://github.blog/changelog/2022-09-22-github-actions-all-actions-will-begin-running-on-node16-instead-of-node12/)
