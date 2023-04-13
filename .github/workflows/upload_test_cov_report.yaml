@@ -109,31 +109,45 @@ jobs:
           path: ${{ inputs.download_path }}
 
       - name: Install Python 3.10
-        if: ${{ inputs.upload-to-codecov == true || inputs.upload-to-coveralls == true }}
+#        if: ${{ inputs.upload-to-codecov == true || inputs.upload-to-coveralls == true }}
+        if: ${{ inputs.upload-to-coveralls == true }}
         uses: actions/setup-python@v4
         with:
           python-version: "3.10"
 
       - name: Install Python dependencies about handling testing coverage report
-        if: ${{ inputs.upload-to-codecov == true || inputs.upload-to-coveralls == true }}
+        if: ${{ inputs.upload-to-coveralls == true }}
         run: |
           python3 -m pip install --upgrade pip
           pip3 install -U pip
 
-      - name: Install Python dependencies about tool of Codecov
-        if: ${{ inputs.upload-to-codecov == true }}
-        run: pip3 install codecov
+#      - name: Install Python dependencies about tool of Codecov
+#        if: ${{ inputs.upload-to-codecov == true }}
+#        run: pip3 install codecov
+
+#      - name: Upload coverage report to Codecov https://codecov.io
+#        if: ${{ inputs.upload-to-codecov == true }}
+#        run: |
+#          codecov \
+#            -t ${{ secrets.codecov_token }} \
+#            --file coverage_${{ inputs.test_type }}.xml \
+#            --flags ${{ inputs.codecov_flags }} \
+#            --env OS,PYTHON \
+#            --name ${{ inputs.codecov_name }} \
+#            --required \
+#            --verbose
 
       - name: Upload coverage report to Codecov https://codecov.io
         if: ${{ inputs.upload-to-codecov == true }}
         run: |
-          codecov \
+          curl -Os https://uploader.codecov.io/latest/linux/codecov
+          chmod +x codecov
+          ./codecov
             -t ${{ secrets.codecov_token }} \
             --file coverage_${{ inputs.test_type }}.xml \
             --flags ${{ inputs.codecov_flags }} \
             --env OS,PYTHON \
             --name ${{ inputs.codecov_name }} \
-            --required \
             --verbose
 
       - name: Install Python dependencies about tool of Coveralls
