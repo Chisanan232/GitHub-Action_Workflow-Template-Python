@@ -142,7 +142,7 @@ jobs:
         run: |
           curl -Os https://uploader.codecov.io/latest/linux/codecov
           chmod +x codecov
-          ./codecov
+          ./codecov \
             -t ${{ secrets.codecov_token }} \
             --file coverage_${{ inputs.test_type }}.xml \
             --flags ${{ inputs.codecov_flags }} \
