@@ -1,8 +1,7 @@
 [run]
-branch = True
 parallel = True
-source=./test_gh_workflow
 relative_files = True
+include=./test_gh_workflow
 
 omit =
     */__init__.py
