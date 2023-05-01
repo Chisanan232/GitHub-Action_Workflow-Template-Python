@@ -30,16 +30,12 @@ on:
         description: "The Python package name."
         required: true
         type: string
-      test_import_package_code_1:
-        description: "Test for importing the Python package."
-        required: true
-        type: string
-      test_import_package_code_2:
-        description: "Test for importing the Python package."
+      test_shell:
+        description: "Test to run shell."
         required: false
         type: string
-      test_import_package_code_3:
-        description: "Test for importing the Python package."
+      test_shell_in_python:
+        description: "Test to run shell within Python."
         required: false
         type: string
       test_python_script:
@@ -90,26 +86,20 @@ jobs:
       - name: Show the Python package information
         run: pip3 show ${{ inputs.python_package_name }}
 
-      - name: Test to run script with package '${{ inputs.python_package_name }}' in command lines within Python shell
-        if: ${{ inputs.build-type == 'setuptools' }}
+      - name: Test to run script with package '${{ inputs.python_package_name }}' in command lines
+        if: ${{ inputs.test_shell != '' }}
         run: |
-          ${{ inputs.test_import_package_code_1 }}
-          ${{ inputs.test_import_package_code_2 }}
-          ${{ inputs.test_import_package_code_3 }}
+          ${{ inputs.test_shell }}
+
+      - name: Test to run script with package '${{ inputs.python_package_name }}' in command lines within Python shell
+        if: ${{ inputs.test_shell_in_python != '' }}
+        run: |
+          ${{ inputs.test_shell_in_python }}
         shell: python
 
       - name: Test to run script with package '${{ inputs.python_package_name }}' with Python file
         if: ${{ inputs.test_python_script != '' && inputs.build-type == 'setuptools' }}
         run: python3 ${{ inputs.test_python_script }}
-
-      - name: Test to run script with package '${{ inputs.python_package_name }}' in command lines within Python shell of Poetry
-        if: ${{ inputs.build-type == 'poetry' }}
-        run: |
-          poetry shell
-          python3
-          ${{ inputs.test_import_package_code_1 }}
-          ${{ inputs.test_import_package_code_2 }}
-          ${{ inputs.test_import_package_code_3 }}
 
       - name: Test to run script with package '${{ inputs.python_package_name }}' with Python file by Poetry
         if: ${{ inputs.test_python_script != '' && inputs.build-type == 'poetry' }}
