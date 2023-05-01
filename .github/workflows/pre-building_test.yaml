@@ -70,6 +70,10 @@ jobs:
         if: ${{ inputs.build-type == 'setuptools' }}
         run: python3 setup.py install --user || exit 1
 
+      - name: Show the Python package information
+        if: ${{ inputs.build-type == 'setuptools' }}
+        run: pip3 show ${{ inputs.python_package_name }}
+
       - name: Install Python dependencies by Poetry
         if: ${{ inputs.build-type == 'poetry' }}
         run: |
@@ -83,8 +87,9 @@ jobs:
           poetry build
           poetry run pip3 install ./dist/*.whl || exit 1
 
-      - name: Show the Python package information
-        run: pip3 show ${{ inputs.python_package_name }}
+      - name: Show the Python package information via Poetry
+        if: ${{ inputs.build-type == 'poetry' }}
+        run: poetry run pip3 show ${{ inputs.python_package_name }}
 
       - name: Test to run script with package '${{ inputs.python_package_name }}' in command lines
         if: ${{ inputs.test_shell != '' }}
