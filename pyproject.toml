@@ -5,6 +5,7 @@ description = "This is a testing package of GitHub Action reusable workflow"
 authors = ["Chisanan232 <chi10211201@cycu.org.tw>"]
 license = "Apache License 2.0"
 readme = "README.md"
+packages = [{include = "test_gh_workflow"}]
 
 [tool.poetry.dependencies]
 python = "^3.7"
