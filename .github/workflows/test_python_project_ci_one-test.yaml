@@ -98,9 +98,7 @@ jobs:
     uses: ./.github/workflows/pre-building_test.yaml
     with:
       python_package_name: Test-GitHub-Action-workflow
-      test_import_package_code_1: import test_gh_workflow
-      test_import_package_code_2: from test_gh_workflow import sample
-      test_import_package_code_3: sample.hello_python()
+      test_shell_in_python: from test_gh_workflow import sample
       test_python_script: ./scripts/ci/test/test_pgk_install.py
 
 
