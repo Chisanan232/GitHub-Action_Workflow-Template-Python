@@ -114,7 +114,8 @@ jobs:
 
   pre-building_test:
 #    name: Check about it could work finely by installing the Python package with setup.py file
-    if: github.event_name == 'push' && (github.ref_name == 'release' || github.ref_name == 'master')
+#    if: github.event_name == 'push' && (github.ref_name == 'release' || github.ref_name == 'master')
+    if: github.event_name == 'push'
     needs: [codecov_finish, coveralls_finish, codacy_finish]
     uses: ./.github/workflows/pre-building_test.yaml
     with:
