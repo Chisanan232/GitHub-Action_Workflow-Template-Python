@@ -23,6 +23,11 @@ name: Push the Python package to PyPI
 on:
   workflow_call:
     inputs:
+      build-type:
+        description: "Use one specific way to build and package Python code. It has 2 type options: 'setuptools' or 'poetry'."
+        type: string
+        required: false
+        default: 'setuptools'
       release-type:
         description: "The type of release processing. It has 2 type options: 'Official-Release' or 'Pre-Release'. It won't 
                       push the package to PyPI if it's 'Pre-Release'."
@@ -56,7 +61,8 @@ jobs:
         with:
           python-version: '3.10'
 
-      - name: Install Python dependencies
+      - name: Install Python dependencies for setuptools
+        if: ${{ inputs.build-type == 'setuptools' }}
         run: |
           python3 -m pip install --upgrade pip
           pip3 install -U pip
@@ -64,19 +70,41 @@ jobs:
           pip3 install wheel
           pip3 install twine
 
+      - name: Install Python dependencies for Poetry
+        if: ${{ inputs.build-type == 'poetry' }}
+        run: |
+          python3 -m pip install --upgrade pip
+          pip3 install -U pip
+          pip3 install -U poetry
+          poetry --version
+
       - name: Compile and package the code as Python package formatter
+        if: ${{ inputs.build-type == 'setuptools' }}
         run: python3 setup.py sdist bdist_wheel
 
-      - name: Push Python package to test PyPI
-        if: ${{ inputs.push-to-PyPI == 'test' }}
+      - name: Push Python package to test PyPI through setuptools
+        if: ${{ inputs.build-type == 'setuptools' && inputs.push-to-PyPI == 'test' }}
         run: python3 -m twine upload --repository testpypi ./dist/*
         env:
           TWINE_USERNAME: ${{ secrets.PyPI_user }}
           TWINE_PASSWORD: ${{ secrets.PyPI_token }}
 
-      - name: Push Python package to official PyPI
-        if: ${{ inputs.push-to-PyPI == 'official' }}
+      - name: Push Python package to official PyPI through setuptools
+        if: ${{ inputs.build-type == 'setuptools' && inputs.push-to-PyPI == 'official' }}
         run: python3 -m twine upload ./dist/*
         env:
           TWINE_USERNAME: ${{ secrets.PyPI_user }}
           TWINE_PASSWORD: ${{ secrets.PyPI_token }}
+
+      - name: Push Python package to test PyPI through Poetry
+        if: ${{ inputs.build-type == 'poetry' && inputs.push-to-PyPI == 'test' }}
+        run: |
+          poetry config pypi-token.pypi ${{ secrets.PyPI_token }}
+          poetry config repositories.testpypi https://test.pypi.org/legacy/
+          poetry publish --build -vvv -r testpypi
+
+      - name: Push Python package to official PyPI through Poetry
+        if: ${{ inputs.build-type == 'poetry' && inputs.push-to-PyPI == 'official' }}
+        run: |
+          poetry config pypi-token.pypi ${{ secrets.PyPI_token }}
+          poetry publish --build -vvv

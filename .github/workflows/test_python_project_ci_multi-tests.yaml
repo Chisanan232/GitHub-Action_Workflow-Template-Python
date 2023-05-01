@@ -9,6 +9,7 @@ on:
       - "release/**"
       - "master"
     paths-ignore:
+      - "pyproject.toml"
       - ".gitcommitrules"
       - ".gitignore"
       - "LICENSE"
@@ -22,6 +23,7 @@ on:
       - "release/**"
       - "master"
     paths-ignore:
+      - "pyproject.toml"
       - ".gitcommitrules"
       - ".gitignore"
       - "LICENSE"
