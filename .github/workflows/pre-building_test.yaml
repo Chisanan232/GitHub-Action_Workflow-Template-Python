@@ -81,7 +81,7 @@ jobs:
         if: ${{ inputs.build-type == 'poetry' }}
         run: |
           poetry build
-          pip3 install ./dist/*.whl || exit 1
+          poetry run pip3 install ./dist/*.whl || exit 1
 
       - name: Show the Python package information
         run: pip3 show ${{ inputs.python_package_name }}
