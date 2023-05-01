@@ -122,7 +122,6 @@ jobs:
       build-type: poetry
       python_package_name: Test-GitHub-Action-workflow
       test_shell: echo 'Test running'
-      test_shell_in_python: from test_gh_workflow import sample
       test_python_script: ./scripts/ci/test/test_pgk_install.py
 
 
