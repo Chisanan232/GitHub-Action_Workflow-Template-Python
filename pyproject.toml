@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "test github action workflow"
+name = "test_github_action_workflow"
 version = "0.2.0"
 description = "This is a testing package of GitHub Action reusable workflow"
 authors = ["Chisanan232 <chi10211201@cycu.org.tw>"]
