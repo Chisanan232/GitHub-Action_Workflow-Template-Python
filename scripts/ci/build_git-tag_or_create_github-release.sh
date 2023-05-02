@@ -160,6 +160,7 @@ generate_new_version_as_tag() {
     if [ "$project_type" == "python" ]; then
         echo "🔎 🐍 📦  Get the new version info from Python package."
         New_Release_Version=$(cat ./"$Input_Arg_Python_Pkg_Name"/__pkg_info__.py | grep -E "$Python_Version_Reg" | grep -E -o "$Software_Version_Reg")
+        New_Release_Tag=$New_Release_Version
     elif [ "$project_type" == "github-action_reusable-workflow" ]; then
         echo "🔎 🐙 🐈 🏷  Get the current version info from GitHub release."
         # Generate the new version from previous tag
@@ -172,9 +173,8 @@ generate_new_version_as_tag() {
             current_ver=0
         fi
         New_Release_Version=$(( current_ver + 1 ))
+        New_Release_Tag='v'$New_Release_Version'.0.0'
     fi
-
-    New_Release_Tag='v'$New_Release_Version'.0.0'
 }
 
 
