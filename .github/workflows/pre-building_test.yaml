@@ -70,10 +70,6 @@ jobs:
         if: ${{ inputs.build-type == 'setuptools' }}
         run: python3 setup.py install --user || exit 1
 
-      - name: Show the Python package information
-        if: ${{ inputs.build-type == 'setuptools' }}
-        run: pip3 show ${{ inputs.python_package_name }}
-
       - name: Install Python dependencies by Poetry
         if: ${{ inputs.build-type == 'poetry' }}
         run: |
@@ -85,11 +81,10 @@ jobs:
         if: ${{ inputs.build-type == 'poetry' }}
         run: |
           poetry build
-          poetry run pip3 install ./dist/*.whl || exit 1
+          pip3 install ./dist/*.whl || exit 1
 
-      - name: Show the Python package information via Poetry
-        if: ${{ inputs.build-type == 'poetry' }}
-        run: poetry run pip3 show ${{ inputs.python_package_name }}
+      - name: Show the Python package information
+        run: pip3 show ${{ inputs.python_package_name }}
 
       - name: Test to run script with package '${{ inputs.python_package_name }}' in command lines
         if: ${{ inputs.test_shell != '' }}
@@ -103,12 +98,8 @@ jobs:
         shell: python
 
       - name: Test to run script with package '${{ inputs.python_package_name }}' with Python file
-        if: ${{ inputs.test_python_script != '' && inputs.build-type == 'setuptools' }}
+        if: ${{ inputs.test_python_script != '' }}
         run: python3 ${{ inputs.test_python_script }}
-
-      - name: Test to run script with package '${{ inputs.python_package_name }}' with Python file by Poetry
-        if: ${{ inputs.test_python_script != '' && inputs.build-type == 'poetry' }}
-        run: poetry run python3 ${{ inputs.test_python_script }}
 
 # TODO: Build and upload Python package to test PyPI and install it from test PyPI to test
 # TODO-note: https://stackoverflow.com/questions/68882603/using-python-poetry-to-publish-to-test-pypi-org
