@@ -5,6 +5,7 @@
 #
 # Workflow input parameters:
 #     * General arguments:
+#         * build-type: Use one specific way to build and package Python code. It has 2 type options: 'setuptools' or 'poetry'.
 #         * release-type: The type of release processing. It has 2 type options: 'Official-Release' or 'Pre-Release'.
 #                         It won't push the package to PyPI if it's 'Pre-Release'.
 #         * push-to-PyPI: Push Python package to official PyPI or test PyPI. It has 2 type options: 'official' or 'test'.
