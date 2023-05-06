@@ -227,7 +227,7 @@ Nothing.
       
         The badge it generates: 
         
-        [![codecov](https://codecov.io/gh/Chisanan232/GitHub-Action-Template-Python/branch/master/graph/badge.svg?token=wbPgJ4wxOl)](https://codecov.io/gh/Chisanan232/GitHub-Action-Template-Python)
+        [![codecov](https://codecov.io/gh/Chisanan232/GitHub-Action_Reusable_Workflows-Python/branch/master/graph/badge.svg?token=wbPgJ4wxOl)](https://codecov.io/gh/Chisanan232/GitHub-Action_Reusable_Workflows-Python)
 
     * Uploading test coverage report to **_Coveralls_** (accepted report format: _.coverage_)
 
@@ -247,7 +247,7 @@ Nothing.
       
         The badge it generates: 
         
-        [![Coverage Status](https://coveralls.io/repos/github/Chisanan232/GitHub-Action-Template-Python/badge.svg?branch=master)](https://coveralls.io/github/Chisanan232/GitHub-Action-Template-Python?branch=master)
+        [![Coverage Status](https://coveralls.io/repos/github/Chisanan232/GitHub-Action_Reusable_Workflows-Python/badge.svg?branch=master)](https://coveralls.io/github/Chisanan232/GitHub-Action_Reusable_Workflows-Python?branch=master)
 
     * Uploading test coverage report to **_Codacy_** (accepted report format: _.xml_) 
 
