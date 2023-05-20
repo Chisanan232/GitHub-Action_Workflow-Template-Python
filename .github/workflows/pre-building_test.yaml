@@ -5,10 +5,10 @@
 #
 # Workflow input parameters:
 #     * General arguments:
+#         * build-type: Use one specific way to build and package Python code. It has 2 type options: 'setuptools' or 'poetry'.
 #         * python_package_name: The Python package name.
-#         * test_import_package_code_1: Test for importing the Python package.
-#         * test_import_package_code_2: Test for importing the Python package.
-#         * test_import_package_code_3: Run a Python script for testing the Python package.
+#         * test_shell: Run command line(s) for testing.
+#         * test_shell_in_python: Run Python code as script for testing.
 #         * test_python_script: Test for importing the Python package.
 #
 # Workflow running output:

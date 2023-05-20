@@ -118,6 +118,21 @@ from needed workflow _prepare-testing-items_unit-test_, and the context it wants
 And be more essentially, what outputs it want to use? It's _all_test_items_. Do you discover this keyword 
 is provided by previous workflow? That is all testing items.
 
+> **_NOTE:_**
+>
+> It also has another reusable workflow names _poetry_run_test_via_pytest.yaml_. If your Python project manages by **Poetry**, 
+> it recommends you to use this one replaces _run_test_items_via_pytest.yaml_. The usage and running details are mostly same 
+> as _run_test_items_via_pytest.yaml_. But, workflow _poetry_run_test_via_pytest.yaml_ only supports Python version 3.8 up. 
+> 
+
+* Difference between workflows _run_test_items_via_pytest.yaml_ and _poetry_run_test_via_pytest.yaml_
+
+| Workflow                          | Running way                                       | Support Python version |
+|-----------------------------------|---------------------------------------------------|------------------------|
+| _run_test_items_via_pytest.yaml_  | Command lines like ``pip``, ``python``, etc       | 3.6 - 3.11             |
+| _poetry_run_test_via_pytest.yaml_ | Use ``poetry`` feature or run command lines in it | 3.8 - 3.11             |
+
+
 <hr>
 
 ### _organize_and_generate_test_cov_reports.yaml_
@@ -212,7 +227,7 @@ Nothing.
       
         The badge it generates: 
         
-        [![codecov](https://codecov.io/gh/Chisanan232/GitHub-Action-Template-Python/branch/master/graph/badge.svg?token=wbPgJ4wxOl)](https://codecov.io/gh/Chisanan232/GitHub-Action-Template-Python)
+        [![codecov](https://codecov.io/gh/Chisanan232/GitHub-Action_Reusable_Workflows-Python/branch/master/graph/badge.svg?token=wbPgJ4wxOl)](https://codecov.io/gh/Chisanan232/GitHub-Action_Reusable_Workflows-Python)
 
     * Uploading test coverage report to **_Coveralls_** (accepted report format: _.coverage_)
 
@@ -232,7 +247,7 @@ Nothing.
       
         The badge it generates: 
         
-        [![Coverage Status](https://coveralls.io/repos/github/Chisanan232/GitHub-Action-Template-Python/badge.svg?branch=master)](https://coveralls.io/github/Chisanan232/GitHub-Action-Template-Python?branch=master)
+        [![Coverage Status](https://coveralls.io/repos/github/Chisanan232/GitHub-Action_Reusable_Workflows-Python/badge.svg?branch=master)](https://coveralls.io/github/Chisanan232/GitHub-Action_Reusable_Workflows-Python?branch=master)
 
     * Uploading test coverage report to **_Codacy_** (accepted report format: _.xml_) 
 
@@ -262,13 +277,13 @@ Nothing.
 * Description: Test package by simple way after running setup.py script to install Python package
 * Options:
 
-| option name                | data type | optional or required                      | function content                                    |
-|----------------------------|-----------|-------------------------------------------|-----------------------------------------------------|
-| python_package_name        | string    | Required                                  | The Python package name.                            |
-| test_import_package_code_1 | string    | Optional, Default value is _empty string_ | Test for importing the Python package.              |
-| test_import_package_code_2 | string    | Optional, Default value is _empty string_ | Test for importing the Python package.              |
-| test_import_package_code_3 | string    | Optional, Default value is _empty string_ | Test for importing the Python package.              |
-| test_python_script         | string    | Optional, Default value is _empty string_ | Run a Python script for testing the Python package. |
+| option name          | data type | optional or required                      | function content                                    |
+|----------------------|-----------|-------------------------------------------|-----------------------------------------------------|
+| build-type           | string    | Optional, Default value is _setuptools_   | The way CI should run the pre-build test.           |
+| python_package_name  | string    | Required                                  | The Python package name.                            |
+| test_shell           | string    | Optional, Default value is _empty string_ | Run command line(s) for testing.                    |
+| test_shell_in_python | string    | Optional, Default value is _empty string_ | Run Python code as script for testing.              |
+| test_python_script   | string    | Optional, Default value is _empty string_ | Run a Python script for testing the Python package. |
 
 * Output: 
 
@@ -281,9 +296,10 @@ No, nothing at all.
 #    name: Check about it could work finely by installing the Python package with setup.py file
     uses: ./.github/workflows/pre-building_test.yaml
     with:
+      build-type: setuptools
       python_package_name: Test-GitHub-Action-workflow
-      test_import_package_code_1: from test_gh_workflow import sample
-      test_import_package_code_2: sample.hello_python()
+      test_shell_in_python: from test_gh_workflow import sample
+      test_shell: echo 'Echo something for testing'
       test_python_script: ./scripts/ci/test/test_pgk_install.py
 ```
 
@@ -355,6 +371,7 @@ _General option_:
 
 | option name  | data type | optional or required                      | function content                                                                                                                                     |
 |--------------|-----------|-------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------|
+| build-type   | string    | Optional, Default value is _setuptools_   | Which way CI should to package the Python code. It has 2 type options: 'setuptools' or 'poetry'.                                                     |
 | release-type | string    | Required                                  | The type of release processing. It has 2 type options: 'Official-Release' or 'Pre-Release'. It won't push the package to PyPI if it's 'Pre-Release'. |
 | push-to-PyPI | string    | Optional, Default value is _empty string_ | Push Python package to official PyPI or test PyPI. It has 2 type options: 'official' or 'test'.                                                      |
 
@@ -376,6 +393,7 @@ No, nothing at all.
 #    name: Upload the Python package files which has been compiled to PyPi
     uses: ./.github/workflows/push_pkg_to_pypi.yaml
     with:
+      build-type: setuptools
       release-type: 'Official-Release'
       push-to-PyPI: test
     secrets:
