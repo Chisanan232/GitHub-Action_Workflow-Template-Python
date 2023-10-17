@@ -66,15 +66,19 @@ get_all_test_subpackage() {
     fi
 }
 
+get_all_test_modules() {
+    # Get all test modules under these test sub-pacakges
+    for test_subpkg in "${all_test_subpkgs[@]}";
+    do
+        getalltests "$test_subpkg"
+    done
+}
+
 get_all_test_subpackage
 
 printf '%s\n' "${all_test_subpkgs[@]}" | jq -R . | jq -cs .
 
-# Get all test modules under these test sub-pacakges
-for test_subpkg in "${all_test_subpkgs[@]}";
-do
-    getalltests "$test_subpkg"
-done
+get_all_test_modules
 
 dest=( "${all_tests[@]}" )
 
