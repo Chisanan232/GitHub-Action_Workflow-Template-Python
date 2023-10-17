@@ -1,10 +1,14 @@
 #!/usr/bin/env bash
 
 set -ex
-runtime_os=$1
 
-declare base_directory
-base_directory=test/unit_test/
+base_directory=$1
+if [ "$base_directory" == "" ];
+then
+    base_directory="test/"
+fi
+
+runtime_os=$2
 
 declare -a all_test_subpkgs=( "$base_directory" )
 
