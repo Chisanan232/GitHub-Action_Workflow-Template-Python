@@ -9,6 +9,10 @@ then
 fi
 
 runtime_os=$2
+if [ "$runtime_os" == "" ];
+then
+    runtime_os="unix"
+fi
 
 declare -a all_test_subpkgs=( "$base_directory" )
 
