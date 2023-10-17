@@ -6,21 +6,6 @@ runtime_os=$1
 declare base_directory
 base_directory=test/unit_test/
 
-declare -a all_tests
-
-get_all_test_modules_under_subpkg() {
-    # Get all test items from the module (.py files)
-    declare -a testpatharray=( $(ls -F "$1" | grep -v '/$' | grep -v '__init__.py' | grep -v 'test_config.py' | grep -v -E '^_[a-z_]{1,64}.py' | grep -v '__pycache__'))
-
-    declare -a alltestpaths
-    for test_module_path in ${testpatharray};
-    do
-        alltestpaths+=("$1$test_module_path")
-    done
-
-    all_tests+=("${alltestpaths[@]}")
-}
-
 declare -a all_test_subpkgs=( "$base_directory" )
 
 get_all_test_subpackage() {
@@ -66,8 +51,23 @@ get_all_test_subpackage() {
     fi
 }
 
+declare -a all_tests
+
+get_all_test_modules_under_subpkg() {
+    # Get all test modules with one specific subpackage (directory has __init__.py file)
+    declare -a testpatharray=( $(ls -F "$1" | grep -v '/$' | grep -v '__init__.py' | grep -v 'test_config.py' | grep -v -E '^_[a-z_]{1,64}.py' | grep -v '__pycache__'))
+
+    declare -a alltestpaths
+    for test_module_path in ${testpatharray};
+    do
+        alltestpaths+=("$1$test_module_path")
+    done
+
+    all_tests+=("${alltestpaths[@]}")
+}
+
 get_all_test_modules() {
-    # Get all test modules under these test sub-pacakges
+    # Get all test modules under these test subpackages
     for test_subpkg in "${all_test_subpkgs[@]}";
     do
         get_all_test_modules_under_subpkg "$test_subpkg"
