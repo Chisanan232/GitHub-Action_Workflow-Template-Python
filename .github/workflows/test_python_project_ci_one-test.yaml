@@ -33,8 +33,7 @@ jobs:
 #    name: Prepare all unit test items
     uses: ./.github/workflows/prepare_test_items.yaml
     with:
-      shell_path: scripts/ci/test/get-unit-test-paths.sh
-      shell_arg: unix
+      shell_arg: test/unit_test/
 
 
   run_unit-test:
