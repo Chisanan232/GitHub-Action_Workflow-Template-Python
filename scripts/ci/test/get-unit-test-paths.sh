@@ -20,7 +20,7 @@ get_all_test_subpackage() {
     declare test_subpkg="${all_test_subpkgs[$index]}"
     if [ "$test_subpkg" != "" ];
     then
-        echo "[SCRIPT] Path '$test_subpkg' is not empty, run to scan and get all directories."
+        # Still has test subpackage won't scan
         declare test_path="$test_subpkg*/"
         declare -a test_subpkg_array=( $(ls -d $test_path | grep -v '__pycache__') )
 
@@ -34,12 +34,8 @@ get_all_test_subpackage() {
             if [ ${#all_test_subpkgs[@]} != $index ];
             then
                 get_all_test_subpackage $(( $index + 1 ))
-            else
-                echo "[SCRIPT] Done to find all test subpacakge."
             fi
         fi
-    else
-        echo "[SCRIPT] Path '$test_subpkg' is empty, ignore to run."
     fi
 }
 
