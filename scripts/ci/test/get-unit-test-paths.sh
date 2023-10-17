@@ -8,7 +8,7 @@ base_directory=test/unit_test/
 
 declare -a all_tests
 
-getalltests() {
+get_all_test_modules_under_subpkg() {
     # Get all test items from the module (.py files)
     declare -a testpatharray=( $(ls -F "$1" | grep -v '/$' | grep -v '__init__.py' | grep -v 'test_config.py' | grep -v -E '^_[a-z_]{1,64}.py' | grep -v '__pycache__'))
 
@@ -70,7 +70,7 @@ get_all_test_modules() {
     # Get all test modules under these test sub-pacakges
     for test_subpkg in "${all_test_subpkgs[@]}";
     do
-        getalltests "$test_subpkg"
+        get_all_test_modules_under_subpkg "$test_subpkg"
     done
 }
 
