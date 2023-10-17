@@ -11,7 +11,6 @@ declare -a all_test_subpkgs=( "$base_directory" )
 get_all_test_subpackage() {
     # Get all test directories (python subpackage)
     # Note: use dept-first search algorithm
-    printf "running parameter $1" | jq -R . | jq -cs .
     declare index=0
     if [ "$1" ];
     then
@@ -21,33 +20,26 @@ get_all_test_subpackage() {
     declare test_subpkg="${all_test_subpkgs[$index]}"
     if [ "$test_subpkg" != "" ];
     then
-        printf "Path '$test_subpkg' is not empty, run to scan directoies." | jq -R . | jq -cs .
+        echo "[SCRIPT] Path '$test_subpkg' is not empty, run to scan and get all directories."
         declare test_path="$test_subpkg*/"
-
-        printf "Start to find under path $test_path" | jq -R . | jq -cs .
-        printf '%s\n' "${all_test_subpkgs[@]}" | jq -R . | jq -cs .
         declare -a test_subpkg_array=( $(ls -d $test_path | grep -v '__pycache__') )
-
-        echo "[DEBUG in finally] test_subpkg_array: $test_subpkg_array"
 
         if [ ${#test_subpkg_array[@]} != 0 ];
         then
-            printf "No any directory under this path, try to get the test modules" | jq -R . | jq -cs .
             # No any directory under this path, try to get the test modules
             all_test_subpkgs+=( "${test_subpkg_array[@]}" )
             get_all_test_subpackage $(( $index + 1 ))
         else
-            printf "Has some directories under this path, keep searching" | jq -R . | jq -cs .
             # Has some directories under this path, keep searching
             if [ ${#all_test_subpkgs[@]} != $index ];
             then
                 get_all_test_subpackage $(( $index + 1 ))
             else
-                printf "Done to find under path $1" | jq -R . | jq -cs .
+                echo "[SCRIPT] Done to find all test subpacakge."
             fi
         fi
     else
-        printf "Path '$test_subpkg' is empty, ignore to run." | jq -R . | jq -cs .
+        echo "[SCRIPT] Path '$test_subpkg' is empty, ignore to run."
     fi
 }
 
@@ -74,10 +66,8 @@ get_all_test_modules() {
     done
 }
 
+# Get all test module paths
 get_all_test_subpackage
-
-printf '%s\n' "${all_test_subpkgs[@]}" | jq -R . | jq -cs .
-
 get_all_test_modules
 
 # Process data as list type value
