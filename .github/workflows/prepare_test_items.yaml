@@ -20,7 +20,7 @@ on:
     inputs:
       shell_path:
         description: "The file path of shell script which gets all the test items."
-        required: true
+        required: false
         type: string
         default: './scripts/ci/get-all-tests.sh'
       shell_arg:
