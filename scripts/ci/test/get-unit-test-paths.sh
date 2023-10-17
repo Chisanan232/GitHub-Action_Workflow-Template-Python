@@ -80,9 +80,11 @@ printf '%s\n' "${all_test_subpkgs[@]}" | jq -R . | jq -cs .
 
 get_all_test_modules
 
+# Process data as list type value
 dest=( "${all_tests[@]}" )
 
 
+# Output the final result about all test modules
 if echo "$runtime_os" | grep -q "windows";
 then
     printf "${dest[@]}" | jq -R .
