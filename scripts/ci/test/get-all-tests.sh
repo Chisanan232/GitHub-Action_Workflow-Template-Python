@@ -54,7 +54,7 @@ get_all_test_modules_under_subpkg() {
     declare -a testpatharray=( $(ls -F "$1" | grep -v '/$' | grep -v '__init__.py' | grep -v 'test_config.py' | grep -v -E '^_[a-z_]{1,64}.py' | grep -v '__pycache__'))
 
     declare -a alltestpaths
-    for test_module_path in ${testpatharray};
+    for test_module_path in "${testpatharray[@]}";
     do
         alltestpaths+=("$1$test_module_path")
     done
