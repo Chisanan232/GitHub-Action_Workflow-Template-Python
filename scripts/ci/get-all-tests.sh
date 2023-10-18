@@ -30,17 +30,19 @@ get_all_test_subpackage() {
     then
         # Still has test subpackage won't scan
         declare test_path="$test_subpkg*/"
-        declare -a test_subpkg_array=( $(ls -d $test_path | grep -v '__pycache__') )
+        declare -a test_subpkg_array=( $(ls -d "$test_path" | grep -v '__pycache__') )
 
         if [ ${#test_subpkg_array[@]} != 0 ];
         then
             # No any directory under this path, try to get the test modules
             all_test_subpkgs+=( "${test_subpkg_array[@]}" )
+            # shellcheck disable=SC2004
             get_all_test_subpackage $(( $index + 1 ))
         else
             # Has some directories under this path, keep searching
-            if [ ${#all_test_subpkgs[@]} != $index ];
+            if [ ${#all_test_subpkgs[@]} != "$index" ];
             then
+                # shellcheck disable=SC2004
                 get_all_test_subpackage $(( $index + 1 ))
             fi
         fi
