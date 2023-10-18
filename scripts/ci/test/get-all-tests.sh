@@ -47,7 +47,7 @@ get_all_test_subpackage() {
     fi
 }
 
-declare -a all_tests
+declare all_tests
 
 get_all_test_modules_under_subpkg() {
     # Get all test modules with one specific subpackage (directory has __init__.py file)
@@ -59,7 +59,9 @@ get_all_test_modules_under_subpkg() {
         alltestpaths+=("$1$test_module_path")
     done
 
-    all_tests+=("${alltestpaths[@]}")
+    # shellcheck disable=SC2124
+    # shellcheck disable=SC2178
+    all_tests+="${alltestpaths[@]} "
 }
 
 get_all_test_modules() {
