@@ -96,7 +96,6 @@ jobs:
     needs: [unit-test_codecov]
     uses: ./.github/workflows/sonarqube_scan.yaml
     secrets:
-      github_token: ${{ secrets.GITHUB_TOKEN }}
       sonar_token: ${{ secrets.SONAR_TOKEN }}
 #    with:
 #      download_path: ${{ inputs.download_path }}

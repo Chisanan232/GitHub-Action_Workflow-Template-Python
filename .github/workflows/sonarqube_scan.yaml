@@ -8,7 +8,6 @@
 #         * download_path: The path to download testing coverage reports via 'actions/download-artifact@v3'.
 #
 #     * Secret arguments:
-#         * github_token: The token for operating something with GitHub service.
 #         * sonar_token: The API token for triggering SonarQube cloud service.
 #
 # Workflow running output:
@@ -28,9 +27,6 @@ on:
         default: ./
 
     secrets:
-      github_token:
-        description: "The API token for uploading testing coverage report to Codecov."
-        required: true
       sonar_token:
         description: "The API token for uploading testing coverage report to Coveralls."
         required: true
@@ -54,4 +50,4 @@ jobs:
         uses: SonarSource/sonarcloud-github-action@master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.sonar_token }}
