@@ -112,6 +112,17 @@ jobs:
       upload-to-codacy: true
 
 
+  sonarqube_finish:
+#    name: Trigger SoarQube service to scan and analyse project
+    needs: [unit-test_codecov]
+    uses: ./.github/workflows/sonarqube_scan.yaml
+    secrets:
+      github_token: ${{ secrets.GITHUB_TOKEN }}
+      sonar_token: ${{ secrets.SONAR_TOKEN }}
+#    with:
+#      download_path: ${{ inputs.download_path }}
+
+
   pre-building_test:
 #    name: Check about it could work finely by installing the Python package with setup.py file
 #    if: github.event_name == 'push' && (github.ref_name == 'release' || github.ref_name == 'master')
