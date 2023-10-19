@@ -32,8 +32,7 @@ jobs:
 #    name: Prepare all unit test items
     uses: ./.github/workflows/prepare_test_items.yaml
     with:
-      shell_path: scripts/ci/test/get-unit-test-paths.sh
-      shell_arg: unix
+      shell_arg: test/unit_test/
 
 
   prep-testbed_integration-test:
@@ -42,6 +41,7 @@ jobs:
     with:
       shell_path: scripts/ci/test/get-integration-test-paths.sh
       shell_arg: unix
+      use_customized_shell: true
 
 
   run_unit-test:
