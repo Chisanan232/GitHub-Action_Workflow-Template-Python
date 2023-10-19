@@ -30,7 +30,8 @@ get_all_test_subpackage() {
     then
         # Still has test subpackage won't scan
         declare test_path="$test_subpkg*/"
-        declare -a test_subpkg_array=( $(ls -d "$test_path" | grep -v '__pycache__') )
+        # shellcheck disable=SC2086
+        declare -a test_subpkg_array=( $(ls -d $test_path | grep -v '__pycache__') )
 
         if [ ${#test_subpkg_array[@]} != 0 ];
         then
