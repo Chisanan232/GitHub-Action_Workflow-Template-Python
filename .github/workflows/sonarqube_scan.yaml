@@ -16,7 +16,7 @@
 #
 ###################################################################################################################################
 
-name: Upload test report to Codecov
+name: SoarQube cloud scan and analyse project
 
 on:
   workflow_call:
