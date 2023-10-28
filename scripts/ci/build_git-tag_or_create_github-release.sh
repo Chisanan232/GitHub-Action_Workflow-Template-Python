@@ -3,26 +3,26 @@
 #set -ex
 
 # Check whether it has 'release-notes.md' or 'release-title.md' in the target directory '.github'.
-has_auto_release_flag=$(ls .github | grep -E "release-auto-flag.txt")
+has_auto_release_flag=$(ls .github/tag-and_release | grep -E "release-auto-flag.txt")
 if [ "$has_auto_release_flag" == "" ]; then
-    echo "⚠️ It should have *release-auto-flag.txt* in '.github' directory of your project in HitHub."
+    echo "⚠️ It should have *release-auto-flag.txt* in '.github/tag-and_release/' directory of your project in HitHub."
     exit 0
 else
-    auto_release_flag=$(cat .github/release-auto-flag.txt)
+    auto_release_flag=$(cat .github/tag-and_release/release-auto-flag.txt)
     if [ "$auto_release_flag" == false ]; then
         echo "💤 Auto-release flag is 'false' so it won't build git tag or create GitHub release."
         exit 0
     fi
 fi
 
-has_release_notes=$(ls .github | grep -E "release-notes.md")
-has_release_title=$(ls .github | grep -E "release-title.md")
+has_release_notes=$(ls .github/tag-and_release | grep -E "release-notes.md")
+has_release_title=$(ls .github/tag-and_release | grep -E "release-title.md")
 if [ "$has_release_notes" == "" ]; then
-    echo "❌ It should have *release-notes.md* in '.github' directory of your project in HitHub."
+    echo "❌ It should have *release-notes.md* in '.github/tag-and_release/' directory of your project in HitHub."
     exit 1
 fi
 if [ "$has_release_title" == "" ]; then
-    echo "❌ It should have *release-title.md* in '.github' directory of your project in HitHub."
+    echo "❌ It should have *release-title.md* in '.github/tag-and_release/' directory of your project in HitHub."
     exit 1
 fi
 
@@ -195,12 +195,12 @@ build_git_tag_or_github_release() {
     echo "🎉 🍻 🌳 🏷  Build git tag which named '$New_Release_Tag' with current branch '$Current_Branch' successfully!"
 
     if [ "$Current_Branch" == "master" ]; then
-        release_title=$(cat .github/release-title.md)
+        release_title=$(cat .github/tag-and_release/release-title.md)
 
         if [ "$Input_Arg_Debug_Mode" == true ]; then
             echo " 🔍👀 [DEBUG MODE] Create GitHub release with tag '$New_Release_Tag' and title '$release_title' in git branch '$Current_Branch'."
         else
-            gh release create "$New_Release_Tag" --title "$release_title" --notes-file .github/release-notes.md
+            gh release create "$New_Release_Tag" --title "$release_title" --notes-file .github/tag-and_release/release-notes.md
         fi
     fi
         echo "🎉 🍻 🐙 🐈 🏷  Create GitHub release with title '$release_title' successfully!"
@@ -296,9 +296,9 @@ elif [ "$Input_Arg_Release_Type" == 'github-action-reusable-workflow' ]; then
     echo "🔎 🔗 🌳 Verify the git remote info again after git fetch."
     git remote -v
 
-    echo "🔬 📄 🌳 ⛓ 🌳 Check the different of '.github/release-notes.md' between current git branch and master branch ..."
+    echo "🔬 📄 🌳 ⛓ 🌳 Check the different of '.github/tag-and_release/release-notes.md' between current git branch and master branch ..."
     # # v1: compare by git branches
-#    release_notes_has_diff=$(git diff origin/master "$Current_Branch" -- .github/release-notes.md | cat)
+#    release_notes_has_diff=$(git diff origin/master "$Current_Branch" -- .github/tag-and_release/release-notes.md | cat)
     # # v2: compare by git tag
     all_git_tags=$(git tag -l | cat)
     declare -a all_git_tags_array=( $(echo "$all_git_tags" | awk -v RS='' '{gsub("\n","  "); print}') )
@@ -306,8 +306,8 @@ elif [ "$Input_Arg_Release_Type" == 'github-action-reusable-workflow' ]; then
     latest_git_tag=${all_git_tags_array[$all_git_tags_array_len - 1]}
     echo "🔎 🌳 🏷 The latest git tag: $latest_git_tag"
 
-    release_notes_has_diff=$(git diff "$latest_git_tag" "$Current_Branch" -- .github/release-notes.md | cat)
-    echo "🔎 🔬 📄 different of '.github/release-notes.md': $release_notes_has_diff"
+    release_notes_has_diff=$(git diff "$latest_git_tag" "$Current_Branch" -- .github/tag-and_release/release-notes.md | cat)
+    echo "🔎 🔬 📄 different of '.github/tag-and_release/release-notes.md': $release_notes_has_diff"
 
     if [ "$release_notes_has_diff" != "" ]; then
         # 1. Yes, it has different. -> Build git tag, GitHub release and version branch
