@@ -143,7 +143,6 @@ jobs:
       project_type: python-package
       project_name: test_gh_workflow
       software_version_format: general-3
-      debug_mode: true
 
 
   fake_build_pkg_and_push_to_pypi:

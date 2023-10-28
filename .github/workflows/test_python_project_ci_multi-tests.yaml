@@ -53,7 +53,6 @@ jobs:
     with:
       test_type: unit-test
       all_test_items_paths: ${{needs.prep-testbed_unit-test.outputs.all_test_items}}
-      debug_mode: true
 
 
   run_integration-test:
@@ -68,7 +67,6 @@ jobs:
       http_server_port: 30303
       http_server_app_module: test._http_server.app
       http_server_enter_point: app
-      debug_mode: true
 
 
   all-test_codecov:
