@@ -10,6 +10,7 @@ on:
       - "master"
     paths-ignore:
       - "pyproject.toml"
+      - ".github/dependabot.yaml"
       - ".gitcommitrules"
       - ".gitignore"
       - "LICENSE"
@@ -23,6 +24,7 @@ on:
       - "master"
     paths-ignore:
       - "pyproject.toml"
+      - ".github/dependabot.yaml"
       - ".gitcommitrules"
       - ".gitignore"
       - "LICENSE"
