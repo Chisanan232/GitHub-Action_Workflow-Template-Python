@@ -242,12 +242,7 @@ ensure_release_tag_is_not_empty() {
 }
 
 
-# The truly running implementation of shell script
-if [ "$Input_Arg_Release_Type" == 'python-package' ]; then
-
-    # # # # For Python package release
-    echo "🏃‍♂ ️🐍 𝌚 Run python package releasing process"
-
+tag_and_release_python_project() {
     git_tag=$(git describe --tag --abbrev=0 --match "v[0-9]\.[0-9]\.[0-9]*" | grep -o '[0-9]\.[0-9]\.[0-9]*')
     github_release=$(curl -s https://api.github.com/repos/Chisanan232/GitHub-Action_Reusable_Workflows-Python/releases/latest | jq -r '.tag_name')
     # shellcheck disable=SC2002
@@ -308,7 +303,14 @@ if [ "$Input_Arg_Release_Type" == 'python-package' ]; then
         fi
 
     fi
+}
 
+
+# The truly running implementation of shell script
+if [ "$Input_Arg_Release_Type" == 'python-package' ]; then
+    # # # # For Python package release
+    echo "🏃‍♂ ️🐍 𝌚 Run python package releasing process"
+    tag_and_release_python_project
 elif [ "$Input_Arg_Release_Type" == 'github-action-reusable-workflow' ]; then
 
     echo "🏃‍♂  🐙 🐈 𝌚  Run github-action-reusable-workflow releasing process"
