@@ -94,7 +94,7 @@ jobs:
   sonarqube_finish:
 #    name: Trigger SoarQube service to scan and analyse project
     needs: [unit-test_codecov]
-    uses: ./.github/workflows/sonarqube_scan.yaml
+    uses: ./.github/workflows/rw_sonarqube_scan.yaml
     secrets:
       sonar_token: ${{ secrets.SONAR_TOKEN }}
 #    with:
