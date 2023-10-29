@@ -138,7 +138,7 @@ jobs:
   build_git-tag_and_create_github-release:
 #    name: Build git tag and GitHub release if it needs
     needs: pre-building_test
-    uses: ./.github/workflows/build_git-tag_and_create_github-release.yaml
+    uses: ./.github/workflows/rw_build_git-tag_and_create_github-release.yaml
     with:
       project_type: python-package
       project_name: test_gh_workflow
