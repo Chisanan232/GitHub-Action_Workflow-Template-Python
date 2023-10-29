@@ -70,7 +70,7 @@ jobs:
   all-test_codecov:
 #    name: Organize and generate the testing report and upload it to Codecov
     needs: [run_unit-test, run_integration-test]
-    uses: ./.github/workflows/organize_and_generate_test_cov_reports.yaml
+    uses: ./.github/workflows/rw_organize_test_cov_reports.yaml
     with:
       test_type: all-test
 
