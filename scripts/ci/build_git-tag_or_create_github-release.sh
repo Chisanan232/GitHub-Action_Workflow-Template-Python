@@ -306,14 +306,7 @@ tag_and_release_python_project() {
 }
 
 
-# The truly running implementation of shell script
-if [ "$Input_Arg_Release_Type" == 'python-package' ]; then
-    # # # # For Python package release
-    echo "🏃‍♂ ️🐍 𝌚 Run python package releasing process"
-    tag_and_release_python_project
-elif [ "$Input_Arg_Release_Type" == 'github-action-reusable-workflow' ]; then
-
-    echo "🏃‍♂  🐙 🐈 𝌚  Run github-action-reusable-workflow releasing process"
+tag_and_release_reusable_github_action_workflows_project() {
     # # # # For GitHub Action reusable workflow template release
     # 1. Compare whether the release-notes.md has different or not.
     # Note 1: Diff a specific file with currently latest tag and previous one commit
@@ -357,5 +350,15 @@ elif [ "$Input_Arg_Release_Type" == 'github-action-reusable-workflow' ]; then
         echo "💤 Release note file doesn't change. Don't do anything."
         echo "[GitHub Action - Reusable workflow] [Final Running Result] Pre-Release"
     fi
+}
 
+
+# The truly running implementation of shell script
+if [ "$Input_Arg_Release_Type" == 'python-package' ]; then
+    # # # # For Python package release
+    echo "🏃‍♂ ️🐍 𝌚 Run python package releasing process"
+    tag_and_release_python_project
+elif [ "$Input_Arg_Release_Type" == 'github-action-reusable-workflow' ]; then
+    echo "🏃‍♂  🐙 🐈 𝌚  Run github-action-reusable-workflow releasing process"
+    tag_and_release_reusable_github_action_workflows_project
 fi
