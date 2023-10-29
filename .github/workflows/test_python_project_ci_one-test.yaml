@@ -31,7 +31,7 @@ on:
 jobs:
   prep-testbed_unit-test:
 #    name: Prepare all unit test items
-    uses: ./.github/workflows/prepare_test_items.yaml
+    uses: ./.github/workflows/rw_get_tests.yaml
     with:
       shell_arg: test/unit_test/
 
