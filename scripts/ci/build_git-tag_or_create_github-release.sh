@@ -37,6 +37,8 @@ fi
 Input_Arg_Release_Type=$1
 Input_Arg_Debug_Mode=$2
 
+keep_release=(echo "$KEEP_RELEASE_IF_PRE_VERSION")
+
 if [ "$Input_Arg_Release_Type" == "" ]; then
     echo "❌ The argument 'Input_Arg_Release_Type' (first argument) cannot be empty."
     exit 1
@@ -192,13 +194,7 @@ build_git_tag_or_github_release() {
     project_type=$1
     generate_new_version_as_tag "$project_type"
 
-    if [ "$Input_Arg_Debug_Mode" == true ]; then
-        echo " 🔍👀 [DEBUG MODE] Build git tag $New_Release_Tag in git branch '$Current_Branch'."
-    else
-        git tag -a "$New_Release_Tag" -m "$New_Release_Tag"
-        git push -u origin --tags
-    fi
-    echo "🎉 🍻 🌳 🏷  Build git tag which named '$New_Release_Tag' with current branch '$Current_Branch' successfully!"
+    build_git_tag
 
     if [ "$Current_Branch" == "master" ]; then
         release_title=$(cat "$Auto_Tag_And_Release_Dir"/$Auto_Release_Title)
@@ -210,6 +206,20 @@ build_git_tag_or_github_release() {
         fi
     fi
         echo "🎉 🍻 🐙 🐈 🏷  Create GitHub release with title '$release_title' successfully!"
+}
+
+
+build_git_tag() {
+    # git event: push
+    # all branch -> Build tag
+    # master branch -> Build tag and create release
+    if [ "$Input_Arg_Debug_Mode" == true ]; then
+        echo " 🔍👀 [DEBUG MODE] Build git tag $New_Release_Tag in git branch '$Current_Branch'."
+    else
+        git tag -a "$New_Release_Tag" -m "$New_Release_Tag"
+        git push -u origin --tags
+    fi
+    echo "🎉 🍻 🌳 🏷  Build git tag which named '$New_Release_Tag' with current branch '$Current_Branch' successfully!"
 }
 
 
