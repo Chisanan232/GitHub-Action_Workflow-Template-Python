@@ -23,7 +23,7 @@ on:
       - "README.md"
 
 jobs:
-  test_build_git-tag_and_create_github-release:
+  build_git-tag_and_create_github-release:
 #    name: Build git tag and GitHub release if it needs
     if: ${{ github.ref_name == 'master' && github.event_name == 'push' }}
     uses: ./.github/workflows/build_git-tag_and_create_github-release.yaml
@@ -34,7 +34,7 @@ jobs:
       debug_mode: false
 
 
-  test_deploy_as_new_branch:
+  deploy_as_new_branch:
 #    name: Create new git branch by the tagged commit
     needs: test_build_git-tag_and_create_github-release
     if: ${{ github.ref_name == 'master' && 
