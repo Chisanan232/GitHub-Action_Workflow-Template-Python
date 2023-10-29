@@ -130,7 +130,7 @@ jobs:
 #    name: Check about it could work finely by installing the Python package with setup.py file
     if: github.event_name == 'push' && (github.ref_name == 'release' || github.ref_name == 'master')
     needs: [codecov_finish, coveralls_finish, codacy_finish, sonarqube_finish]
-    uses: ./.github/workflows/pre-building_test.yaml
+    uses: ./.github/workflows/rw_pre-building_test.yaml
     with:
       python_package_name: Test-GitHub-Action-workflow
       test_shell_in_python: from test_gh_workflow import sample

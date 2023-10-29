@@ -127,7 +127,7 @@ jobs:
 #    if: github.event_name == 'push' && (github.ref_name == 'release' || github.ref_name == 'master')
     if: github.event_name == 'push'
     needs: [codecov_finish, coveralls_finish, codacy_finish]
-    uses: ./.github/workflows/pre-building_test.yaml
+    uses: ./.github/workflows/rw_pre-building_test.yaml
     with:
       build-type: poetry
       python_package_name: Test-GitHub-Action-workflow
