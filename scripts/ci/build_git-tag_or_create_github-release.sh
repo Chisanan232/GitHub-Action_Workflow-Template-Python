@@ -3,7 +3,7 @@
 #set -ex
 
 # The file paths for auto-tag (git tag) and auto-release (GitHub release info)
-Auto_Tag_And_Release_Dir=.github/tag-and_release
+Auto_Tag_And_Release_Dir=.github/tag_and_release
 Auto_Tag_And_Release_Flag=release-auto-flag.txt
 Auto_Release_Title=release-title.md
 Auto_Release_Content=release-notes.md
