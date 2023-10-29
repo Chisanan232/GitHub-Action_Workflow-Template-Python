@@ -201,6 +201,8 @@ build_git_tag() {
     # git event: push
     # all branch -> Build tag
     # master branch -> Build tag and create release
+    ensure_release_tag_is_not_empty
+
     if [ "$Input_Arg_Debug_Mode" == true ]; then
         echo " 🔍👀 [DEBUG MODE] Build git tag $New_Release_Tag in git branch '$Current_Branch'."
     else
@@ -215,6 +217,8 @@ build_github_release() {
     # git event: push
     # all branch -> Build tag
     # master branch -> Build tag and create release
+    ensure_release_tag_is_not_empty
+
     if [ "$Current_Branch" == "master" ]; then
         release_title=$(cat "$Auto_Tag_And_Release_Dir"/$Auto_Release_Title)
 
@@ -225,6 +229,16 @@ build_github_release() {
         fi
     fi
         echo "🎉 🍻 🐙 🐈 🏷  Create GitHub release with title '$release_title' successfully!"
+}
+
+
+ensure_release_tag_is_not_empty() {
+    if [ "$New_Release_Tag" == "" ]; then
+        echo "❌ The new release tag it got is empty. Please check version info in your repository."
+        exit 1
+    else
+        echo "✅  It gets new version info and it's *$New_Release_Tag*. It would keep running to set it."
+    fi
 }
 
 
