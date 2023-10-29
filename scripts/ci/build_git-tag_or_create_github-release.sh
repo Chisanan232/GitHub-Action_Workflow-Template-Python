@@ -190,22 +190,10 @@ build_git_tag_or_github_release() {
     # git event: push
     # all branch -> Build tag
     # master branch -> Build tag and create release
-
     project_type=$1
     generate_new_version_as_tag "$project_type"
-
     build_git_tag
-
-    if [ "$Current_Branch" == "master" ]; then
-        release_title=$(cat "$Auto_Tag_And_Release_Dir"/$Auto_Release_Title)
-
-        if [ "$Input_Arg_Debug_Mode" == true ]; then
-            echo " 🔍👀 [DEBUG MODE] Create GitHub release with tag '$New_Release_Tag' and title '$release_title' in git branch '$Current_Branch'."
-        else
-            gh release create "$New_Release_Tag" --title "$release_title" --notes-file "$Auto_Tag_And_Release_Dir"/$Auto_Release_Content
-        fi
-    fi
-        echo "🎉 🍻 🐙 🐈 🏷  Create GitHub release with title '$release_title' successfully!"
+    build_github_release
 }
 
 
@@ -220,6 +208,23 @@ build_git_tag() {
         git push -u origin --tags
     fi
     echo "🎉 🍻 🌳 🏷  Build git tag which named '$New_Release_Tag' with current branch '$Current_Branch' successfully!"
+}
+
+
+build_github_release() {
+    # git event: push
+    # all branch -> Build tag
+    # master branch -> Build tag and create release
+    if [ "$Current_Branch" == "master" ]; then
+        release_title=$(cat "$Auto_Tag_And_Release_Dir"/$Auto_Release_Title)
+
+        if [ "$Input_Arg_Debug_Mode" == true ]; then
+            echo " 🔍👀 [DEBUG MODE] Create GitHub release with tag '$New_Release_Tag' and title '$release_title' in git branch '$Current_Branch'."
+        else
+            gh release create "$New_Release_Tag" --title "$release_title" --notes-file "$Auto_Tag_And_Release_Dir"/$Auto_Release_Content
+        fi
+    fi
+        echo "🎉 🍻 🐙 🐈 🏷  Create GitHub release with title '$release_title' successfully!"
 }
 
 
