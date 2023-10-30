@@ -32,7 +32,7 @@ on:
 jobs:
   test_build_git-tag_and_create_github-release:
 #    name: Build git tag and GitHub release if it needs
-    uses: ./.github/workflows/build_git-tag_and_create_github-release.yaml
+    uses: ./.github/workflows/rw_build_git-tag_and_create_github-release.yaml
     secrets:
       github_auth_token: ${{ secrets.GITHUB_TOKEN }}
     with:

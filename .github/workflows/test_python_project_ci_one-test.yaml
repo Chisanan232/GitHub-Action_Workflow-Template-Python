@@ -33,7 +33,7 @@ on:
 jobs:
   prep-testbed_unit-test:
 #    name: Prepare all unit test items
-    uses: ./.github/workflows/prepare_test_items.yaml
+    uses: ./.github/workflows/rw_get_tests.yaml
     with:
       shell_arg: test/unit_test/
 
@@ -41,7 +41,7 @@ jobs:
   run_unit-test:
 #    name: Run all unit test items
     needs: prep-testbed_unit-test
-    uses: ./.github/workflows/run_test_items_via_pytest.yaml
+    uses: ./.github/workflows/rw_run_test.yaml
     with:
       test_type: unit-test
       all_test_items_paths: ${{needs.prep-testbed_unit-test.outputs.all_test_items}}
@@ -51,7 +51,7 @@ jobs:
   unit-test_codecov:
 #    name: Organize and generate the testing report and upload it to Codecov
     needs: run_unit-test
-    uses: ./.github/workflows/organize_and_generate_test_cov_reports.yaml
+    uses: ./.github/workflows/rw_organize_test_cov_reports.yaml
     with:
       test_type: unit-test
 
@@ -60,7 +60,7 @@ jobs:
 #    name: Organize and generate the testing report and upload it to Codecov
 #    if: github.ref_name == 'release' || github.ref_name == 'master'
     needs: [unit-test_codecov]
-    uses: ./.github/workflows/upload_test_cov_report.yaml
+    uses: ./.github/workflows/rw_upload_test_cov_report.yaml
     secrets:
       codecov_token: ${{ secrets.CODECOV_TOKEN }}
     with:
@@ -74,7 +74,7 @@ jobs:
 #    name: Organize and generate the testing report and upload it to Coveralls
 #    if: github.ref_name == 'release' || github.ref_name == 'master'
     needs: [unit-test_codecov]
-    uses: ./.github/workflows/upload_test_cov_report.yaml
+    uses: ./.github/workflows/rw_upload_test_cov_report.yaml
     secrets:
       coveralls_token: ${{ secrets.COVERALLS_TOKEN }}
     with:
@@ -85,7 +85,7 @@ jobs:
   codacy_finish:
 #    name: Upload test report to Codacy to analyse and record code quality
     needs: [unit-test_codecov]
-    uses: ./.github/workflows/upload_test_cov_report.yaml
+    uses: ./.github/workflows/rw_upload_test_cov_report.yaml
     secrets:
       codacy_token: ${{ secrets.CODACY_PROJECT_TOKEN }}
     with:
@@ -96,7 +96,7 @@ jobs:
   sonarqube_finish:
 #    name: Trigger SoarQube service to scan and analyse project
     needs: [unit-test_codecov]
-    uses: ./.github/workflows/sonarqube_scan.yaml
+    uses: ./.github/workflows/rw_sonarqube_scan.yaml
     secrets:
       sonar_token: ${{ secrets.SONAR_TOKEN }}
 #    with:
@@ -106,7 +106,7 @@ jobs:
   pre-building_test:
 #    name: Check about it could work finely by installing the Python package with setup.py file
     needs: [codecov_finish, coveralls_finish, codacy_finish]
-    uses: ./.github/workflows/pre-building_test.yaml
+    uses: ./.github/workflows/rw_pre-building_test.yaml
     with:
       python_package_name: Test-GitHub-Action-workflow
       test_shell_in_python: from test_gh_workflow import sample
@@ -116,7 +116,7 @@ jobs:
   build_git-tag_and_create_github-release:
 #    name: Build git tag and GitHub release if it needs
     needs: pre-building_test
-    uses: ./.github/workflows/build_git-tag_and_create_github-release.yaml
+    uses: ./.github/workflows/rw_build_git-tag_and_create_github-release.yaml
     with:
       project_type: python-package
       project_name: test_gh_workflow
@@ -128,7 +128,7 @@ jobs:
 #    name: Upload the Python package files which has been compiled to PyPi
     if: github.event_name == 'push' && github.ref_name == 'release'
     needs: build_git-tag_and_create_github-release
-    uses: ./.github/workflows/push_pkg_to_pypi.yaml
+    uses: ./.github/workflows/rw_push_pypi.yaml
     with:
       release-type: ${{ needs.build_git-tag_and_create_github-release.outputs.python_release_version }}
       push-to-PyPI: test
