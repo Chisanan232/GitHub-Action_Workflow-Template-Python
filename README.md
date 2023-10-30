@@ -4,6 +4,7 @@
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg?logo=apache)](https://opensource.org/licenses/Apache-2.0)
 [![Python project CI Test (one-test)](https://github.com/Chisanan232/GitHub-Action_Workflow-Template-Python/actions/workflows/test_python_project_ci_one-test.yaml/badge.svg)](https://github.com/Chisanan232/GitHub-Action_Workflow-Template-Python/actions/workflows/test_python_project_ci_one-test.yaml)
 [![Python project CI Test (multi-tests)](https://github.com/Chisanan232/GitHub-Action_Workflow-Template-Python/actions/workflows/test_python_project_ci_multi-tests.yaml/badge.svg)](https://github.com/Chisanan232/GitHub-Action_Workflow-Template-Python/actions/workflows/test_python_project_ci_multi-tests.yaml)
+[![Python project with Poetry CI Test (multi-tests)](https://github.com/Chisanan232/GitHub-Action_Reusable_Workflows-Python/actions/workflows/test_pyproject_ci_multi-tests_by_poetry.yaml/badge.svg)](https://github.com/Chisanan232/GitHub-Action_Reusable_Workflows-Python/actions/workflows/test_pyproject_ci_multi-tests_by_poetry.yaml)
 [![GitHub Action reusable workflow project CI Test](https://github.com/Chisanan232/GitHub-Action_Workflow-Template-Python/actions/workflows/test_gh_reusable_workflow.yaml/badge.svg)](https://github.com/Chisanan232/GitHub-Action_Workflow-Template-Python/actions/workflows/test_gh_reusable_workflow.yaml)
 
 
@@ -28,6 +29,7 @@ The usage of each workflow template.
 
 * [_rw_get_tests.yaml_](#rw_get_testsyaml)
 * [_rw_run_test.yaml_](#rw_run_testyaml)
+* [_rw_poetry_run_test.yaml_](#rw_poetry_run_testyaml)
 * [_rw_organize_test_cov_reports.yaml_](#rw_organize_test_cov_reportsyaml)
 * [_rw_upload_test_cov_report.yaml_](#rw_upload_test_cov_reportyaml)
 * [_rw_pre-building_test.yaml_](#rw_pre-building_testyaml)
@@ -129,8 +131,15 @@ is provided by previous workflow? That is all testing items.
 
 | Workflow                          | Running way                                       | Support Python version |
 |-----------------------------------|---------------------------------------------------|------------------------|
-| _rw_run_test.yaml_  | Command lines like ``pip``, ``python``, etc       | 3.6 - 3.11             |
+| _rw_run_test.yaml_                | Command lines like ``pip``, ``python``, etc       | 3.6 - 3.11             |
 | _poetry_run_test_via_pytest.yaml_ | Use ``poetry`` feature or run command lines in it | 3.8 - 3.11             |
+
+
+<hr>
+
+### _rw_poetry_run_test.yaml_
+
+* Description: Same working with workflow _rw_run_test.yaml_, but this workflow would run test via **_Poetry_**.
 
 
 <hr>
