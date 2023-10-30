@@ -8,13 +8,31 @@ on:
       - "release-**"
       - "release/**"
       - "master"
-    paths-ignore:
-      - "pyproject.toml"
-      - ".github/dependabot.yaml"
-      - ".gitcommitrules"
-      - ".gitignore"
-      - "LICENSE"
-      - "README.md"
+    paths:
+#     The workflow self.
+      - ".github/workflows/test_python_project_ci_multi-tests.yaml"
+#     The shell script only be used by this workflow.
+      - "scripts/ci/check_getting_output.sh"
+#     The sample Python code.
+      - ".coveragerc"
+      - "pytest.ini"
+      - "sonar-project.properties"
+      - "requirements/**"
+      - "setup.py"
+      - "test_gh_workflow/**"
+      - "test/**"
+#     The shell scripts or actions this workflow would use.
+      - ".github/workflows/rw_get_tests.yaml"
+      - ".github/workflows/rw_poetry_run_test.yaml"
+      - ".github/workflows/rw_organize_test_cov_reports.yaml"
+      - "scripts/ci/combine_coverage_reports.sh"
+      - ".github/workflows/rw_upload_test_cov_report.yaml"
+      - "scripts/ci/check-input-params.sh"
+      - ".github/workflows/rw_sonarqube_scan.yaml"
+      - ".github/workflows/rw_pre-building_test.yaml"
+      - ".github/workflows/rw_build_git-tag_and_create_github-release.yaml"
+      - "scripts/ci/build_git-tag_or_create_github-release.sh"
+      - "scripts/ci/deployment_new_version_workflow.sh"
 
   pull_request:
     branches:
@@ -23,13 +41,31 @@ on:
       - "release-**"
       - "release/**"
       - "master"
-    paths-ignore:
-      - "pyproject.toml"
-      - ".github/dependabot.yaml"
-      - ".gitcommitrules"
-      - ".gitignore"
-      - "LICENSE"
-      - "README.md"
+    paths:
+#     The workflow self.
+      - ".github/workflows/test_python_project_ci_multi-tests.yaml"
+#     The shell script only be used by this workflow.
+      - "scripts/ci/check_getting_output.sh"
+#     The sample Python code.
+      - ".coveragerc"
+      - "pytest.ini"
+      - "sonar-project.properties"
+      - "requirements/**"
+      - "setup.py"
+      - "test_gh_workflow/**"
+      - "test/**"
+#     The shell scripts or actions this workflow would use.
+      - ".github/workflows/rw_get_tests.yaml"
+      - ".github/workflows/rw_poetry_run_test.yaml"
+      - ".github/workflows/rw_organize_test_cov_reports.yaml"
+      - "scripts/ci/combine_coverage_reports.sh"
+      - ".github/workflows/rw_upload_test_cov_report.yaml"
+      - "scripts/ci/check-input-params.sh"
+      - ".github/workflows/rw_sonarqube_scan.yaml"
+      - ".github/workflows/rw_pre-building_test.yaml"
+      - ".github/workflows/rw_build_git-tag_and_create_github-release.yaml"
+      - "scripts/ci/build_git-tag_or_create_github-release.sh"
+      - "scripts/ci/deployment_new_version_workflow.sh"
 
 jobs:
   prep-testbed_unit-test:
