@@ -26,18 +26,18 @@ this project. This project has some workflow templates for reusing in GitHub Act
 
 The usage of each workflow template.
 
-* [_prepare_test_items.yaml_](#prepare_test_itemsyaml)
-* [_run_test_items_via_pytest.yaml_](#run_test_items_via_pytestyaml)
-* [_organize_and_generate_test_cov_reports.yaml_](#organize_and_generate_test_cov_reportsyaml)
-* [_upload_test_cov_report.yaml_](#upload_test_cov_reportyaml)
-* [_pre-building_test.yaml_](#pre-building_testyaml)
-* [_build_git-tag_and_create_github-release.yaml_](#build_git-tag_and_create_github-releaseyaml)
-* [_push_pkg_to_pypi.yaml_](#push_pkg_to_pypiyaml)
+* [_rw_get_tests.yaml_](#rw_get_testsyaml)
+* [_rw_run_test.yaml_](#rw_run_testyaml)
+* [_rw_organize_test_cov_reports.yaml_](#rw_organize_test_cov_reportsyaml)
+* [_rw_upload_test_cov_report.yaml_](#rw_upload_test_cov_reportyaml)
+* [_rw_pre-building_test.yaml_](#rw_pre-building_testyaml)
+* [_rw_build_git-tag_and_create_github-release.yaml_](#rw_build_git-tag_and_create_github-releaseyaml)
+* [_rw_push_pypi.yaml_](#rw_push_pypiyaml)
 
 <hr>
 
 
-### _prepare_test_items.yaml_
+### _rw_get_tests.yaml_
 
 * Description: Prepare the test items.
 * Options:
@@ -57,7 +57,7 @@ Before use this workflow, it should prepare a shell script for getting the testi
 ```yaml
   prepare-testing-items_unit-test:
 #    name: Prepare all unit test items
-    uses: Chisanan232/GitHub-Action-Template-Python/.github/workflows/prepare_test_items.yaml@master
+    uses: Chisanan232/GitHub-Action-Template-Python/.github/workflows/rw_get_tests.yaml@master
     with:
       shell_path: scripts/ci/get-unit-test-paths.sh
       shell_arg: unix
@@ -67,7 +67,7 @@ And we could get this workflow output result via keyword _all_test_items_.
 
 <hr>
 
-### _run_test_items_via_pytest.yaml_
+### _rw_run_test.yaml_
 
 * Description: Run testing by specific type with all test items via PyTest and generate its testing coverage report (it would save reports by _actions/upload-artifact@v3_).
 * Options:
@@ -97,7 +97,7 @@ No, but it would save the testing coverage reports to provide after-process to o
   run_unit-test:
 #    name: Run all unit test items
     needs: prepare-testing-items_unit-test
-    uses: Chisanan232/GitHub-Action-Template-Python/.github/workflows/run_test_items_via_pytest.yaml@master
+    uses: Chisanan232/GitHub-Action-Template-Python/.github/workflows/rw_run_test.yaml@master
     with:
       test_type: unit-test
       all_test_items_paths: ${{needs.prepare-testing-items_unit-test.outputs.all_test_items}}
@@ -121,21 +121,21 @@ is provided by previous workflow? That is all testing items.
 > **_NOTE:_**
 >
 > It also has another reusable workflow names _poetry_run_test_via_pytest.yaml_. If your Python project manages by **Poetry**, 
-> it recommends you to use this one replaces _run_test_items_via_pytest.yaml_. The usage and running details are mostly same 
-> as _run_test_items_via_pytest.yaml_. But, workflow _poetry_run_test_via_pytest.yaml_ only supports Python version 3.8 up. 
+> it recommends you to use this one replaces _rw_run_test.yaml_. The usage and running details are mostly same 
+> as _rw_run_test.yaml_. But, workflow _poetry_run_test_via_pytest.yaml_ only supports Python version 3.8 up. 
 > 
 
-* Difference between workflows _run_test_items_via_pytest.yaml_ and _poetry_run_test_via_pytest.yaml_
+* Difference between workflows _rw_run_test.yaml_ and _poetry_run_test_via_pytest.yaml_
 
 | Workflow                          | Running way                                       | Support Python version |
 |-----------------------------------|---------------------------------------------------|------------------------|
-| _run_test_items_via_pytest.yaml_  | Command lines like ``pip``, ``python``, etc       | 3.6 - 3.11             |
+| _rw_run_test.yaml_  | Command lines like ``pip``, ``python``, etc       | 3.6 - 3.11             |
 | _poetry_run_test_via_pytest.yaml_ | Use ``poetry`` feature or run command lines in it | 3.8 - 3.11             |
 
 
 <hr>
 
-### _organize_and_generate_test_cov_reports.yaml_
+### _rw_organize_test_cov_reports.yaml_
 
 * Description: Organize all the testing coverage reports which be generated in different runtime OS with Python version. (it would save reports by _actions/upload-artifact@v3_).
 * Options:
@@ -159,7 +159,7 @@ No, but it would save the testing coverage reports to provide after-process to o
   unit-test_codecov:
 #    name: Organize and generate the testing report and upload it to Codecov
     needs: run_unit-test
-    uses: Chisanan232/GitHub-Action-Template-Python/.github/workflows/organize_and_generate_test_cov_reports.yaml@master
+    uses: Chisanan232/GitHub-Action-Template-Python/.github/workflows/rw_organize_test_cov_reports.yaml@master
     with:
       test_type: unit-test
 ```
@@ -168,7 +168,7 @@ It would upload the organized report via _actions/upload-artifact@v3_. And it do
 
 <hr>
 
-### _upload_test_cov_report.yaml_
+### _rw_upload_test_cov_report.yaml_
 
 * Description: Upload the testing coverage reports to Codecov.
 * Options:
@@ -215,7 +215,7 @@ Nothing.
           codecov_finish:
         #    name: Organize and generate the testing report and upload it to Codecov
             needs: [unit-test_codecov]
-            uses: Chisanan232/GitHub-Action-Template-Python/.github/workflows/upload_test_cov_report.yaml@master
+            uses: Chisanan232/GitHub-Action-Template-Python/.github/workflows/rw_upload_test_cov_report.yaml@master
             secrets:
               codecov_token: ${{ secrets.CODECOV_TOKEN }}
             with:
@@ -237,7 +237,7 @@ Nothing.
           codecov_finish:
         #    name: Organize and generate the testing report and upload it to Coveralls
             needs: [unit-test_codecov]
-            uses: Chisanan232/GitHub-Action-Template-Python/.github/workflows/upload_test_cov_report.yaml@master
+            uses: Chisanan232/GitHub-Action-Template-Python/.github/workflows/rw_upload_test_cov_report.yaml@master
             secrets:
               coveralls_token: ${{ secrets.COVERALLS_TOKEN }}
             with:
@@ -257,7 +257,7 @@ Nothing.
           codecov_finish:
         #    name: Organize and generate the testing report and upload it to Codacy
             needs: [unit-test_codecov]
-            uses: Chisanan232/GitHub-Action-Template-Python/.github/workflows/upload_test_cov_report.yaml@master
+            uses: Chisanan232/GitHub-Action-Template-Python/.github/workflows/rw_upload_test_cov_report.yaml@master
             secrets:
               codacy_token: ${{ secrets.CODACY_PROJECT_TOKEN }}
             with:
@@ -272,7 +272,7 @@ Nothing.
 
 <hr>
 
-### _pre-building_test.yaml_
+### _rw_pre-building_test.yaml_
 
 * Description: Test package by simple way after running setup.py script to install Python package
 * Options:
@@ -292,9 +292,9 @@ No, nothing at all.
 * How to use it?
 
 ```yaml
-  pre-building_test:
+  rw_pre-building_test:
 #    name: Check about it could work finely by installing the Python package with setup.py file
-    uses: ./.github/workflows/pre-building_test.yaml
+    uses: ./.github/workflows/rw_pre-building_test.yaml
     with:
       build-type: setuptools
       python_package_name: Test-GitHub-Action-workflow
@@ -305,7 +305,7 @@ No, nothing at all.
 
 <hr>
 
-### _build_git-tag_and_create_github-release.yaml_
+### _rw_build_git-tag_and_create_github-release.yaml_
 
 * Description: Build a git tag on a specific commit in every git branch. And create GitHub release if current git branch is 'master'.
 * Options:
@@ -331,10 +331,10 @@ Yes, it has running result output. It would output the version which could provi
     * **_Python package_** usage case:
 
     ```yaml
-      build_git-tag_and_create_github-release:
+      rw_build_git-tag_and_create_github-release:
     #    name: Build git tag and GitHub release if it needs for Python package project
         needs: [coveralls_finish, codacy_finish]
-        uses: ./.github/workflows/build_git-tag_and_create_github-release.yaml
+        uses: ./.github/workflows/rw_build_git-tag_and_create_github-release.yaml
         with:
           project_type: python-package
           project_name: test_gh_workflow
@@ -345,10 +345,10 @@ Yes, it has running result output. It would output the version which could provi
     * **_GitHub Action reusable workflow_** usage case:
 
     ```yaml
-      build_git-tag_and_create_github-release:
+      rw_build_git-tag_and_create_github-release:
     #    name: Build git tag and GitHub release if it needs for GitHub Action reusable workflow project
         needs: [coveralls_finish, codacy_finish]
-        uses: ./.github/workflows/build_git-tag_and_create_github-release.yaml
+        uses: ./.github/workflows/rw_build_git-tag_and_create_github-release.yaml
         with:
           project_type: github-action-reusable-workflow
           debug_mode: true
@@ -360,7 +360,7 @@ The badge it generates:
 
 <hr>
 
-### _push_pkg_to_pypi.yaml_
+### _rw_push_pypi.yaml_
 
 * Description: Compile source code and push the Python package to PyPI. (Official release the Python package)
 * Options:
@@ -391,7 +391,7 @@ No, nothing at all.
 ```yaml
   push_python_pkg_to_pypi:
 #    name: Upload the Python package files which has been compiled to PyPi
-    uses: ./.github/workflows/push_pkg_to_pypi.yaml
+    uses: ./.github/workflows/rw_push_pypi.yaml
     with:
       build-type: setuptools
       release-type: 'Official-Release'
