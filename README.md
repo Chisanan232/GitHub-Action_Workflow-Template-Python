@@ -44,28 +44,46 @@ The usage of each workflow template.
 * Description: Prepare the test items.
 * Options:
 
-| option name | data type | optional or required | function content                                     |
-|-------------|-----------|----------------------|------------------------------------------------------|
-| shell_path  | string    | Required             | The path shell script for getting the testing items. |
-| shell_arg   | string    | Required             | Input arguments of the shell script.                 |
+| option name          | data type | optional or required                                       | function content                                          |
+|----------------------|-----------|------------------------------------------------------------|-----------------------------------------------------------|
+| shell_path           | string    | Optional, Default value is _./scripts/ci/get-all-tests.sh_ | The path shell script for getting the testing items.      |
+| shell_arg            | string    | Required                                                   | Input arguments of the shell script.                      |
+| use_customized_shell | boolean   | Optional, Default value is _false_                         | Whether it should use the customized shell script or not. |
 
 * Output: 
   * all_test_items: All the test items it would run.
 
 * How to use it?
 
-Before use this workflow, it should prepare a shell script for getting the testing items.
+  * Use default shell script (recommended)
 
-```yaml
-  prepare-testing-items_unit-test:
-#    name: Prepare all unit test items
-    uses: Chisanan232/GitHub-Action-Template-Python/.github/workflows/rw_get_tests.yaml@master
-    with:
-      shell_path: scripts/ci/get-unit-test-paths.sh
-      shell_arg: unix
-```
+    If we want to use default shell script to auto-scan all tests, it only needs to give a shell script argument which is the directory path of test code:
 
-And we could get this workflow output result via keyword _all_test_items_.
+    ```yaml
+      prepare-testing-items_unit-test:
+    #    name: Prepare all unit test items
+        uses: Chisanan232/GitHub-Action-Template-Python/.github/workflows/rw_get_tests.yaml@master
+        with:
+          shell_arg: test/unit_test/
+    ```
+
+    And it would get all tests you need. And the keyword to get this workflow output result is _all_test_items_.
+
+  * Use customized shell script
+
+    Before use this workflow, it should prepare a shell script for getting the testing items.
+
+    ```yaml
+      prepare-testing-items_unit-test:
+    #    name: Prepare all unit test items
+        uses: Chisanan232/GitHub-Action-Template-Python/.github/workflows/rw_get_tests.yaml@master
+        with:
+          shell_path: scripts/ci/get-unit-test-paths.sh
+          shell_arg: unix
+          use_customized_shell: true
+    ```
+
+    And we could get this workflow output result via keyword _all_test_items_.
 
 <hr>
 
