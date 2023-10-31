@@ -1,4 +1,5 @@
-name: GitHub Action reusable workflow build
+#name: GitHub Action reusable workflow build
+name: CI
 
 on:
   push:
