@@ -1,1 +1,1 @@
-v4.0.0 🍻🍾 - Add new reusable workflows and fix setup issue with the latest version Ubuntu OS.
+v5.0.0 🍻🍾 - Add new features and improve reusable workflows.
