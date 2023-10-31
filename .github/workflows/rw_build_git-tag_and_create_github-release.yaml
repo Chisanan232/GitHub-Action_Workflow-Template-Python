@@ -72,7 +72,7 @@ jobs:
       matrix_github_action_reusable_workflow: ${{ steps.github_action_reusable_workflow_release.outputs.release_version }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Download shell script for checking input parameters
         run: curl https://raw.githubusercontent.com/Chisanan232/GitHub-Action_Reusable_Workflows-Python/develop/scripts/ci/build_git-tag_or_create_github-release.sh --output ./scripts/ci/build_git-tag_or_create_github-release.sh

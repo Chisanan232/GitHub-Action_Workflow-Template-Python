@@ -56,7 +56,7 @@ jobs:
     env:
       RELEASE_TYPE: ${{ needs.test_build_git-tag_and_create_github-release.outputs.github-action_reusable_workflow_release_version }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Check it whether get the output of previous one job which has version info or not
         run: bash scripts/ci/check_getting_output.sh
