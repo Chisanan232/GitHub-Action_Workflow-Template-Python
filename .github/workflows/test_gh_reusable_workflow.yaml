@@ -8,11 +8,15 @@ on:
       - "release-**"
       - "release/**"
       - "master"
-    paths-ignore:
-      - ".gitcommitrules"
-      - ".gitignore"
-      - "LICENSE"
-      - "README.md"
+    paths:
+#     The workflow self.
+      - ".github/workflows/test_gh_reusable_workflow.yaml"
+#     The shell script only be used by this workflow.
+      - "scripts/ci/check_getting_output.sh"
+#     The shell scripts or actions this workflow would use.
+      - ".github/workflows/rw_build_git-tag_and_create_github-release.yaml"
+      - "scripts/ci/build_git-tag_or_create_github-release.sh"
+      - "scripts/ci/deployment_new_version_workflow.sh"
 
   pull_request:
     branches:
@@ -21,16 +25,20 @@ on:
       - "release-**"
       - "release/**"
       - "master"
-    paths-ignore:
-      - ".gitcommitrules"
-      - ".gitignore"
-      - "LICENSE"
-      - "README.md"
+    paths:
+#     The workflow self.
+      - ".github/workflows/test_gh_reusable_workflow.yaml"
+#     The shell script only be used by this workflow.
+      - "scripts/ci/check_getting_output.sh"
+#     The shell scripts or actions this workflow would use.
+      - ".github/workflows/rw_build_git-tag_and_create_github-release.yaml"
+      - "scripts/ci/build_git-tag_or_create_github-release.sh"
+      - "scripts/ci/deployment_new_version_workflow.sh"
 
 jobs:
   test_build_git-tag_and_create_github-release:
 #    name: Build git tag and GitHub release if it needs
-    uses: ./.github/workflows/build_git-tag_and_create_github-release.yaml
+    uses: ./.github/workflows/rw_build_git-tag_and_create_github-release.yaml
     secrets:
       github_auth_token: ${{ secrets.GITHUB_TOKEN }}
     with:

@@ -8,11 +8,31 @@ on:
       - "release-**"
       - "release/**"
       - "master"
-    paths-ignore:
-      - ".gitcommitrules"
-      - ".gitignore"
-      - "LICENSE"
-      - "README.md"
+    paths:
+#     The workflow self.
+      - ".github/workflows/test_python_project_ci_multi-tests.yaml"
+#     The shell script only be used by this workflow.
+      - "scripts/ci/check_getting_output.sh"
+#     The sample Python code.
+      - ".coveragerc"
+      - "pytest.ini"
+      - "sonar-project.properties"
+      - "requirements/**"
+      - "setup.py"
+      - "test_gh_workflow/**"
+      - "test/**"
+#     The shell scripts or actions this workflow would use.
+      - ".github/workflows/rw_get_tests.yaml"
+      - ".github/workflows/rw_poetry_run_test.yaml"
+      - ".github/workflows/rw_organize_test_cov_reports.yaml"
+      - "scripts/ci/combine_coverage_reports.sh"
+      - ".github/workflows/rw_upload_test_cov_report.yaml"
+      - "scripts/ci/check-input-params.sh"
+      - ".github/workflows/rw_sonarqube_scan.yaml"
+      - ".github/workflows/rw_pre-building_test.yaml"
+      - ".github/workflows/rw_build_git-tag_and_create_github-release.yaml"
+      - "scripts/ci/build_git-tag_or_create_github-release.sh"
+      - "scripts/ci/deployment_new_version_workflow.sh"
 
   pull_request:
     branches:
@@ -21,33 +41,53 @@ on:
       - "release-**"
       - "release/**"
       - "master"
-    paths-ignore:
-      - ".gitcommitrules"
-      - ".gitignore"
-      - "LICENSE"
-      - "README.md"
+    paths:
+#     The workflow self.
+      - ".github/workflows/test_python_project_ci_multi-tests.yaml"
+#     The shell script only be used by this workflow.
+      - "scripts/ci/check_getting_output.sh"
+#     The sample Python code.
+      - ".coveragerc"
+      - "pytest.ini"
+      - "sonar-project.properties"
+      - "requirements/**"
+      - "setup.py"
+      - "test_gh_workflow/**"
+      - "test/**"
+#     The shell scripts or actions this workflow would use.
+      - ".github/workflows/rw_get_tests.yaml"
+      - ".github/workflows/rw_poetry_run_test.yaml"
+      - ".github/workflows/rw_organize_test_cov_reports.yaml"
+      - "scripts/ci/combine_coverage_reports.sh"
+      - ".github/workflows/rw_upload_test_cov_report.yaml"
+      - "scripts/ci/check-input-params.sh"
+      - ".github/workflows/rw_sonarqube_scan.yaml"
+      - ".github/workflows/rw_pre-building_test.yaml"
+      - ".github/workflows/rw_build_git-tag_and_create_github-release.yaml"
+      - "scripts/ci/build_git-tag_or_create_github-release.sh"
+      - "scripts/ci/deployment_new_version_workflow.sh"
 
 jobs:
   prep-testbed_unit-test:
 #    name: Prepare all unit test items
-    uses: ./.github/workflows/prepare_test_items.yaml
+    uses: ./.github/workflows/rw_get_tests.yaml
     with:
-      shell_path: scripts/ci/test/get-unit-test-paths.sh
-      shell_arg: unix
+      shell_arg: test/unit_test/
 
 
   prep-testbed_integration-test:
 #    name: Prepare all integration test items
-    uses: ./.github/workflows/prepare_test_items.yaml
+    uses: ./.github/workflows/rw_get_tests.yaml
     with:
       shell_path: scripts/ci/test/get-integration-test-paths.sh
       shell_arg: unix
+      use_customized_shell: true
 
 
   run_unit-test:
 #    name: Run all unit test items
     needs: prep-testbed_unit-test
-    uses: ./.github/workflows/run_test_items_via_pytest.yaml
+    uses: ./.github/workflows/rw_run_test.yaml
     with:
       test_type: unit-test
       all_test_items_paths: ${{needs.prep-testbed_unit-test.outputs.all_test_items}}
@@ -57,7 +97,7 @@ jobs:
   run_integration-test:
 #    name: Run all integration test items. This testing would test the code with other resource or system to ensure the features work finely.
     needs: prep-testbed_integration-test
-    uses: ./.github/workflows/run_test_items_via_pytest.yaml
+    uses: ./.github/workflows/rw_run_test.yaml
     with:
       test_type: integration-test
       all_test_items_paths: ${{needs.prep-testbed_integration-test.outputs.all_test_items}}
@@ -72,7 +112,7 @@ jobs:
   all-test_codecov:
 #    name: Organize and generate the testing report and upload it to Codecov
     needs: [run_unit-test, run_integration-test]
-    uses: ./.github/workflows/organize_and_generate_test_cov_reports.yaml
+    uses: ./.github/workflows/rw_organize_test_cov_reports.yaml
     with:
       test_type: all-test
 
@@ -81,7 +121,7 @@ jobs:
 #    name: Organize and generate the testing report and upload it to Codecov
 #    if: github.ref_name == 'release' || github.ref_name == 'master'
     needs: [all-test_codecov]
-    uses: ./.github/workflows/upload_test_cov_report.yaml
+    uses: ./.github/workflows/rw_upload_test_cov_report.yaml
     secrets:
       codecov_token: ${{ secrets.CODECOV_TOKEN }}
     with:
@@ -95,7 +135,7 @@ jobs:
 #    name: Organize and generate the testing report and upload it to Coveralls
 #    if: github.ref_name == 'release' || github.ref_name == 'master'
     needs: [all-test_codecov]
-    uses: ./.github/workflows/upload_test_cov_report.yaml
+    uses: ./.github/workflows/rw_upload_test_cov_report.yaml
     secrets:
       coveralls_token: ${{ secrets.COVERALLS_TOKEN }}
     with:
@@ -106,7 +146,7 @@ jobs:
   codacy_finish:
 #    name: Upload test report to Codacy to analyse and record code quality
     needs: [all-test_codecov]
-    uses: ./.github/workflows/upload_test_cov_report.yaml
+    uses: ./.github/workflows/rw_upload_test_cov_report.yaml
     secrets:
       codacy_token: ${{ secrets.CODACY_PROJECT_TOKEN }}
     with:
@@ -114,23 +154,31 @@ jobs:
       upload-to-codacy: true
 
 
+  sonarqube_finish:
+#    name: Trigger SoarQube service to scan and analyse project
+    needs: [all-test_codecov]
+    uses: ./.github/workflows/rw_sonarqube_scan.yaml
+    secrets:
+      sonar_token: ${{ secrets.SONAR_TOKEN }}
+#    with:
+#      download_path: ${{ inputs.download_path }}
+
+
   pre-building_test:
 #    name: Check about it could work finely by installing the Python package with setup.py file
     if: github.event_name == 'push' && (github.ref_name == 'release' || github.ref_name == 'master')
-    needs: [codecov_finish, coveralls_finish, codacy_finish]
-    uses: ./.github/workflows/pre-building_test.yaml
+    needs: [codecov_finish, coveralls_finish, codacy_finish, sonarqube_finish]
+    uses: ./.github/workflows/rw_pre-building_test.yaml
     with:
       python_package_name: Test-GitHub-Action-workflow
-      test_import_package_code_1: import test_gh_workflow
-      test_import_package_code_2: from test_gh_workflow import sample
-      test_import_package_code_3: sample.hello_python()
+      test_shell_in_python: from test_gh_workflow import sample
       test_python_script: ./scripts/ci/test/test_pgk_install.py
 
 
   build_git-tag_and_create_github-release:
 #    name: Build git tag and GitHub release if it needs
     needs: pre-building_test
-    uses: ./.github/workflows/build_git-tag_and_create_github-release.yaml
+    uses: ./.github/workflows/rw_build_git-tag_and_create_github-release.yaml
     with:
       project_type: python-package
       project_name: test_gh_workflow
