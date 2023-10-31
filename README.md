@@ -2,9 +2,16 @@
 
 [![Release](https://img.shields.io/github/release/Chisanan232/GitHub-Action-Template-Python.svg?label=Release&logo=github)](https://github.com/Chisanan232/GitHub-Action-Template-Python/releases)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg?logo=apache)](https://opensource.org/licenses/Apache-2.0)
-[![Python project CI Test (one-test)](https://github.com/Chisanan232/GitHub-Action_Workflow-Template-Python/actions/workflows/test_python_project_ci_one-test.yaml/badge.svg)](https://github.com/Chisanan232/GitHub-Action_Workflow-Template-Python/actions/workflows/test_python_project_ci_one-test.yaml)
-[![Python project CI Test (multi-tests)](https://github.com/Chisanan232/GitHub-Action_Workflow-Template-Python/actions/workflows/test_python_project_ci_multi-tests.yaml/badge.svg)](https://github.com/Chisanan232/GitHub-Action_Workflow-Template-Python/actions/workflows/test_python_project_ci_multi-tests.yaml)
-[![GitHub Action reusable workflow project CI Test](https://github.com/Chisanan232/GitHub-Action_Workflow-Template-Python/actions/workflows/test_gh_reusable_workflow.yaml/badge.svg)](https://github.com/Chisanan232/GitHub-Action_Workflow-Template-Python/actions/workflows/test_gh_reusable_workflow.yaml)
+[![GitHub Action reusable workflow build](https://github.com/Chisanan232/GitHub-Action_Reusable_Workflows-Python/actions/workflows/ci-cd.yaml/badge.svg)](https://github.com/Chisanan232/GitHub-Action_Reusable_Workflows-Python/actions/workflows/ci-cd.yaml)
+
+🤖 Test state:
+
+| Usage scenario / state                                                                                                                                                                                                                                                                                                                        |
+|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| [![Python project CI Test (one-test)](https://github.com/Chisanan232/GitHub-Action_Workflow-Template-Python/actions/workflows/test_python_project_ci_one-test.yaml/badge.svg)](https://github.com/Chisanan232/GitHub-Action_Workflow-Template-Python/actions/workflows/test_python_project_ci_one-test.yaml)                                  |
+| [![Python project CI Test (multi-tests)](https://github.com/Chisanan232/GitHub-Action_Workflow-Template-Python/actions/workflows/test_python_project_ci_multi-tests.yaml/badge.svg)](https://github.com/Chisanan232/GitHub-Action_Workflow-Template-Python/actions/workflows/test_python_project_ci_multi-tests.yaml)                         |
+| [![Python project with Poetry CI Test (multi-tests)](https://github.com/Chisanan232/GitHub-Action_Reusable_Workflows-Python/actions/workflows/test_pyproject_ci_multi-tests_by_poetry.yaml/badge.svg)](https://github.com/Chisanan232/GitHub-Action_Reusable_Workflows-Python/actions/workflows/test_pyproject_ci_multi-tests_by_poetry.yaml) |
+| [![GitHub Action reusable workflow project CI Test](https://github.com/Chisanan232/GitHub-Action_Workflow-Template-Python/actions/workflows/test_gh_reusable_workflow.yaml/badge.svg)](https://github.com/Chisanan232/GitHub-Action_Workflow-Template-Python/actions/workflows/test_gh_reusable_workflow.yaml)                                |
 
 
 This is a GitHub Action workflow template for **_Python library_** project.
@@ -28,6 +35,7 @@ The usage of each workflow template.
 
 * [_rw_get_tests.yaml_](#rw_get_testsyaml)
 * [_rw_run_test.yaml_](#rw_run_testyaml)
+* [_rw_poetry_run_test.yaml_](#rw_poetry_run_testyaml)
 * [_rw_organize_test_cov_reports.yaml_](#rw_organize_test_cov_reportsyaml)
 * [_rw_upload_test_cov_report.yaml_](#rw_upload_test_cov_reportyaml)
 * [_rw_pre-building_test.yaml_](#rw_pre-building_testyaml)
@@ -42,28 +50,46 @@ The usage of each workflow template.
 * Description: Prepare the test items.
 * Options:
 
-| option name | data type | optional or required | function content                                     |
-|-------------|-----------|----------------------|------------------------------------------------------|
-| shell_path  | string    | Required             | The path shell script for getting the testing items. |
-| shell_arg   | string    | Required             | Input arguments of the shell script.                 |
+| option name          | data type | optional or required                                       | function content                                          |
+|----------------------|-----------|------------------------------------------------------------|-----------------------------------------------------------|
+| shell_path           | string    | Optional, Default value is _./scripts/ci/get-all-tests.sh_ | The path shell script for getting the testing items.      |
+| shell_arg            | string    | Required                                                   | Input arguments of the shell script.                      |
+| use_customized_shell | boolean   | Optional, Default value is _false_                         | Whether it should use the customized shell script or not. |
 
 * Output: 
   * all_test_items: All the test items it would run.
 
 * How to use it?
 
-Before use this workflow, it should prepare a shell script for getting the testing items.
+  * Use default shell script (recommended)
 
-```yaml
-  prepare-testing-items_unit-test:
-#    name: Prepare all unit test items
-    uses: Chisanan232/GitHub-Action-Template-Python/.github/workflows/rw_get_tests.yaml@master
-    with:
-      shell_path: scripts/ci/get-unit-test-paths.sh
-      shell_arg: unix
-```
+    If we want to use default shell script to auto-scan all tests, it only needs to give a shell script argument which is the directory path of test code:
 
-And we could get this workflow output result via keyword _all_test_items_.
+    ```yaml
+      prepare-testing-items_unit-test:
+    #    name: Prepare all unit test items
+        uses: Chisanan232/GitHub-Action-Template-Python/.github/workflows/rw_get_tests.yaml@master
+        with:
+          shell_arg: test/unit_test/
+    ```
+
+    And it would get all tests you need. And the keyword to get this workflow output result is _all_test_items_.
+
+  * Use customized shell script
+
+    Before use this workflow, it should prepare a shell script for getting the testing items.
+
+    ```yaml
+      prepare-testing-items_unit-test:
+    #    name: Prepare all unit test items
+        uses: Chisanan232/GitHub-Action-Template-Python/.github/workflows/rw_get_tests.yaml@master
+        with:
+          shell_path: scripts/ci/get-unit-test-paths.sh
+          shell_arg: unix
+          use_customized_shell: true
+    ```
+
+    And we could get this workflow output result via keyword _all_test_items_.
 
 <hr>
 
@@ -129,8 +155,15 @@ is provided by previous workflow? That is all testing items.
 
 | Workflow                          | Running way                                       | Support Python version |
 |-----------------------------------|---------------------------------------------------|------------------------|
-| _rw_run_test.yaml_  | Command lines like ``pip``, ``python``, etc       | 3.6 - 3.11             |
+| _rw_run_test.yaml_                | Command lines like ``pip``, ``python``, etc       | 3.6 - 3.11             |
 | _poetry_run_test_via_pytest.yaml_ | Use ``poetry`` feature or run command lines in it | 3.8 - 3.11             |
+
+
+<hr>
+
+### _rw_poetry_run_test.yaml_
+
+* Description: Same working with workflow _rw_run_test.yaml_, but this workflow would run test via **_Poetry_**.
 
 
 <hr>
