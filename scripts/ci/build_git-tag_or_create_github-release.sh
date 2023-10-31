@@ -37,7 +37,7 @@ fi
 Input_Arg_Release_Type=$1
 Input_Arg_Debug_Mode=$2
 
-keep_release=(echo "$KEEP_RELEASE_IF_PRE_VERSION")
+keep_release="$KEEP_RELEASE_IF_PRE_VERSION"
 
 if [ "$Input_Arg_Release_Type" == "" ]; then
     echo "❌ The argument 'Input_Arg_Release_Type' (first argument) cannot be empty."
@@ -280,7 +280,7 @@ tag_and_release_python_project() {
         echo "🔎 🐍 📦 Python package new release version: $New_Release_Version"
         is_pre_release_version=$(echo $New_Release_Version | grep -E -o '([\.-]*([a-zA-Z]{1,})+([0-9]{0,})*){1,}')
         echo "🔎 🤰 📦 is pre-release version: $is_pre_release_version"
-        if [ "$is_pre_release_version" == "" ]; then
+        if [ "$is_pre_release_version" == "" ] || [ "$keep_release" == "TRUE" ]; then
             echo "🎓 🐍 📦 The version is a official-release."
             # do different things with different ranches
             # git event: push
