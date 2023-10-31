@@ -1,40 +1,40 @@
-### 🎉🎊🍾 New feature
+### 🎉🎊 New feature
 <hr>
 
 1. Add new reusable workflows.
-    * _pre-building_test.yaml_: Running pre-testing by simple way with running _setup.py_ script.
-    * _push_pkg_to_pypi.yaml_: Compile Python source code and push the Python package to PyPI.
+    * _rw_poetry_run_test.yaml_: Running tests by PyTest through **_Poetry_**.
+    * _rw_sonarqube_scan.yaml_: Trigger SonarQube to scan project.
 
-### 🛠⚙️🔩 **Breaking Change**
+2. Improve the shell script about getting all tests.
+    * _rw_get_tests.yaml_: It could scan and get all test paths automatically without manually configure test directory path.
+
+3. Add GitHub dependencies bot for managing GitHub Action dependencies automatically.
+
+### 🛠⚙️ **Breaking Change**
 <hr>
 
-1. Modify the workflows detail about testing coverage report processing.
-    * All report types, e.g., .coverage format data file or XML format report, would be handled and generated in workflow _organize_and_generate_test_cov_reports.yaml_.
-    * It only processes uploading testing reports in workflow _upload_test_cov_report.yaml_.
+1. Rename all reusable workflows to be more clear and simple and rule the naming.
+    * If it's reusable workflow, it should be named start with ``rw_``.
+    * If it's CI process for testing, it should be named start with ``test_``.
+    * Below are the renaming of all reusable workflows:
+        * _prepare_test_items.yaml_ -> _rw_get_tests.yaml_
+        * _run_test_items_via_pytest.yaml_ -> _rw_run_test.yaml_
+        * _poetry_run_test_via_pytest.yaml_ -> _rw_poetry_run_test.yaml_
+        * _organize_and_generate_test_cov_reports.yaml_ -> _rw_organize_test_cov_reports.yaml_
+        * _upload_test_cov_report.yaml_ -> _rw_upload_test_cov_report.yaml_
+        * _sonarqube_scan.yaml_ -> _rw_sonarqube_scan.yaml_
+        * _pre-building_test.yaml_ -> _rw_pre-building_test.yaml_
+        * _build_git-tag_and_create_github-release.yaml_ -> _rw_build_git-tag_and_create_github-release.yaml_
+        * _push_pkg_to_pypi.yaml_ -> _rw_push_pypi.yaml_
 
-### 🛠🐛💣 **Bug Fix**
+2. Modify the git event listening condition of testing CI process which would only be run at some key point git event.
+
+### 🛠🐛 **Bug Fix**
 <hr>
 
-1. Fix issue of setup processing would fail with Python version 3.6 in runtime OS Ubuntu 22.04.
-    * Modify to test code with Python 3.6 version in Ubuntu 20.04.
+1. Fix issue of generating incorrect git tag from software version info.
 
-[//]: # (### 🔬🧪🧬 **Refactor**)
-[//]: # (<hr>)
+### 🧪🧬 **Refactor**
+<hr>
 
-[//]: # ()
-[//]: # (1. Upgrade the GitHub Action syntax usage about set-output commands.)
-
-[//]: # ()
-[//]: # (    * Change to use environment variable _GITHUB_OUTPUT_.)
-
-[//]: # (    * Refer: https://github.blog/changelog/2022-10-11-github-actions-deprecating-save-state-and-set-output-commands/)
-
-[//]: # ()
-[//]: # (2. Upgrade the actions which depends on Node.JS version 12 to newer version.)
-
-[//]: # ()
-[//]: # (    * Upgrade _actions/checkout_ to version 3.)
-
-[//]: # (    * Upgrade _actions/setup-python_ to version 4.)
-
-[//]: # (    * Refer: https://github.blog/changelog/2022-09-22-github-actions-all-actions-will-begin-running-on-node16-instead-of-node12/)
+1. Refactor the shell script for building git tag and GitHub release info.
