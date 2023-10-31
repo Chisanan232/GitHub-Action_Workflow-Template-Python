@@ -14,7 +14,7 @@ if [ "$has_auto_release_flag" == "" ]; then
     echo "⚠️ It should have *$Auto_Tag_And_Release_Flag* in '$Auto_Tag_And_Release_Dir/' directory of your project in HitHub."
     exit 0
 else
-    auto_release_flag=$(cat "$Auto_Tag_And_Release_Dir"/$Auto_Tag_And_Release_Flag)
+    auto_release_flag=$(cat "$Auto_Tag_And_Release_Dir/$Auto_Tag_And_Release_Flag")
     if [ "$auto_release_flag" == false ]; then
         echo "💤 Auto-release flag is 'false' so it won't build git tag or create GitHub release."
         exit 0
@@ -220,12 +220,12 @@ build_github_release() {
     ensure_release_tag_is_not_empty
 
     if [ "$Current_Branch" == "master" ]; then
-        release_title=$(cat "$Auto_Tag_And_Release_Dir"/$Auto_Release_Title)
+        release_title=$(cat "$Auto_Tag_And_Release_Dir/$Auto_Release_Title")
 
         if [ "$Input_Arg_Debug_Mode" == true ]; then
             echo " 🔍👀 [DEBUG MODE] Create GitHub release with tag '$New_Release_Tag' and title '$release_title' in git branch '$Current_Branch'."
         else
-            gh release create "$New_Release_Tag" --title "$release_title" --notes-file "$Auto_Tag_And_Release_Dir"/$Auto_Release_Content
+            gh release create "$New_Release_Tag" --title "$release_title" --notes-file "$Auto_Tag_And_Release_Dir/$Auto_Release_Content"
         fi
     fi
         echo "🎉 🍻 🐙 🐈 🏷  Create GitHub release with title '$release_title' successfully!"
@@ -328,7 +328,7 @@ tag_and_release_reusable_github_action_workflows_project() {
 
     echo "🔬 📄 🌳 ⛓ 🌳 Check the different of '$Auto_Tag_And_Release_Dir/$Auto_Release_Content' between current git branch and master branch ..."
     # # v1: compare by git branches
-#    release_notes_has_diff=$(git diff origin/master "$Current_Branch" -- "$Auto_Tag_And_Release_Dir"/$Auto_Release_Content | cat)
+#    release_notes_has_diff=$(git diff origin/master "$Current_Branch" -- "$Auto_Tag_And_Release_Dir/$Auto_Release_Content" | cat)
     # # v2: compare by git tag
     all_git_tags=$(git tag -l | cat)
     declare -a all_git_tags_array=( $(echo "$all_git_tags" | awk -v RS='' '{gsub("\n","  "); print}') )
@@ -336,7 +336,7 @@ tag_and_release_reusable_github_action_workflows_project() {
     latest_git_tag=${all_git_tags_array[$all_git_tags_array_len - 1]}
     echo "🔎 🌳 🏷 The latest git tag: $latest_git_tag"
 
-    release_notes_has_diff=$(git diff "$latest_git_tag" "$Current_Branch" -- "$Auto_Tag_And_Release_Dir"/$Auto_Release_Content | cat)
+    release_notes_has_diff=$(git diff "$latest_git_tag" "$Current_Branch" -- "$Auto_Tag_And_Release_Dir/$Auto_Release_Content" | cat)
     echo "🔎 🔬 📄 different of '$Auto_Tag_And_Release_Dir/$Auto_Release_Content': $release_notes_has_diff"
 
     if [ "$release_notes_has_diff" != "" ]; then
