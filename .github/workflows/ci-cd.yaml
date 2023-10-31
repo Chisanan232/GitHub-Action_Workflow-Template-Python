@@ -11,6 +11,7 @@ on:
       - ".github/workflows/ci-cd.yaml"
 #     Reusable GitHub Action workflows
       - ".github/workflows/rw_**.yaml"
+      - "scripts/ci/**.sh"
 
 jobs:
   build_git-tag_and_create_github-release:
