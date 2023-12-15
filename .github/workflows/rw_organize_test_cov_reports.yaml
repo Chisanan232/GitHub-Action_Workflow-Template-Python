@@ -56,14 +56,14 @@ jobs:
           bash ./scripts/ci/combine_coverage_reports.sh ${{ inputs.test_type }}
 
       - name: Upload testing coverage report (.coverage)
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: test_coverage_data_file
           path: .coverage
           if-no-files-found: error
 
       - name: Upload testing coverage report (.xml)
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: test_coverage_xml_report
           path: coverage**xml
