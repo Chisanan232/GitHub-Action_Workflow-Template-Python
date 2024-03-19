@@ -20,6 +20,11 @@ name: SoarQube cloud scan and analyse project
 on:
   workflow_call:
     inputs:
+      test_type:
+        description: "The testing type. In generally, it only has 2 options: 'unit-test' and 'integration-test'."
+        required: true
+        type: string
+        default: all-test
       download_path:
         description: "The path to download testing coverage reports via 'actions/download-artifact@v3'."
         type: string
@@ -43,7 +48,7 @@ jobs:
       - name: Download code coverage result files which has be handled by different test type process
         uses: actions/download-artifact@v3
         with:
-          name: test_coverage_xml_report
+          name: ${{ inputs.test_type }}_coverage_xml_report
           path: ${{ inputs.download_path }}
 
       - name: SonarCloud Scan

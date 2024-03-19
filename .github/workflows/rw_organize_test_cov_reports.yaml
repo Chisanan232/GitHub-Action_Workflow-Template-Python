@@ -36,7 +36,7 @@ jobs:
       - name: Download code coverage result file
         uses: actions/download-artifact@v3
         with:
-          name: coverage
+          pattern: coverage*
           path: ./
 
       - name: Setup Python 3.10 in Ubuntu OS
@@ -58,13 +58,13 @@ jobs:
       - name: Upload testing coverage report (.coverage)
         uses: actions/upload-artifact@v4
         with:
-          name: test_coverage_data_file
+          name: ${{ inputs.test_type }}_coverage_data_file
           path: .coverage
           if-no-files-found: error
 
       - name: Upload testing coverage report (.xml)
         uses: actions/upload-artifact@v4
         with:
-          name: test_coverage_xml_report
+          name: ${{ inputs.test_type }}_coverage_xml_report
           path: coverage**xml
           if-no-files-found: error
