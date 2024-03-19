@@ -111,6 +111,7 @@ jobs:
 
   all-test_codecov:
 #    name: Organize and generate the testing report and upload it to Codecov
+    if: ${{ !contains(github.event.pull_request.labels.*.name, 'dependencies') }}
     needs: [run_unit-test, run_integration-test]
     uses: ./.github/workflows/rw_organize_test_cov_reports.yaml
     with:

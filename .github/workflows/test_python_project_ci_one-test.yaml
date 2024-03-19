@@ -96,6 +96,7 @@ jobs:
   codecov_finish:
 #    name: Organize and generate the testing report and upload it to Codecov
 #    if: github.ref_name == 'release' || github.ref_name == 'master'
+    if: ${{ !contains(github.event.pull_request.labels.*.name, 'dependencies') }}
     needs: [unit-test_codecov]
     uses: ./.github/workflows/rw_upload_test_cov_report.yaml
     secrets:
