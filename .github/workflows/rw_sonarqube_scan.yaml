@@ -22,7 +22,7 @@ on:
     inputs:
       test_type:
         description: "The testing type. In generally, it only has 2 options: 'unit-test' and 'integration-test'."
-        required: true
+        required: false
         type: string
         default: all-test
       download_path:
