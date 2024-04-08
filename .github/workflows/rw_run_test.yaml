@@ -12,7 +12,6 @@
 #     * http_server_port: The port number of HTTP server.
 #     * http_server_app_module: The module path of HTTP server.
 #     * http_server_enter_point: The object about the web application.
-#     * debug_mode: For debug, so it's matrix would one has os: ubuntu-22.04 & python-version: '3.10'.
 #
 # Workflow running output:
 #     No, but it would save the testing coverage reports to provide after-process to organize and record.
@@ -61,16 +60,10 @@ on:
         type: string
         required: false
         default: app
-      debug_mode:
-        description: "For debug, so it's matrix would one has os: ubuntu-22.04 & python-version: '3.10'."
-        type: boolean
-        required: false
-        default: false
 
 
 jobs:
   run_test_items:
-    if: ${{ inputs.debug_mode == false }}
     runs-on: ${{ matrix.os }}
 
     strategy:
@@ -92,54 +85,6 @@ jobs:
             python-version: 3.11
         test-path: ${{fromJson(inputs.all_test_items_paths)}}
 
-
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Install Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v4
-        with:
-          python-version: ${{ matrix.python-version }}
-
-      - name: Install Python dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -U pip
-          pip install -U -r ./requirements/requirements.txt
-          pip install -U -r ./requirements/requirements-test.txt
-
-      - name: Setup and run HTTP server for testing
-        if: ${{ inputs.setup_http_server == true }}
-        run: gunicorn --bind ${{ inputs.http_server_host }}:${{ inputs.http_server_port }} '${{ inputs.http_server_app_module }}:${{ inputs.http_server_enter_point }}' --daemon
-
-      - name: Test to send HTTP request to sample HTTP server
-        if: ${{ inputs.setup_http_server == true }}
-        run: curl "http://${{ inputs.http_server_host }}:${{ inputs.http_server_port }}/exchangeReport/STOCK_DAY?response=json&date=20170101&stockNo=2331"
-
-      - name: Run tests with pytest
-        run: pytest ${{ matrix.test-path }}
-        continue-on-error: true
-
-      - name: Rename the code coverage result file
-        run: mv ./.coverage ./.coverage.${{ inputs.test_type }}.${{ matrix.os }}-${{ matrix.python-version }}
-
-      - name: Upload code coverage result file
-        uses: actions/upload-artifact@v3
-        with:
-          name: coverage
-          path: .coverage.${{ inputs.test_type }}.${{ matrix.os }}-${{ matrix.python-version }}
-          if-no-files-found: error
-
-
-  run_test_items_with_debug_mode:
-    if: ${{ inputs.debug_mode == true }}
-    runs-on: ${{ matrix.os }}
-
-    strategy:
-      matrix:
-        python-version: ['3.10']
-        os: [ubuntu-22.04]
-        test-path: ${{fromJson(inputs.all_test_items_paths)}}
 
     steps:
       - uses: actions/checkout@v3
