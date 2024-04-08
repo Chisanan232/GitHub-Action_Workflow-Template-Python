@@ -78,7 +78,7 @@ jobs:
   run_unit-test:
 #    name: Run all unit test items
     needs: prep-testbed_unit-test
-    uses: ./.github/workflows/rw_run_test.yaml
+    uses: ./.github/workflows/rw_run_test_with_multi_py_version.yaml
     with:
       test_type: unit-test
       all_test_items_paths: ${{needs.prep-testbed_unit-test.outputs.all_test_items}}

@@ -27,16 +27,6 @@ name: Run test items via PyTest
 on:
   workflow_call:
     inputs:
-      runtime_os:
-        description: "The OS to use for runtime environment. In default, it's 'ubuntu-latest'."
-        required: false
-        type: string
-        default: ubuntu-latest
-      python_version:
-        description: "The Python version to run the workflow. In default, it's Python version '3.11'."
-        required: false
-        type: string
-        default: 3.11
       test_type:
         description: "The testing type. In generally, it only has 2 options: 'unit-test' and 'integration-test'."
         required: true
@@ -74,12 +64,12 @@ on:
 
 jobs:
   run_test_items:
-    runs-on: ${{ matrix.os }}
+#    runs-on: ${{ matrix.os }}
 
     strategy:
       matrix:
-        python-version: [${{ inputs.python_version }}]
-        os: [${{ inputs.runtime_os }}]
+        python-version: [3.6,3.7,3.8,3.9,'3.10','3.11']
+        os: [ubuntu-20.04,ubuntu-latest,macos-latest]
         exclude:
           - os: ubuntu-latest
             python-version: 3.6
@@ -95,40 +85,51 @@ jobs:
             python-version: 3.11
         test-path: ${{fromJson(inputs.all_test_items_paths)}}
 
+    uses: ./.github/workflows/rw_run_test.yaml
+    with:
+      runtime_os: ${{ matrix.os }}
+      python_version: ${{ matrix.python-version }}
+      test_type: ${{ inputs.test_type }}
+      all_test_items_paths: ${{ inputs.all_test_items_paths }}
+      setup_http_server: ${{ inputs.setup_http_server }}
+      http_server_host: ${{ inputs.http_server_host }}
+      http_server_port: ${{ inputs.http_server_port }}
+      http_server_app_module: ${{ inputs.http_server_app_module }}
+      http_server_enter_point: ${{ inputs.http_server_enter_point }}
 
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Install Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v4
-        with:
-          python-version: ${{ matrix.python-version }}
-
-      - name: Install Python dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -U pip
-          pip install -U -r ./requirements/requirements.txt
-          pip install -U -r ./requirements/requirements-test.txt
-
-      - name: Setup and run HTTP server for testing
-        if: ${{ inputs.setup_http_server == true }}
-        run: gunicorn --bind ${{ inputs.http_server_host }}:${{ inputs.http_server_port }} '${{ inputs.http_server_app_module }}:${{ inputs.http_server_enter_point }}' --daemon
-
-      - name: Test to send HTTP request to sample HTTP server
-        if: ${{ inputs.setup_http_server == true }}
-        run: curl "http://${{ inputs.http_server_host }}:${{ inputs.http_server_port }}/exchangeReport/STOCK_DAY?response=json&date=20170101&stockNo=2331"
-
-      - name: Run tests with pytest
-        run: pytest ${{ matrix.test-path }}
-        continue-on-error: true
-
-      - name: Rename the code coverage result file
-        run: mv ./.coverage ./.coverage.${{ inputs.test_type }}.${{ matrix.os }}-${{ matrix.python-version }}
-
-      - name: Upload code coverage result file
-        uses: actions/upload-artifact@v3
-        with:
-          name: coverage
-          path: .coverage.${{ inputs.test_type }}.${{ matrix.os }}-${{ matrix.python-version }}
-          if-no-files-found: error
+#    steps:
+#      - uses: actions/checkout@v3
+#
+#      - name: Install Python ${{ matrix.python-version }}
+#        uses: actions/setup-python@v4
+#        with:
+#          python-version: ${{ matrix.python-version }}
+#
+#      - name: Install Python dependencies
+#        run: |
+#          python -m pip install --upgrade pip
+#          pip install -U pip
+#          pip install -U -r ./requirements/requirements.txt
+#          pip install -U -r ./requirements/requirements-test.txt
+#
+#      - name: Setup and run HTTP server for testing
+#        if: ${{ inputs.setup_http_server == true }}
+#        run: gunicorn --bind ${{ inputs.http_server_host }}:${{ inputs.http_server_port }} '${{ inputs.http_server_app_module }}:${{ inputs.http_server_enter_point }}' --daemon
+#
+#      - name: Test to send HTTP request to sample HTTP server
+#        if: ${{ inputs.setup_http_server == true }}
+#        run: curl "http://${{ inputs.http_server_host }}:${{ inputs.http_server_port }}/exchangeReport/STOCK_DAY?response=json&date=20170101&stockNo=2331"
+#
+#      - name: Run tests with pytest
+#        run: pytest ${{ matrix.test-path }}
+#        continue-on-error: true
+#
+#      - name: Rename the code coverage result file
+#        run: mv ./.coverage ./.coverage.${{ inputs.test_type }}.${{ matrix.os }}-${{ matrix.python-version }}
+#
+#      - name: Upload code coverage result file
+#        uses: actions/upload-artifact@v4
+#        with:
+#          name: coverage
+#          path: .coverage.${{ inputs.test_type }}.${{ matrix.os }}-${{ matrix.python-version }}
+#          if-no-files-found: error
