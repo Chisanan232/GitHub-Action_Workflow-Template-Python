@@ -74,13 +74,13 @@ on:
 
 jobs:
   run_test_items:
-    runs-on: ${{ matrix.os }}
+    runs-on: ${{ inputs.runtime_os }}
 
     strategy:
       matrix:
-        python-version: ${{ inputs.python_version }}
-        os: ${{ inputs.runtime_os }}
         test-path: ${{fromJson(inputs.all_test_items_paths)}}
+#        python-version: ${{ inputs.python_version }}
+#        os: ${{ inputs.runtime_os }}
 #        exclude:
 #          - os: ubuntu-latest
 #            python-version: 3.6
@@ -99,10 +99,10 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Install Python ${{ matrix.python-version }}
+      - name: Install Python ${{ inputs.python_version }}
         uses: actions/setup-python@v4
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: ${{ inputs.python_version }}
 
       - name: Install Python dependencies
         run: |
@@ -124,11 +124,11 @@ jobs:
         continue-on-error: true
 
       - name: Rename the code coverage result file
-        run: mv ./.coverage ./.coverage.${{ inputs.test_type }}.${{ matrix.os }}-${{ matrix.python-version }}
+        run: mv ./.coverage ./.coverage.${{ inputs.test_type }}.${{ inputs.runtime_os }}-${{ inputs.python_version }}
 
       - name: Upload code coverage result file
         uses: actions/upload-artifact@v3
         with:
           name: coverage
-          path: .coverage.${{ inputs.test_type }}.${{ matrix.os }}-${{ matrix.python-version }}
+          path: .coverage.${{ inputs.test_type }}.${{ inputs.runtime_os }}-${{ inputs.python_version }}
           if-no-files-found: error
