@@ -81,22 +81,6 @@ jobs:
     strategy:
       matrix:
         test-path: ${{fromJson(inputs.all_test_items_paths)}}
-#        python-version: ${{ inputs.python_version }}
-#        os: ${{ inputs.runtime_os }}
-#        exclude:
-#          - os: ubuntu-latest
-#            python-version: 3.6
-#          - os: ubuntu-20.04
-#            python-version: 3.7
-#          - os: ubuntu-20.04
-#            python-version: 3.8
-#          - os: ubuntu-20.04
-#            python-version: 3.9
-#          - os: ubuntu-20.04
-#            python-version: '3.10'
-#          - os: ubuntu-20.04
-#            python-version: 3.11
-
 
     steps:
       - uses: actions/checkout@v3
