@@ -23,7 +23,8 @@ on:
       - "test/**"
 #     The shell scripts or actions this workflow would use.
       - ".github/workflows/rw_get_tests.yaml"
-      - ".github/workflows/rw_poetry_run_test.yaml"
+      - ".github/workflows/rw_run_test.yaml"
+      - ".github/workflows/rw_run_test_with_multi_py_versions.yaml"
       - ".github/workflows/rw_organize_test_cov_reports.yaml"
       - "scripts/ci/combine_coverage_reports.sh"
       - ".github/workflows/rw_upload_test_cov_report.yaml"
@@ -56,7 +57,8 @@ on:
       - "test/**"
 #     The shell scripts or actions this workflow would use.
       - ".github/workflows/rw_get_tests.yaml"
-      - ".github/workflows/rw_poetry_run_test.yaml"
+      - ".github/workflows/rw_run_test.yaml"
+      - ".github/workflows/rw_run_test_with_multi_py_versions.yaml"
       - ".github/workflows/rw_organize_test_cov_reports.yaml"
       - "scripts/ci/combine_coverage_reports.sh"
       - ".github/workflows/rw_upload_test_cov_report.yaml"
@@ -78,11 +80,10 @@ jobs:
   run_unit-test:
 #    name: Run all unit test items
     needs: prep-testbed_unit-test
-    uses: ./.github/workflows/rw_run_test.yaml
+    uses: ./.github/workflows/rw_run_test_with_multi_py_versions.yaml
     with:
       test_type: unit-test
       all_test_items_paths: ${{needs.prep-testbed_unit-test.outputs.all_test_items}}
-#      debug_mode: true
 
 
   unit-test_codecov:

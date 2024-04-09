@@ -5,6 +5,8 @@
 #     coverage report (it would save reports by 'actions/upload-artifact@v3').
 #
 # Workflow input parameters:
+#     * runtime_os: The OS to use for runtime environment. In default, it's 'ubuntu-latest'.
+#     * python_version: The Python version to run the workflow. In default, it's Python version '3.11'.
 #     * test_type: The testing type. In generally, it only has 2 options: 'unit-test' and 'integration-test'.
 #     * all_test_items_paths: The target paths of test items under test.
 #     * setup_http_server: If it's true, it would set up and run HTTP server for testing.
@@ -29,6 +31,16 @@ name: Run test items via PyTest
 on:
   workflow_call:
     inputs:
+      runtime_os:
+        description: "The OS to use for runtime environment. In default, it's 'ubuntu-latest'."
+        required: false
+        type: string
+        default: ubuntu-latest
+      python_version:
+        description: "The Python version to run the workflow. In default, it's Python version '3.11'."
+        required: false
+        type: string
+        default: 3.11
       test_type:
         description: "The testing type. In generally, it only has 2 options: 'unit-test' and 'integration-test'."
         required: true
@@ -68,23 +80,19 @@ on:
 
 jobs:
   run_test_items:
-    if: ${{ inputs.debug_mode == false }}
-    runs-on: ${{ matrix.os }}
+    runs-on: ${{ inputs.runtime_os }}
 
     strategy:
       matrix:
-        python-version: [3.8,3.9,'3.10','3.11']
-        os: [ubuntu-20.04,ubuntu-latest,macos-latest]
         test-path: ${{fromJson(inputs.all_test_items_paths)}}
-
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install Python ${{ matrix.python-version }}
+      - name: Install Python ${{ inputs.python_version }}
         uses: actions/setup-python@v5
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: ${{ inputs.python_version }}
 
       - name: Install Python dependencies
         run: |
@@ -112,11 +120,11 @@ jobs:
         continue-on-error: true
 
       - name: Rename the code coverage result file
-        run: mv ./.coverage ./.coverage.${{ inputs.test_type }}.${{ matrix.os }}-${{ matrix.python-version }}
+        run: mv ./.coverage ./.coverage.${{ inputs.test_type }}.${{ inputs.runtime_os }}-${{ inputs.python_version }}
 
       - name: Upload code coverage result file
         uses: actions/upload-artifact@v3
         with:
           name: coverage
-          path: .coverage.${{ inputs.test_type }}.${{ matrix.os }}-${{ matrix.python-version }}
+          path: .coverage.${{ inputs.test_type }}.${{ inputs.runtime_os }}-${{ inputs.python_version }}
           if-no-files-found: error
