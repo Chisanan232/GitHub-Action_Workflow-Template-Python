@@ -23,6 +23,7 @@ on:
 #     The shell scripts or actions this workflow would use.
       - ".github/workflows/rw_get_tests.yaml"
       - ".github/workflows/rw_poetry_run_test.yaml"
+      - ".github/workflows/rw_poetry_run_test_with_multi_py_versions.yaml"
       - ".github/workflows/rw_organize_test_cov_reports.yaml"
       - "scripts/ci/combine_coverage_reports.sh"
       - ".github/workflows/rw_upload_test_cov_report.yaml"
@@ -55,6 +56,7 @@ on:
 #     The shell scripts or actions this workflow would use.
       - ".github/workflows/rw_get_tests.yaml"
       - ".github/workflows/rw_poetry_run_test.yaml"
+      - ".github/workflows/rw_poetry_run_test_with_multi_py_versions.yaml"
       - ".github/workflows/rw_organize_test_cov_reports.yaml"
       - "scripts/ci/combine_coverage_reports.sh"
       - ".github/workflows/rw_upload_test_cov_report.yaml"
@@ -94,7 +96,7 @@ jobs:
   run_integration-test:
 #    name: Run all integration test items. This testing would test the code with other resource or system to ensure the features work finely.
     needs: prep-testbed_integration-test
-    uses: ./.github/workflows/rw_poetry_run_test.yaml
+    uses: ./.github/workflows/rw_poetry_run_test_with_multi_py_versions.yaml
     with:
       test_type: integration-test
       all_test_items_paths: ${{needs.prep-testbed_integration-test.outputs.all_test_items}}
