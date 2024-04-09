@@ -9,7 +9,6 @@ invalid message format should not be merged or fetched, etc.
 Format:
 [commit topic] (commit scope) <commit message>
 
-
 Commit Topic:
 * New Feature
 The new features which be added currently.

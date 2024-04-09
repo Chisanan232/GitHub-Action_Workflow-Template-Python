@@ -46,7 +46,7 @@ jobs:
     outputs:
       matrix: ${{ steps.set-matrix.outputs.all_test_items }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Download shell script for getting path of all test modules
         if: ${{ inputs.use_customized_shell != true }}

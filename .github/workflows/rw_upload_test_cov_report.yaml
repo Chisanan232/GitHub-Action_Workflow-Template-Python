@@ -80,7 +80,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Download shell script for checking input parameters
         run: curl https://raw.githubusercontent.com/Chisanan232/GitHub-Action_Reusable_Workflows-Python/develop/scripts/ci/check-input-params.sh --output ./scripts/ci/check-input-params.sh
@@ -111,7 +111,7 @@ jobs:
       - name: Install Python 3.10
 #        if: ${{ inputs.upload-to-codecov == true || inputs.upload-to-coveralls == true }}
         if: ${{ inputs.upload-to-coveralls == true }}
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: "3.10"
 
