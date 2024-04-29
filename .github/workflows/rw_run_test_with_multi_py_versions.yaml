@@ -73,6 +73,8 @@ jobs:
             python-version: 3.6
           - os: macos-latest
             python-version: 3.6
+          - os: macos-latest    # Issue: The version '3.7' with architecture 'arm64' was not found for macOS 14.4.1.
+            python-version: 3.7
         test-path: ${{fromJson(inputs.all_test_items_paths)}}
 
     uses: ./.github/workflows/rw_run_test.yaml
