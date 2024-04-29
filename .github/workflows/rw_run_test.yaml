@@ -73,6 +73,8 @@ on:
         required: false
         default: app
 
+env:
+  PIP_DISABLE_PIP_VERSION_CHECK: 1
 
 jobs:
   run_test_items:
