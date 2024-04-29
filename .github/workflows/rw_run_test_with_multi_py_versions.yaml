@@ -67,7 +67,7 @@ jobs:
     strategy:
       matrix:
         python-version: [3.6,3.7,3.8,3.9,'3.10','3.11']
-        os: [ubuntu-latest,ubuntu-20.04,macos-latest,macos-14,macos-13]
+        os: [ubuntu-latest,ubuntu-20.04,macos-latest,macos-13]
         test-path: ${{fromJson(inputs.all_test_items_paths)}}
 #        exclude:
 #          - os: ubuntu-latest
