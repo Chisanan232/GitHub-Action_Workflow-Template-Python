@@ -93,6 +93,8 @@ jobs:
       - name: Install Python dependencies
         run: |
           pip --version
+          pip install -U flask
+          pip install -U gunicorn
           pip install -U -r ./requirements/requirements.txt
           pip install -U -r ./requirements/requirements-test.txt
 

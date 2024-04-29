@@ -97,6 +97,7 @@ jobs:
       - name: Install Python dependencies
         run: |
           pip --version
+          pip install -U flask
           pip install -U gunicorn
           pip install -U poetry
 
