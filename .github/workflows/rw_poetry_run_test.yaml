@@ -78,6 +78,9 @@ on:
 # TODO: Add a reusable workflow about running test via Poetry
 # TODO: https://github.com/marketplace/actions/python-poetry-action
 
+env:
+  PIP_DISABLE_PIP_VERSION_CHECK: 1
+
 jobs:
   run_test_items:
     runs-on: ${{ inputs.runtime_os }}
@@ -96,8 +99,7 @@ jobs:
 
       - name: Install Python dependencies
         run: |
-          python -m pip install --upgrade pip
-          pip install -U pip
+          pip --version
           pip install -U flask
           pip install -U gunicorn
           pip install -U poetry
