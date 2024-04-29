@@ -68,22 +68,12 @@ jobs:
       matrix:
         python-version: [3.6,3.7,3.8,3.9,'3.10','3.11']
         os: [ubuntu-latest,ubuntu-20.04,macos-latest,macos-13]
-        test-path: ${{fromJson(inputs.all_test_items_paths)}}
         exclude:
           - os: ubuntu-latest    # Issue: The version '3.6' with architecture 'x64' was not found for Ubuntu 22.04
             python-version: 3.6
           - os: macos-latest
             python-version: 3.6
-#          - os: ubuntu-20.04
-#            python-version: 3.7
-#          - os: ubuntu-20.04
-#            python-version: 3.8
-#          - os: ubuntu-20.04
-#            python-version: 3.9
-#          - os: ubuntu-20.04
-#            python-version: '3.10'
-#          - os: ubuntu-20.04
-#            python-version: 3.11
+        test-path: ${{fromJson(inputs.all_test_items_paths)}}
 
     uses: ./.github/workflows/rw_run_test.yaml
     with:
