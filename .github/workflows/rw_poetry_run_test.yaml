@@ -133,5 +133,5 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: coverage
-          path: .coverage.${{ inputs.test_type }}.${{ inputs.runtime_os }}-${{ inputs.python_version }}
+          path: ./.coverage.${{ inputs.test_type }}.${{ inputs.runtime_os }}-${{ inputs.python_version }}
           if-no-files-found: error
