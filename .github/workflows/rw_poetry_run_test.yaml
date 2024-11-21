@@ -123,8 +123,11 @@ jobs:
 
       - name: Rename the code coverage result file
         run: |
+          echo "Before rename file ..."
           ls -la
           mv ./.coverage ./.coverage.${{ inputs.test_type }}.${{ inputs.runtime_os }}-${{ inputs.python_version }}
+          echo "After rename file ..."
+          ls -la
 
       - name: Upload code coverage result file
         uses: actions/upload-artifact@v3
