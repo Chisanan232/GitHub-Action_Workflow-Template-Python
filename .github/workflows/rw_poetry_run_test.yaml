@@ -122,7 +122,8 @@ jobs:
         continue-on-error: true
 
       - name: Rename the code coverage result file
-        run: mv ./.coverage ./.coverage.${{ inputs.test_type }}.${{ inputs.runtime_os }}-${{ inputs.python_version }}
+        run: |
+          mv ./.coverage ./.coverage.${{ inputs.test_type }}.${{ inputs.runtime_os }}-${{ inputs.python_version }}
 
       - name: Upload code coverage result file
         uses: actions/upload-artifact@v3
@@ -130,3 +131,4 @@ jobs:
           name: coverage
           path: .coverage.${{ inputs.test_type }}.${{ inputs.runtime_os }}-${{ inputs.python_version }}
           if-no-files-found: error
+          include-hidden-files: true

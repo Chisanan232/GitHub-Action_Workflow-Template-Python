@@ -61,6 +61,7 @@ jobs:
           name: test_coverage_data_file
           path: .coverage
           if-no-files-found: error
+          include-hidden-files: true
 
       - name: Upload testing coverage report (.xml)
         uses: actions/upload-artifact@v3
@@ -68,3 +69,4 @@ jobs:
           name: test_coverage_xml_report
           path: coverage**xml
           if-no-files-found: error
+          include-hidden-files: true
