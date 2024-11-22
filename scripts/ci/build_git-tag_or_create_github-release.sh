@@ -180,6 +180,7 @@ generate_new_version_as_tag() {
         if [ "$current_ver" == "" ]; then
             current_ver=0
         fi
+        # TODO: Modify the logic about it also can get the version from the specific file
         New_Release_Version=$(( current_ver + 1 ))
         New_Release_Tag='v'$New_Release_Version'.0.0'
     fi
