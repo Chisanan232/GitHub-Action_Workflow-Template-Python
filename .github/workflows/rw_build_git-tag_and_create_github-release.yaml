@@ -75,7 +75,9 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Download shell script for checking input parameters
-        run: curl https://raw.githubusercontent.com/Chisanan232/GitHub-Action_Reusable_Workflows-Python/develop/scripts/ci/build_git-tag_or_create_github-release.sh --output ./scripts/ci/build_git-tag_or_create_github-release.sh
+        run: |
+          curl https://raw.githubusercontent.com/Chisanan232/GitHub-Action_Reusable_Workflows-Python/develop/scripts/ci/build_git-tag_or_create_github-release.sh --output ./scripts/ci/build_git-tag_or_create_github-release.sh
+          curl https://raw.githubusercontent.com/Chisanan232/GitHub-Action_Reusable_Workflows-Python/develop/scripts/ci/generate_release_info.sh --output ./scripts/ci/generate_release_info.sh
 
       # This flow for the project type is Python project
       - name: Build git tag and create GitHub release for Python project
@@ -97,10 +99,8 @@ jobs:
         if: ${{ inputs.project_type == 'github-action-reusable-workflow' }}
         id: github_action_reusable_workflow_release
         run: | 
-          release=$(bash ./scripts/ci/build_git-tag_or_create_github-release.sh ${{ inputs.project_type }} ${{ inputs.debug_mode }})
-          echo "📄 Release log: $release"
-
-          release_version=$(echo "$release" | grep -E "\[GitHub Action - Reusable workflow\] \[Final Running Result\] (Official\-Release and version: ([0-9]{1,})|(Pre\-Release))" | grep -E -o "(([0-9]{1,})|(Pre\-Release))")
+          release_info=$(bash ./scripts/ci/generate_release_info.sh ${{ inputs.project_type }} ${{ inputs.debug_mode }})
+          release_version=$(echo "$release_info" | grep -E "Target version which would be pass to deployment process: ([0-9]{1,})|(Pre\-Release))" | grep -E -o "(([0-9]{1,})|(Pre\-Release))")
           echo "🤖 Release Version: $release_version"
 
           echo "release_version=$(echo $release_version)" >> $GITHUB_OUTPUT
