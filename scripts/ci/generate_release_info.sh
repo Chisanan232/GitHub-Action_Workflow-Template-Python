@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 Input_Arg_Project_Type=$1
 Input_Arg_Debug_Mode=$2
 
