@@ -82,28 +82,26 @@ fi
 declare Software_Version_Reg
 declare Python_Version_Reg
 
-if [ "$Input_Arg_Release_Type" == 'python-package' ]; then
+declare version_reg
+if [ "$Input_Arg_Software_Version_Format" == "general-2" ]; then
+    version_reg="[0-9]\.[0-9]"
+elif [ "$Input_Arg_Software_Version_Format" == "general-3" ]; then
+    version_reg="[0-9]\.[0-9]\.[0-9]"
+elif [ "$Input_Arg_Software_Version_Format" == "date-based" ]; then
+    version_reg="[0-9]{4}\.([0-9]{1,})+"
+else
+    # Default value
+    version_reg="[0-9]\.[0-9]\.[0-9]"
+fi
+Software_Version_Reg="$version_reg*([\.,-]*([a-zA-Z]{1,})*([0-9]{0,})*){0,}"
 
+if [ "$Input_Arg_Release_Type" == 'python-package' ]; then
     if [ "$Input_Arg_Python_Pkg_Name" == "" ]; then
         echo "❌ The argument 'Input_Arg_Python_Pkg_Name' (second argument) cannot be empty if option 'Input_Arg_Release_Type' (first argument) is 'python-package'."
         exit 1
     fi
 
-    declare version_reg
-    if [ "$Input_Arg_Software_Version_Format" == "general-2" ]; then
-        version_reg="[0-9]\.[0-9]"
-    elif [ "$Input_Arg_Software_Version_Format" == "general-3" ]; then
-        version_reg="[0-9]\.[0-9]\.[0-9]"
-    elif [ "$Input_Arg_Software_Version_Format" == "date-based" ]; then
-        version_reg="[0-9]{4}\.([0-9]{1,})+"
-    else
-        # Default value
-        version_reg="[0-9]\.[0-9]\.[0-9]"
-    fi
-
-    Software_Version_Reg="$version_reg*([\.,-]*([a-zA-Z]{1,})*([0-9]{0,})*){0,}"
     Python_Version_Reg="__version__ = \"$Software_Version_Reg\""
-
 fi
 
 #if [ "$Input_Arg_Release_Type" == 'python-package' ]; then
@@ -177,12 +175,18 @@ generate_new_version_as_tag() {
         echo "🔎 📃  Current Version: $current_ver"
 
 #        current_ver=$(git describe --tag --abbrev=0 --match "v[0-9]\.[0-9]\.[0-9]" | grep -E -o '[0-9]\.[0-9]\.[0-9]' | head -n1 | cut -d "." -f1)
-        if [ "$current_ver" == "" ]; then
-            current_ver=0
+        # NOTE: It it has value, the version is a semi-version number like '6.1.0'
+        # shellcheck disable=SC2002
+        New_Release_Version=$(cat "$Auto_Tag_And_Release_Dir/$Auto_Release_Title" | grep -E -o "$Software_Version_Reg")
+        New_Release_Tag='v'$New_Release_Version
+        if [ "$New_Release_Version" == "" ]; then
+            # NOTE: The version is a pure number like '6'
+            if [ "$current_ver" == "" ]; then
+                current_ver=0
+            fi
+            New_Release_Version=$(( current_ver + 1 ))
+            New_Release_Tag='v'$New_Release_Version'.0.0'
         fi
-        # TODO: Modify the logic about it also can get the version from the specific file
-        New_Release_Version=$(( current_ver + 1 ))
-        New_Release_Tag='v'$New_Release_Version'.0.0'
     fi
 }
 
