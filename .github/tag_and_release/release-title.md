@@ -1,1 +1,1 @@
-v6.0.0 🍻🍾 - Fix some issue and improve reusable workflow to be more flexible.
+v6.1.0 🍻🍾 - Fix broken reusable workflow.
