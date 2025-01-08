@@ -100,12 +100,8 @@ jobs:
         id: github_action_reusable_workflow_release
         run: | 
           release_info=$(bash ./scripts/ci/generate_release_info.sh ${{ inputs.project_type }} ${{ inputs.debug_mode }})
-<<<<<<< HEAD
           echo "🧾 release_info: $release_info"
           release_version=$(echo "$release_info" | grep -E "Target version which would be pass to deployment process: (([0-9]{1,}\.{0,1}[0-9]{0,}\.{0,1}[0-9]{0,})|(Pre\-Release))" | grep -E -o "(([0-9]{1,}\.{0,1}[0-9]{0,}\.{0,1}[0-9]{0,})|(Pre\-Release))")
-=======
-          release_version=$(echo "$release_info" | grep -E "Target version which would be pass to deployment process: ([0-9]{1,}\.{0,1}[0-9]{0,}\.{0,1}[0-9]{0,})|(Pre\-Release))" | grep -E -o "(([0-9]{1,}\.{0,1}[0-9]{0,}\.{0,1}[0-9]{0,})|(Pre\-Release))")
->>>>>>> 31b852d (Merge pull request #68 from Chisanan232/develop)
           echo "🤖 Release Version: $release_version"
 
           echo "release_version=$(echo $release_version)" >> $GITHUB_OUTPUT
