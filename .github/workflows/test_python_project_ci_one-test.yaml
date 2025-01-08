@@ -3,10 +3,7 @@ name: Python project CI Test (one-test)
 on:
   push:
     branches:
-      - "develop"
-      - "release"
-      - "release-**"
-      - "release/**"
+      - "develop**"
       - "master"
     paths:
 #     The workflow self.
@@ -37,10 +34,7 @@ on:
 
   pull_request:
     branches:
-      - "develop"
-      - "release"
-      - "release-**"
-      - "release/**"
+      - "develop**"
       - "master"
     paths:
 #     The workflow self.
