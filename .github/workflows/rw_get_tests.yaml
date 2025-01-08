@@ -1,0 +1,59 @@
+############################################################################
+#
+# Workflow Description:
+#     Run a specific shell script to get all test items.
+#
+# Workflow input parameters:
+#     * shell_path: The file path of shell script which gets all the test items.
+#     * shell_arg: The arguments of the shell script which gets all the test items.
+#     * use_customized_shell: Don't use the shell script template project prepares, run customized shell script.
+#
+# Workflow running output:
+#     Yes, it has running result output. The output is the paths of all test items.
+#
+############################################################################
+
+name: Prepare test items
+
+on:
+  workflow_call:
+    inputs:
+      shell_path:
+        description: "The file path of shell script which gets all the test items."
+        required: false
+        type: string
+        default: './scripts/ci/get-all-tests.sh'
+      shell_arg:
+        description: "The arguments of the shell script which gets all the test items."
+        required: true
+        type: string
+      use_customized_shell:
+        description: "If it's true, it wouldn't download the shell script and use the value of argument *shell_path* directly as shell script path to run."
+        type: boolean
+        required: false
+        default: false
+    outputs:
+      all_test_items:
+        description: "The output string about all test items it needs to run."
+        value: ${{ jobs.prep-testbed_get_test_items.outputs.matrix }}
+
+
+jobs:
+  prep-testbed_get_test_items:
+    name: Prepare all test items
+    runs-on: ubuntu-latest
+    # Map the job outputs to step outputs
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.all_test_items }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download shell script for getting path of all test modules
+        if: ${{ inputs.use_customized_shell != true }}
+        run: curl https://raw.githubusercontent.com/Chisanan232/GitHub-Action_Reusable_Workflows-Python/develop/scripts/ci/get-all-tests.sh --output ${{ inputs.shell_path }}
+
+      - id: set-matrix
+        run: |
+          sudo apt-get install jq
+          echo "all_test_items=$(bash ${{ inputs.shell_path }} ${{ inputs.shell_arg }})" >> $GITHUB_OUTPUT
+

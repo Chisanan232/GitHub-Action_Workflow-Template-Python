@@ -1,0 +1,105 @@
+###################################################################################################################
+#
+# Workflow Description:
+#     Test Python package by simple way, i.e., import modules, after running setup.py script to install package.
+#
+# Workflow input parameters:
+#     * General arguments:
+#         * build-type: Use one specific way to build and package Python code. It has 2 type options: 'setuptools' or 'poetry'.
+#         * python_package_name: The Python package name.
+#         * test_shell: Run command line(s) for testing.
+#         * test_shell_in_python: Run Python code as script for testing.
+#         * test_python_script: Test for importing the Python package.
+#
+# Workflow running output:
+#     No and do nothing.
+#
+###################################################################################################################
+
+name: Running pre-testing before building with running setup.py script
+
+on:
+  workflow_call:
+    inputs:
+      build-type:
+        description: "Use one specific way to build and package Python code. It has 2 type options: 'setuptools' or 'poetry'."
+        type: string
+        required: false
+        default: 'setuptools'
+      python_package_name:
+        description: "The Python package name."
+        required: true
+        type: string
+      test_shell:
+        description: "Test to run shell."
+        required: false
+        type: string
+      test_shell_in_python:
+        description: "Test to run shell within Python."
+        required: false
+        type: string
+      test_python_script:
+        description: "Run a Python script for testing the Python package."
+        type: string
+        required: false
+        default: ''
+
+
+jobs:
+  pre-building_check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python 3.10 in Ubuntu OS
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install Python dependencies by Setuptools
+        if: ${{ inputs.build-type == 'setuptools' }}
+        run: |
+          python3 -m pip install --upgrade pip
+          pip3 install -U pip
+          pip3 install -U setuptools
+          pip3 install wheel
+          pip install -U -r ./requirements/requirements-test.txt
+
+      - name: Install Python package by setup.py via Setuptools
+        if: ${{ inputs.build-type == 'setuptools' }}
+        run: python3 setup.py install --user || exit 1
+
+      - name: Install Python dependencies by Poetry
+        if: ${{ inputs.build-type == 'poetry' }}
+        run: |
+          python3 -m pip install --upgrade pip
+          pip3 install -U pip
+          pip3 install poetry
+
+      - name: Install Python package by setup.py via Poetry
+        if: ${{ inputs.build-type == 'poetry' }}
+        run: |
+          poetry build
+          pip3 install ./dist/*.whl || exit 1
+
+      - name: Show the Python package information
+        run: pip3 show ${{ inputs.python_package_name }}
+
+      - name: Test to run script with package '${{ inputs.python_package_name }}' in command lines
+        if: ${{ inputs.test_shell != '' }}
+        run: |
+          ${{ inputs.test_shell }}
+
+      - name: Test to run script with package '${{ inputs.python_package_name }}' in command lines within Python shell
+        if: ${{ inputs.test_shell_in_python != '' }}
+        run: |
+          ${{ inputs.test_shell_in_python }}
+        shell: python
+
+      - name: Test to run script with package '${{ inputs.python_package_name }}' with Python file
+        if: ${{ inputs.test_python_script != '' }}
+        run: python3 ${{ inputs.test_python_script }}
+
+# TODO: Build and upload Python package to test PyPI and install it from test PyPI to test
+# TODO-note: https://stackoverflow.com/questions/68882603/using-python-poetry-to-publish-to-test-pypi-org

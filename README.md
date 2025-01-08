@@ -2,9 +2,16 @@
 
 [![Release](https://img.shields.io/github/release/Chisanan232/GitHub-Action-Template-Python.svg?label=Release&logo=github)](https://github.com/Chisanan232/GitHub-Action-Template-Python/releases)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg?logo=apache)](https://opensource.org/licenses/Apache-2.0)
-[![Python project CI Test (one-test)](https://github.com/Chisanan232/GitHub-Action_Workflow-Template-Python/actions/workflows/test_python_project_ci_one-test.yaml/badge.svg)](https://github.com/Chisanan232/GitHub-Action_Workflow-Template-Python/actions/workflows/test_python_project_ci_one-test.yaml)
-[![Python project CI Test (multi-tests)](https://github.com/Chisanan232/GitHub-Action_Workflow-Template-Python/actions/workflows/test_python_project_ci_multi-tests.yaml/badge.svg)](https://github.com/Chisanan232/GitHub-Action_Workflow-Template-Python/actions/workflows/test_python_project_ci_multi-tests.yaml)
-[![GitHub Action reusable workflow project CI Test](https://github.com/Chisanan232/GitHub-Action_Workflow-Template-Python/actions/workflows/test_gh_reusable_workflow.yaml/badge.svg)](https://github.com/Chisanan232/GitHub-Action_Workflow-Template-Python/actions/workflows/test_gh_reusable_workflow.yaml)
+[![GitHub Action reusable workflow build](https://github.com/Chisanan232/GitHub-Action_Reusable_Workflows-Python/actions/workflows/ci-cd.yaml/badge.svg)](https://github.com/Chisanan232/GitHub-Action_Reusable_Workflows-Python/actions/workflows/ci-cd.yaml)
+
+🤖 Test state:
+
+| Usage scenario / state                                                                                                                                                                                                                                                                                                                        |
+|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| [![Python project CI Test (one-test)](https://github.com/Chisanan232/GitHub-Action_Workflow-Template-Python/actions/workflows/test_python_project_ci_one-test.yaml/badge.svg)](https://github.com/Chisanan232/GitHub-Action_Workflow-Template-Python/actions/workflows/test_python_project_ci_one-test.yaml)                                  |
+| [![Python project CI Test (multi-tests)](https://github.com/Chisanan232/GitHub-Action_Workflow-Template-Python/actions/workflows/test_python_project_ci_multi-tests.yaml/badge.svg)](https://github.com/Chisanan232/GitHub-Action_Workflow-Template-Python/actions/workflows/test_python_project_ci_multi-tests.yaml)                         |
+| [![Python project with Poetry CI Test (multi-tests)](https://github.com/Chisanan232/GitHub-Action_Reusable_Workflows-Python/actions/workflows/test_pyproject_ci_multi-tests_by_poetry.yaml/badge.svg)](https://github.com/Chisanan232/GitHub-Action_Reusable_Workflows-Python/actions/workflows/test_pyproject_ci_multi-tests_by_poetry.yaml) |
+| [![GitHub Action reusable workflow project CI Test](https://github.com/Chisanan232/GitHub-Action_Workflow-Template-Python/actions/workflows/test_gh_reusable_workflow.yaml/badge.svg)](https://github.com/Chisanan232/GitHub-Action_Workflow-Template-Python/actions/workflows/test_gh_reusable_workflow.yaml)                                |
 
 
 This is a GitHub Action workflow template for **_Python library_** project.
@@ -26,62 +33,85 @@ this project. This project has some workflow templates for reusing in GitHub Act
 
 The usage of each workflow template.
 
-* [_prepare_test_items.yaml_](#prepare_test_itemsyaml)
-* [_run_test_items_via_pytest.yaml_](#run_test_items_via_pytestyaml)
-* [_organize_and_generate_test_cov_reports.yaml_](#organize_and_generate_test_cov_reportsyaml)
-* [_upload_test_cov_report.yaml_](#upload_test_cov_reportyaml)
-* [_pre-building_test.yaml_](#pre-building_testyaml)
-* [_build_git-tag_and_create_github-release.yaml_](#build_git-tag_and_create_github-releaseyaml)
-* [_push_pkg_to_pypi.yaml_](#push_pkg_to_pypiyaml)
+* [_rw_get_tests.yaml_](#rw_get_testsyaml)
+* [_rw_run_test.yaml_](#rw_run_testyaml)
+* [_rw_poetry_run_test.yaml_](#rw_poetry_run_testyaml)
+* [_rw_run_test_with_multi_py_versions.yaml_](#rw_run_test_with_multi_py_versionsyaml)
+* [_rw_poetry_run_test_with_multi_py_versions.yaml_](#rw_poetry_run_test_with_multi_py_versionsyaml)
+* [_rw_organize_test_cov_reports.yaml_](#rw_organize_test_cov_reportsyaml)
+* [_rw_upload_test_cov_report.yaml_](#rw_upload_test_cov_reportyaml)
+* [_rw_pre-building_test.yaml_](#rw_pre-building_testyaml)
+* [_rw_build_git-tag_and_create_github-release.yaml_](#rw_build_git-tag_and_create_github-releaseyaml)
+* [_rw_push_pypi.yaml_](#rw_push_pypiyaml)
 
 <hr>
 
 
-### _prepare_test_items.yaml_
+### _rw_get_tests.yaml_
 
 * Description: Prepare the test items.
 * Options:
 
-| option name | data type | optional or required | function content                                     |
-|-------------|-----------|----------------------|------------------------------------------------------|
-| shell_path  | string    | Required             | The path shell script for getting the testing items. |
-| shell_arg   | string    | Required             | Input arguments of the shell script.                 |
+| option name          | data type | optional or required                                       | function content                                          |
+|----------------------|-----------|------------------------------------------------------------|-----------------------------------------------------------|
+| shell_path           | string    | Optional, Default value is _./scripts/ci/get-all-tests.sh_ | The path shell script for getting the testing items.      |
+| shell_arg            | string    | Required                                                   | Input arguments of the shell script.                      |
+| use_customized_shell | boolean   | Optional, Default value is _false_                         | Whether it should use the customized shell script or not. |
 
 * Output: 
   * all_test_items: All the test items it would run.
 
 * How to use it?
 
-Before use this workflow, it should prepare a shell script for getting the testing items.
+  * Use default shell script (recommended)
 
-```yaml
-  prepare-testing-items_unit-test:
-#    name: Prepare all unit test items
-    uses: Chisanan232/GitHub-Action-Template-Python/.github/workflows/prepare_test_items.yaml@master
-    with:
-      shell_path: scripts/ci/get-unit-test-paths.sh
-      shell_arg: unix
-```
+    If we want to use default shell script to auto-scan all tests, it only needs to give a shell script argument which is the directory path of test code:
 
-And we could get this workflow output result via keyword _all_test_items_.
+    ```yaml
+      prepare-testing-items_unit-test:
+    #    name: Prepare all unit test items
+        uses: Chisanan232/GitHub-Action-Template-Python/.github/workflows/rw_get_tests.yaml@master
+        with:
+          shell_arg: test/unit_test/
+    ```
+
+    And it would get all tests you need. And the keyword to get this workflow output result is _all_test_items_.
+
+  * Use customized shell script
+
+    Before use this workflow, it should prepare a shell script for getting the testing items.
+
+    ```yaml
+      prepare-testing-items_unit-test:
+    #    name: Prepare all unit test items
+        uses: Chisanan232/GitHub-Action-Template-Python/.github/workflows/rw_get_tests.yaml@master
+        with:
+          shell_path: scripts/ci/get-unit-test-paths.sh
+          shell_arg: unix
+          use_customized_shell: true
+    ```
+
+    And we could get this workflow output result via keyword _all_test_items_.
 
 <hr>
 
-### _run_test_items_via_pytest.yaml_
+### _rw_run_test.yaml_
 
-* Description: Run testing by specific type with all test items via PyTest and generate its testing coverage report (it would save reports by _actions/upload-artifact@v3_).
+* Description: Run testing by specific type with all test items via PyTest and generate its testing coverage report (it would save reports by _actions/upload-artifact_).
 * Options:
 
-| option name             | data type | optional or required                 | function content                                                                           |
-|-------------------------|-----------|--------------------------------------|--------------------------------------------------------------------------------------------|
-| test_type               | string    | Required                             | The testing type. In generally, it only has 2 options: _unit-test_ and _integration-test_. |
-| all_test_items_paths    | string    | Required                             | The target paths of test items under test.                                                 |
-| setup_http_server       | string    | Optional, Default value is _false_   | If it's true, it would set up and run HTTP server for testing.                             |
-| http_server_host        | string    | Optional, Default value is _0.0.0.0_ | The host IPv4 address of HTTP server.                                                      |
-| http_server_port        | string    | Optional, Default value is _12345_   | The port number of HTTP server.                                                            |
-| http_server_app_module  | string    | Optional, Default value is _app_     | The module path of HTTP server.                                                            |
-| http_server_enter_point | string    | Optional, Default value is _app_     | The object about the web application.                                                      |
-| debug_mode              | boolean   | Optional, Default value is _false_   | For debug, so it's matrix would only has one os: ubuntu-22.04 & one python-version: 3.10.  |
+| option name             | data type | optional or required                       | function content                                                                           |
+|-------------------------|-----------|--------------------------------------------|--------------------------------------------------------------------------------------------|
+| runtime_os              | string    | Optional, Default value is _ubuntu-latest_ | The OS to use for runtime environment.                                                     |
+| python_version          | string    | Optional, Default value is _3.11_          | The Python version to run the test in workflow.                                            |
+| test_type               | string    | Required                                   | The testing type. In generally, it only has 2 options: _unit-test_ and _integration-test_. |
+| all_test_items_paths    | string    | Required                                   | The target paths of test items under test.                                                 |
+| setup_http_server       | string    | Optional, Default value is _false_         | If it's true, it would set up and run HTTP server for testing.                             |
+| http_server_host        | string    | Optional, Default value is _0.0.0.0_       | The host IPv4 address of HTTP server.                                                      |
+| http_server_port        | string    | Optional, Default value is _12345_         | The port number of HTTP server.                                                            |
+| http_server_app_module  | string    | Optional, Default value is _app_           | The module path of HTTP server.                                                            |
+| http_server_enter_point | string    | Optional, Default value is _app_           | The object about the web application.                                                      |
+| debug_mode              | boolean   | Optional, Default value is _false_         | For debug, so it's matrix would only has one os: ubuntu-22.04 & one python-version: 3.10.  |
 
 * Output: 
 
@@ -97,8 +127,9 @@ No, but it would save the testing coverage reports to provide after-process to o
   run_unit-test:
 #    name: Run all unit test items
     needs: prepare-testing-items_unit-test
-    uses: Chisanan232/GitHub-Action-Template-Python/.github/workflows/run_test_items_via_pytest.yaml@master
+    uses: Chisanan232/GitHub-Action-Template-Python/.github/workflows/rw_run_test.yaml@master
     with:
+      python_version: '3.10'
       test_type: unit-test
       all_test_items_paths: ${{needs.prepare-testing-items_unit-test.outputs.all_test_items}}
       setup_http_server: true
@@ -121,23 +152,53 @@ is provided by previous workflow? That is all testing items.
 > **_NOTE:_**
 >
 > It also has another reusable workflow names _poetry_run_test_via_pytest.yaml_. If your Python project manages by **Poetry**, 
-> it recommends you to use this one replaces _run_test_items_via_pytest.yaml_. The usage and running details are mostly same 
-> as _run_test_items_via_pytest.yaml_. But, workflow _poetry_run_test_via_pytest.yaml_ only supports Python version 3.8 up. 
-> 
-
-* Difference between workflows _run_test_items_via_pytest.yaml_ and _poetry_run_test_via_pytest.yaml_
-
-| Workflow                          | Running way                                       | Support Python version |
-|-----------------------------------|---------------------------------------------------|------------------------|
-| _run_test_items_via_pytest.yaml_  | Command lines like ``pip``, ``python``, etc       | 3.6 - 3.11             |
-| _poetry_run_test_via_pytest.yaml_ | Use ``poetry`` feature or run command lines in it | 3.8 - 3.11             |
+> it recommends you to use this one replaces _rw_run_test.yaml_. The usage and running details are mostly same 
+> as _rw_run_test.yaml_. But, workflow _poetry_run_test_via_pytest.yaml_ only supports Python version 3.8 up. 
+>
 
 
 <hr>
 
-### _organize_and_generate_test_cov_reports.yaml_
+### _rw_poetry_run_test.yaml_
 
-* Description: Organize all the testing coverage reports which be generated in different runtime OS with Python version. (it would save reports by _actions/upload-artifact@v3_).
+* Description: Same working with workflow _rw_run_test.yaml_, but this workflow would run test via **_Poetry_**.
+
+* Difference between workflows _rw_run_test.yaml_ and _poetry_run_test_via_pytest.yaml_:
+
+| Workflow                          | Running way                                       |
+|-----------------------------------|---------------------------------------------------|
+| _rw_run_test.yaml_                | Command lines like ``pip``, ``python``, etc       |
+| _poetry_run_test_via_pytest.yaml_ | Use ``poetry`` feature or run command lines in it |
+
+
+<hr>
+
+### _rw_run_test_with_multi_py_versions.yaml_
+
+* Description: Almost same working with workflow _rw_run_test.yaml_, but it would run test with multiple Python versions
+with multiple runtime environment OS.
+
+
+<hr>
+
+### _rw_poetry_run_test_with_multi_py_versions.yaml_
+
+* Description: Almost same working with workflow _rw_poetry_run_test.yaml_, but it would run test with multiple Python versions
+with multiple runtime environment OS.
+
+* Difference between workflows _rw_run_test_with_multi_py_version.yaml_ and _rw_poetry_run_test_with_multi_py_versions.yaml_
+
+ | Workflow                                         | Running way                                       | Support Python version |
+ |--------------------------------------------------|---------------------------------------------------|------------------------|
+ | _rw_run_test_with_multi_py_version.yaml_         | Command lines like ``pip``, ``python``, etc       | 3.6 - 3.11             |
+ | _rw_poetry_run_test_with_multi_py_versions.yaml_ | Use ``poetry`` feature or run command lines in it | 3.8 - 3.11             |
+
+
+<hr>
+
+### _rw_organize_test_cov_reports.yaml_
+
+* Description: Organize all the testing coverage reports which be generated in different runtime OS with Python version. (it would save reports by _actions/upload-artifact_).
 * Options:
 
 | option name | data type | optional or required | function content                                                                           |
@@ -159,16 +220,16 @@ No, but it would save the testing coverage reports to provide after-process to o
   unit-test_codecov:
 #    name: Organize and generate the testing report and upload it to Codecov
     needs: run_unit-test
-    uses: Chisanan232/GitHub-Action-Template-Python/.github/workflows/organize_and_generate_test_cov_reports.yaml@master
+    uses: Chisanan232/GitHub-Action-Template-Python/.github/workflows/rw_organize_test_cov_reports.yaml@master
     with:
       test_type: unit-test
 ```
 
-It would upload the organized report via _actions/upload-artifact@v3_. And it doesn't support customize options of _actions/upload-artifact@v3_ currently.
+It would upload the organized report via _actions/upload-artifact_. And it doesn't support customize options of _actions/upload-artifact_ currently.
 
 <hr>
 
-### _upload_test_cov_report.yaml_
+### _rw_upload_test_cov_report.yaml_
 
 * Description: Upload the testing coverage reports to Codecov.
 * Options:
@@ -179,7 +240,7 @@ _General option_:
 
 | option name         | data type | optional or required                     | function content                                                                                                    |
 |---------------------|-----------|------------------------------------------|---------------------------------------------------------------------------------------------------------------------|
-| download_path       | string    | Optional. Default value is './'.         | The path to download testing coverage reports via _actions/download-artifact@v3_.                                   |
+| download_path       | string    | Optional. Default value is './'.         | The path to download testing coverage reports via _actions/download-artifact_.                                      |
 | test_type           | string    | Required                                 | The testing type. In generally, it only has 3 options: _unit-test_, _integration-test_ and _all-type_.              |
 | upload-to-codecov   | boolean   | Optional. Default value is _false_.      | If it's true, it would upload testing coverage report for Codecov (https://codecov.io).                             |
 | codecov_flags       | string    | Optional. Default value is empty string. | The flags of the testing coverage report for Codecov. This option would be required if _upload-to-codecov_ is true. |
@@ -215,7 +276,7 @@ Nothing.
           codecov_finish:
         #    name: Organize and generate the testing report and upload it to Codecov
             needs: [unit-test_codecov]
-            uses: Chisanan232/GitHub-Action-Template-Python/.github/workflows/upload_test_cov_report.yaml@master
+            uses: Chisanan232/GitHub-Action-Template-Python/.github/workflows/rw_upload_test_cov_report.yaml@master
             secrets:
               codecov_token: ${{ secrets.CODECOV_TOKEN }}
             with:
@@ -237,7 +298,7 @@ Nothing.
           codecov_finish:
         #    name: Organize and generate the testing report and upload it to Coveralls
             needs: [unit-test_codecov]
-            uses: Chisanan232/GitHub-Action-Template-Python/.github/workflows/upload_test_cov_report.yaml@master
+            uses: Chisanan232/GitHub-Action-Template-Python/.github/workflows/rw_upload_test_cov_report.yaml@master
             secrets:
               coveralls_token: ${{ secrets.COVERALLS_TOKEN }}
             with:
@@ -257,7 +318,7 @@ Nothing.
           codecov_finish:
         #    name: Organize and generate the testing report and upload it to Codacy
             needs: [unit-test_codecov]
-            uses: Chisanan232/GitHub-Action-Template-Python/.github/workflows/upload_test_cov_report.yaml@master
+            uses: Chisanan232/GitHub-Action-Template-Python/.github/workflows/rw_upload_test_cov_report.yaml@master
             secrets:
               codacy_token: ${{ secrets.CODACY_PROJECT_TOKEN }}
             with:
@@ -272,7 +333,7 @@ Nothing.
 
 <hr>
 
-### _pre-building_test.yaml_
+### _rw_pre-building_test.yaml_
 
 * Description: Test package by simple way after running setup.py script to install Python package
 * Options:
@@ -292,9 +353,9 @@ No, nothing at all.
 * How to use it?
 
 ```yaml
-  pre-building_test:
+  rw_pre-building_test:
 #    name: Check about it could work finely by installing the Python package with setup.py file
-    uses: ./.github/workflows/pre-building_test.yaml
+    uses: ./.github/workflows/rw_pre-building_test.yaml
     with:
       build-type: setuptools
       python_package_name: Test-GitHub-Action-workflow
@@ -305,7 +366,7 @@ No, nothing at all.
 
 <hr>
 
-### _build_git-tag_and_create_github-release.yaml_
+### _rw_build_git-tag_and_create_github-release.yaml_
 
 * Description: Build a git tag on a specific commit in every git branch. And create GitHub release if current git branch is 'master'.
 * Options:
@@ -331,10 +392,10 @@ Yes, it has running result output. It would output the version which could provi
     * **_Python package_** usage case:
 
     ```yaml
-      build_git-tag_and_create_github-release:
+      rw_build_git-tag_and_create_github-release:
     #    name: Build git tag and GitHub release if it needs for Python package project
         needs: [coveralls_finish, codacy_finish]
-        uses: ./.github/workflows/build_git-tag_and_create_github-release.yaml
+        uses: ./.github/workflows/rw_build_git-tag_and_create_github-release.yaml
         with:
           project_type: python-package
           project_name: test_gh_workflow
@@ -345,10 +406,10 @@ Yes, it has running result output. It would output the version which could provi
     * **_GitHub Action reusable workflow_** usage case:
 
     ```yaml
-      build_git-tag_and_create_github-release:
+      rw_build_git-tag_and_create_github-release:
     #    name: Build git tag and GitHub release if it needs for GitHub Action reusable workflow project
         needs: [coveralls_finish, codacy_finish]
-        uses: ./.github/workflows/build_git-tag_and_create_github-release.yaml
+        uses: ./.github/workflows/rw_build_git-tag_and_create_github-release.yaml
         with:
           project_type: github-action-reusable-workflow
           debug_mode: true
@@ -360,7 +421,7 @@ The badge it generates:
 
 <hr>
 
-### _push_pkg_to_pypi.yaml_
+### _rw_push_pypi.yaml_
 
 * Description: Compile source code and push the Python package to PyPI. (Official release the Python package)
 * Options:
@@ -391,7 +452,7 @@ No, nothing at all.
 ```yaml
   push_python_pkg_to_pypi:
 #    name: Upload the Python package files which has been compiled to PyPi
-    uses: ./.github/workflows/push_pkg_to_pypi.yaml
+    uses: ./.github/workflows/rw_push_pypi.yaml
     with:
       build-type: setuptools
       release-type: 'Official-Release'
