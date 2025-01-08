@@ -66,15 +66,8 @@ jobs:
   run_test_items:
     strategy:
       matrix:
-        python-version: [3.6,3.7,3.8,3.9,'3.10','3.11']
+        python-version: [3.9,'3.10','3.11','3.12','3.13']
         os: [ubuntu-latest,ubuntu-20.04,macos-latest,macos-13]
-        exclude:
-          - os: ubuntu-latest    # Issue: The version '3.6' with architecture 'x64' was not found for Ubuntu 22.04
-            python-version: 3.6
-          - os: macos-latest
-            python-version: 3.6
-          - os: macos-latest    # Issue: The version '3.7' with architecture 'arm64' was not found for macOS 14.4.1.
-            python-version: 3.7
         test-path: ${{fromJson(inputs.all_test_items_paths)}}
       fail-fast: false    # Fix issue in GitHub Action: FailFast: cancelling since parallel instance has failed
 

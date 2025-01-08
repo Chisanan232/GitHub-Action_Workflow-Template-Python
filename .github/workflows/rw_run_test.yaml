@@ -14,6 +14,7 @@
 #     * http_server_port: The port number of HTTP server.
 #     * http_server_app_module: The module path of HTTP server.
 #     * http_server_enter_point: The object about the web application.
+#     * keep_run_if_test_fail: Keep running CI process if it gets failure at running runs.
 #
 # Workflow running output:
 #     No, but it would save the testing coverage reports to provide after-process to organize and record.
@@ -72,6 +73,11 @@ on:
         type: string
         required: false
         default: app
+      keep_run_if_test_fail:
+        description: "Keep running CI process if it gets failure at running runs."
+        type: boolean
+        required: false
+        default: false
 
 env:
   PIP_DISABLE_PIP_VERSION_CHECK: 1
@@ -110,7 +116,7 @@ jobs:
 
       - name: Run tests with pytest
         run: pytest ${{ matrix.test-path }}
-        continue-on-error: true
+        continue-on-error: ${{ inputs.keep_run_if_test_fail }}
 
       - name: Rename the code coverage result file
         run: mv ./.coverage ./.coverage.${{ inputs.test_type }}.${{ inputs.runtime_os }}-${{ inputs.python_version }}
