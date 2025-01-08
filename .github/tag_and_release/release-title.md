@@ -1,1 +1,1 @@
-v6.1.0 🍻🍾 - Fix broken reusable workflow.
+v7.0.0 🍻🍾 - Support verifying with Python versions `3.12`, `3.13`.
