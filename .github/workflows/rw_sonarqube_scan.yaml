@@ -25,6 +25,11 @@ on:
         type: string
         required: false
         default: ./
+      sonar_host_url:
+        description: "The server host URL about SonarQube scanning mechanism."
+        required: false
+        type: string
+        default: https://sonarcloud.io
 
     secrets:
       sonar_token:
@@ -51,3 +56,4 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.sonar_token }}
+          SONAR_HOST_URL: ${{ inputs.sonar_host_url }}
