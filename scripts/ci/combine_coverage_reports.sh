@@ -4,7 +4,7 @@ set -ex
 
 test_type=$1
 
-coveragedatafile=".coverage.$test_type"
+coveragedatafile=".coverage_$test_type"
 
 if [ "$test_type" == "all-test" ];
 then
