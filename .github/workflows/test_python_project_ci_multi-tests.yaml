@@ -156,7 +156,8 @@ jobs:
     uses: ./.github/workflows/rw_sonarqube_scan.yaml
     secrets:
       sonar_token: ${{ secrets.SONAR_TOKEN }}
-#    with:
+    with:
+      test_type: all-test
 #      download_path: ${{ inputs.download_path }}
 
 
