@@ -134,7 +134,7 @@ jobs:
       - name: Upload code coverage result file
         uses: actions/upload-artifact@v4
         with:
-          name: coverage_${{ inputs.test_type }}_${{ matrix.os }}_${{ matrix.python-version }}
+          name: coverage_${{ inputs.test_type }}_${{ inputs.runtime_os }}_${{ inputs.python-version }}
           path: .coverage.${{ inputs.test_type }}.${{ inputs.runtime_os }}-${{ inputs.python_version }}
           if-no-files-found: error
           include-hidden-files: true
