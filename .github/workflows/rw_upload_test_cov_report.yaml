@@ -97,15 +97,15 @@ jobs:
           bash ./scripts/ci/check-input-params.sh ${{ inputs.upload-to-codacy }} ${{ secrets.codacy_token }}
 
       - name: Download code coverage result files which has be handled by different test type process
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
-          name: test_coverage_data_file
+          name: ${{ inputs.test_type }}_coverage_data_file
           path: ${{ inputs.download_path }}
 
       - name: Download code coverage result files which has be handled by different test type process
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
-          name: test_coverage_xml_report
+          name: ${{ inputs.test_type }}_coverage_xml_report
           path: ${{ inputs.download_path }}
 
       - name: Install Python 3.10

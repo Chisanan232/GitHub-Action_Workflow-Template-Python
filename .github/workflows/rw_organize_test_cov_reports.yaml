@@ -1,7 +1,7 @@
 ###################################################################################################################################
 #
 # Workflow Description:
-#     Organize all the testing coverage reports. (it would save reports by 'actions/upload-artifact@v3').
+#     Organize all the testing coverage reports. (it would save reports by 'actions/upload-artifact').
 #
 # Workflow input parameters:
 #     * test_type: The testing type. In generally, it only has 2 options: 'unit-test' and 'integration-test'.
@@ -34,10 +34,11 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Download code coverage result file
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
-          name: coverage
+          pattern: coverage*
           path: ./
+          merge-multiple: true
 
       - name: Setup Python 3.10 in Ubuntu OS
         uses: actions/setup-python@v5
@@ -49,24 +50,26 @@ jobs:
           python3 -m pip install --upgrade pip
           pip3 install -U pip
           pip3 install coverage
+          echo "======== Check all the test coverage reports currently. ========"
+          ls -la
 
       - name: Combine all testing coverage data files with test type and runtime OS, and convert to XML format file finally
         run: |
           curl https://raw.githubusercontent.com/Chisanan232/GitHub-Action_Reusable_Workflows-Python/develop/scripts/ci/combine_coverage_reports.sh --output ./scripts/ci/combine_coverage_reports.sh
-          bash ./scripts/ci/combine_coverage_reports.sh ${{ inputs.test_type }}
+          bash ./scripts/ci/combine_coverage_reports.sh ${{ inputs.test_type }} .coverage.
 
       - name: Upload testing coverage report (.coverage)
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          name: test_coverage_data_file
+          name: ${{ inputs.test_type }}_coverage_data_file
           path: .coverage
           if-no-files-found: error
           include-hidden-files: true
 
       - name: Upload testing coverage report (.xml)
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          name: test_coverage_xml_report
+          name: ${{ inputs.test_type }}_coverage_xml_report
           path: coverage**xml
           if-no-files-found: error
           include-hidden-files: true

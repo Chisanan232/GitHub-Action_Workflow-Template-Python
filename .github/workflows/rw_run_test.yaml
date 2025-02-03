@@ -2,7 +2,7 @@
 #
 # Workflow Description:
 #     Run testing by specific type with all test items via PyTest and generate its testing
-#     coverage report (it would save reports by 'actions/upload-artifact@v3').
+#     coverage report (it would save reports by 'actions/upload-artifact').
 #
 # Workflow input parameters:
 #     * runtime_os: The OS to use for runtime environment. In default, it's 'ubuntu-latest'.
@@ -122,9 +122,9 @@ jobs:
         run: mv ./.coverage ./.coverage.${{ inputs.test_type }}.${{ inputs.runtime_os }}-${{ inputs.python_version }}
 
       - name: Upload code coverage result file
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          name: coverage
+          name: coverage_${{ inputs.test_type }}_${{ inputs.runtime_os }}_${{ inputs.python_version }}
           path: .coverage.${{ inputs.test_type }}.${{ inputs.runtime_os }}-${{ inputs.python_version }}
           if-no-files-found: error
           include-hidden-files: true
