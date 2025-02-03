@@ -52,8 +52,6 @@ jobs:
           pip3 install coverage
           echo "======== Check all the test coverage reports currently. ========"
           ls -la
-          coverage report --data-file=coverage_unit-test_ubuntu-latest_3.11
-          coverage report --data-file=coverage_integration-test_macos-latest_3.12
 
       - name: Combine all testing coverage data files with test type and runtime OS, and convert to XML format file finally
         run: |
