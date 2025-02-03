@@ -1,1 +1,1 @@
-v7.1.0 🍻🍾 - Fix broken CI process about SonarQube scan
+v7.2.0 🍻🍾 - Fix broken CI process about expired old versions of artifact actions

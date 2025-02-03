@@ -1,3 +1,3 @@
 ### 🍀 **Improvement**
 
-1. Update the action about SonarQube scan
+1. Update the actions dependencies about artifact features.
