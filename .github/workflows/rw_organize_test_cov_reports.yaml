@@ -38,6 +38,7 @@ jobs:
         with:
           pattern: coverage*
           path: ./
+          merge-multiple: true
 
       - name: Setup Python 3.10 in Ubuntu OS
         uses: actions/setup-python@v5
