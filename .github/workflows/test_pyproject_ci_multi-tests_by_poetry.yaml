@@ -84,6 +84,7 @@ jobs:
     uses: ./.github/workflows/rw_poetry_run_test.yaml
     with:
       test_type: unit-test
+      install_dependency_with_group: github-action
       all_test_items_paths: ${{needs.prep-testbed_unit-test.outputs.all_test_items}}
 
 
@@ -93,6 +94,7 @@ jobs:
     uses: ./.github/workflows/rw_poetry_run_test_with_multi_py_versions.yaml
     with:
       test_type: integration-test
+      install_dependency_with_group: github-action
       all_test_items_paths: ${{needs.prep-testbed_integration-test.outputs.all_test_items}}
       setup_http_server: true
       http_server_host: 0.0.0.0
