@@ -13,6 +13,7 @@ on:
 #     The sample Python code.
       - ".coveragerc"
       - "pyproject.toml"
+      - "poetry.lock"
       - "pytest.ini"
       - "sonar-project.properties"
       - "test_gh_workflow/**"
@@ -43,6 +44,7 @@ on:
 #     The sample Python code.
       - ".coveragerc"
       - "pyproject.toml"
+      - "poetry.lock"
       - "pytest.ini"
       - "sonar-project.properties"
       - "test_gh_workflow/**"
