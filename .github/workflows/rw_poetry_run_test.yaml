@@ -126,6 +126,7 @@ jobs:
         if: ${{ inputs.install_dependency_with_group != '' }}
         run: |
           poetry --version
+          poetry install
           poetry install --with=${{ inputs.install_dependency_with_group }}
 
       - name: Setup and run HTTP server for testing
