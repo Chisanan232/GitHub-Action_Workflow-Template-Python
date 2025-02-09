@@ -16,6 +16,11 @@ pytest-cov = "^3.0.0"
 pytest-rerunfailures = "^10.2"
 coverage = "^6.2"
 coveralls = "^3.3.1"
+
+[tool.poetry.group.github-action]
+optional = true
+
+[tool.poetry.group.github-action.dependencies]
 Flask = "^2.2.3"
 gunicorn = "^20.1.0"
 
