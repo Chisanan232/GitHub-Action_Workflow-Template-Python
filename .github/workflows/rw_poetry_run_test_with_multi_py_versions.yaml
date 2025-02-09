@@ -6,6 +6,7 @@
 #
 # Workflow input parameters:
 #     * test_type: The testing type. In generally, it only has 2 options: 'unit-test' and 'integration-test'.
+#     * install_dependency_with_group: Install the dependency by Poetry configuration with dependency group setting. This parameter receive the dependency group naming.
 #     * all_test_items_paths: The target paths of test items under test.
 #     * setup_http_server: If it's true, it would set up and run HTTP server for testing.
 #     * http_server_host: The host IPv4 address of HTTP server.
@@ -33,6 +34,11 @@ on:
         description: "The testing type. In generally, it only has 2 options: 'unit-test' and 'integration-test'."
         required: true
         type: string
+      install_dependency_with_group:
+        description: "Install the dependency by Poetry configuration with dependency group setting. This parameter receive the dependency group naming."
+        type: string
+        required: false
+        default: ''
       all_test_items_paths:
         description: "The target paths of test items under test."
         required: true
@@ -80,6 +86,7 @@ jobs:
       runtime_os: ${{ matrix.os }}
       python_version: ${{ matrix.python-version }}
       test_type: ${{ inputs.test_type }}
+      install_dependency_with_group: ${{ inputs.install_dependency_with_group }}
       all_test_items_paths: ${{ inputs.all_test_items_paths }}
       setup_http_server: ${{ inputs.setup_http_server }}
       http_server_host: ${{ inputs.http_server_host }}
