@@ -117,7 +117,6 @@ jobs:
           pip install -U poetry
 
       - name: Build Python runtime environment by Poetry
-        if: ${{ inputs.install_dependency_with_group == '' }}
         run: |
           poetry --version
           poetry install
@@ -125,8 +124,6 @@ jobs:
       - name: Build Python runtime environment by Poetry with dependency group *${{ inputs.install_dependency_with_group }}*
         if: ${{ inputs.install_dependency_with_group != '' }}
         run: |
-          poetry --version
-          poetry install
           poetry install --with=${{ inputs.install_dependency_with_group }}
 
       - name: Setup and run HTTP server for testing
